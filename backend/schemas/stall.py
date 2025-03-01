@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from typing import Optional
 from enum import Enum
 
+from .hawker import Hawker
+
 
 class CuisineType(Enum):
     CHINESE = "Chinese"
@@ -20,6 +22,7 @@ class Stall(BaseModel):
     stallID: int
     name: str
     hawkerID: int
+    hawker: Hawker
     unitNumber: str
     openStatus: bool
     operatingHours: Optional[str] = None

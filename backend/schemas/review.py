@@ -1,25 +1,43 @@
 from pydantic import BaseModel
 from typing import Optional
+from enum import Enum
+
+from .consumer import Consumer
+from .stall import Stall
+
+
+class ReviewAction(Enum):
+    DELETE = "Delete"
+    IGNORE = "Ignore"
+    CANCEL = "Cancel"
 
 
 class Review(BaseModel):
     reviewID: int
-    stallID: int
     rating: float
-    reviewText: Optional[str] = None
+    reviewText: Optional[str] = ""
+
+    consumerID: int
+    consumer: Consumer
+
+    stallID: int
+    stall: Stall
 
     class Config:
         orm_mode = True
 
 
 class ReviewCreate(BaseModel):
-    stallID: int
+    reviewText: str
     rating: float
-    reviewText: Optional[str] = None
+
+    consumerID: int
+    stallID: int
 
 
 class ReviewUpdate(BaseModel):
     reviewID: int
-    stallID: Optional[int] = None
-    rating: Optional[float] = None
-    reviewText: Optional[str] = None
+    reviewText: str
+    rating: float
+
+    consumerID: int

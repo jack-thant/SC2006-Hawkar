@@ -1,0 +1,27 @@
+from sqlalchemy import Column, Integer, String, Enum
+from sqlalchemy.orm import relationship, Mapped
+
+from database import Base
+from schemas.user import Role
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    userID = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    emailAddress = Column(String, unique=True, index=True)
+    password = Column(String)
+    profilePhoto = Column(String)
+    role = Column(Enum(Role))
+
+    admin: Mapped["Admin"] = relationship("Admin", back_populates="user")
+    consumer: Mapped["Consumer"] = relationship("Consumer", back_populates="user")
+    hawker: Mapped["Hawker"] = relationship("Hawker", back_populates="user")
+
+    # notifications: Mapped["Notification"] = relationship(
+    #     "Notification", back_populates="receiver"
+    # )
+    # css_history: Mapped[list["CustomerServiceSupportHistory"]] = relationship(
+    #     "CustomerServiceSupportHistory", back_populates="user"
+    # )

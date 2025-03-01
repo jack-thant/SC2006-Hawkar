@@ -6,6 +6,7 @@ from .misc import Geometry
 
 class Hawker(BaseModel):
     hawkerID: int
+    name: str
     contactNumber: str
     verifyStatus: bool
     location: Geometry
