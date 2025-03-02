@@ -9,7 +9,7 @@ class Admin(BaseModel):
     user: User
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class AdminCreate(UserCreate):

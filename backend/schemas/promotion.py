@@ -11,7 +11,7 @@ class Promotion(BaseModel):
     discountedPrice: float
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class PromotionCreate(BaseModel):
