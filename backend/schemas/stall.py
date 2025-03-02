@@ -20,7 +20,7 @@ class CuisineType(Enum):
 
 class Stall(BaseModel):
     stallID: int
-    name: str
+    stallName: str
     hawkerID: int
     hawker: Hawker
     unitNumber: str
@@ -35,7 +35,7 @@ class Stall(BaseModel):
 
 
 class StallCreate(BaseModel):
-    name: str
+    stallName: str
     hawkerID: int
     unitNumber: str
     openStatus: bool
@@ -47,7 +47,7 @@ class StallCreate(BaseModel):
 
 class StallUpdate(BaseModel):
     stallID: int
-    name: Optional[str] = None
+    stallName: Optional[str] = None
     hawkerID: Optional[int] = None
     unitNumber: Optional[str] = None
     openStatus: Optional[bool] = None

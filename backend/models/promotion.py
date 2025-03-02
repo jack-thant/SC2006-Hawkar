@@ -13,4 +13,4 @@ class Promotion(Base):
     discountedPrice = Column(Float)
 
     dishID = Column(Integer, ForeignKey("dishes.dishID"))
-    dish: Mapped["Dish"] = relationship("Dish", back_populates="promotions")
+    dishes: Mapped["Dish"] = relationship("Dish", back_populates="promotions")

@@ -15,4 +15,4 @@ class Dish(Base):
     stallID = Column(Integer, ForeignKey("stalls.stallID"))
     stall: Mapped["Stall"] = relationship("Stall", back_populates="dishes")
 
-    promotion: Mapped["Promotion"] = relationship("Promotion", back_populates="dishes")
+    promotions: Mapped["Promotion"] = relationship("Promotion", back_populates="dishes")

@@ -1,0 +1,58 @@
+from sqlalchemy.orm import Session
+
+import schemas.user as user_schemas
+from models.user import User
+
+import bcrypt
+
+salt = bcrypt.gensalt()
+
+
+def get_user_by_id(db: Session, userID: int):
+    return db.query(User).filter(User.userID == userID).first()
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.emailAddress == email).first()
+
+
+def get_all_users(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(User).offset(skip).limit(limit).all()
+
+
+def create_user(db: Session, user: user_schemas.UserCreate):
+    # hash password
+    user.password = bcrypt.hashpw(user.password.encode("utf-8"), salt=salt)
+
+    db_user = User(**user.model_dump())
+
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def update_user(db: Session, updated_user: user_schemas.UserUpdate):
+    db_user = db.query(User).filter(User.userID == updated_user.userID).first()
+    if not db_user:
+        return None
+
+    updated_user_data = updated_user.model_dump(exclude_unset=True)
+    for key, value in updated_user_data.items():
+        setattr(db_user, key, value)
+
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def login_user(db: Session, user: user_schemas.UserLogin):
+    db_user = db.query(User).filter(User.emailAddress == user.emailAddress).first()
+    if not db_user:
+        return None
+
+    if bcrypt.checkpw(user.password.encode("utf-8"), db_user.password):
+        return db_user
+
+    return None

@@ -6,10 +6,11 @@ from .misc import Geometry
 
 class Hawker(BaseModel):
     hawkerID: int
-    name: str
+    businessName: str
     contactNumber: str
-    verifyStatus: bool
-    location: Geometry
+    verifyStatus: bool = False
+    geometry: Geometry
+    address: str
     userID: int
     user: User
 
@@ -21,11 +22,13 @@ class HawkerCreate(UserCreate):
     role: Role = Role.HAWKER
     contactNumber: str
     verifyStatus: bool
-    location: Geometry
+    geometry: Geometry
+    address: str
 
 
 class HawkerUpdate(UserUpdate):
     hawkerID: int
     contactNumber: str
     verifyStatus: bool
-    location: Geometry
+    geometry: Geometry
+    address: str

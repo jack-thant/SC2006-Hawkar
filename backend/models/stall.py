@@ -10,7 +10,7 @@ class Stall(Base):
     __tablename__ = "stalls"
 
     stallID = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
+    stallName = Column(String)
     unitNumber = Column(String)
     openStatus = Column(Boolean)
     operatingHours = Column(String)
