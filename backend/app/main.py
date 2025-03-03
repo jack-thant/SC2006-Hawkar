@@ -1,11 +1,5 @@
-from fastapi import FastAPI, WebSocket, Depends
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-
-from database import get_db
-from sqlalchemy.orm import Session
-
-# from websocket import WebSocketConnectionManager
-# from websocket import process_websocket_endpoint
 
 from routers import (
     user,
