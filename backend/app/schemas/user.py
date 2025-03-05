@@ -19,7 +19,7 @@ class User(UserBase):
     profilePhoto: Optional[str] = ""
     role: Role
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 

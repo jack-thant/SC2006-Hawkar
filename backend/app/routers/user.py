@@ -22,23 +22,9 @@ tags_metadata = [
 # -------------------- Business Logic -------------------- #
 # -------------------------------------------------------- #
 # ---------- User ---------- #
-@router.get(
-    "/user-controller/get-all-users",
-    response_model=list[user_schemas.User],
-    tags=["User Controller"],
-)
-async def get_all_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return UserController.getAllUsers(db, skip, limit)
-
-
-@router.get(
-    "/user-controller/get-user-by-id/{userID}",
-    response_model=user_schemas.User,
-    tags=["User Controller"],
-)
-async def get_user_by_id(userID: str, db: Session = Depends(get_db)):
-    return UserController.getUserById(db, userID)
-
+@router.post("/user-controller/create-user", tags=["User Controller"])
+async def create_user(user: user_schemas.UserCreate, db: Session = Depends(get_db)):
+    return UserController.createUser(db, user)
 
 # ---------- Hawker ---------- #
 @router.get("/user-controller/get-all-public-hawkers", tags=["User Controller"])
@@ -71,9 +57,28 @@ def search_hawker(
     return UserController.searchHawker(db, skip, limit, search_value=businessName)
 
 
+
 # ------------------------------------------------------------ #
 # -------------------- User (CRUD) --------------------------- #
 # ------------------------------------------------------------ #
+@router.get(
+    "/users",
+    response_model=list[user_schemas.User],
+    tags=["User (CRUD)"],
+)
+async def get_all_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return UserController.getAllUsers(db, skip, limit)
+
+
+@router.get(
+    "/user/{userID}",
+    response_model=user_schemas.User,
+    tags=["User (CRUD)"],
+)
+async def get_user_by_id(userID: str, db: Session = Depends(get_db)):
+    return UserController.getUserById(db, userID)
+
+
 @router.get(
     "/user/email/{email}", response_model=user_schemas.User, tags=["User (CRUD)"]
 )

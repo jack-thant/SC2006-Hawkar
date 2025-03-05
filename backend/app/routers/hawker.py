@@ -51,6 +51,15 @@ def delete_stall(stall_id: int, db: Session = Depends(get_db)):
 # ------------------------------------------------------------ #
 # -------------------- Hawker (CRUD) ------------------------- #
 # ------------------------------------------------------------ #
+@router.post(
+    "/hawker-controller/add-hawker",
+    response_model=hawker_schemas.Hawker,
+    tags=["Hawker (CRUD)"],
+)
+def add_hawker(hawker: hawker_schemas.HawkerCreate, db: Session = Depends(get_db)):
+    return HawkerController.addHawker(db, hawker)
+
+
 @router.get("/hawkers/public", tags=["Hawker (CRUD)"])
 async def getAllPublicHawkers():
     hawkersLocation = UserController.getAllPublicHawkers()

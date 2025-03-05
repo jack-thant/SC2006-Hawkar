@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from sqlalchemy import Engine, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker, Session, declarative_base
 
 
 class DatabaseInterface(ABC):

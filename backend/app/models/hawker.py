@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
 from sqlalchemy.orm import relationship, Mapped
 from typing import List
 
@@ -14,7 +14,9 @@ class Hawker(Base):
     contactNumber = Column(String)
     verifyStatus = Column(Boolean)
     address = Column(String)
-    geometry = Column(String)
+    # geometry = Column(String)
+    latitude = Column(Float)
+    longitude = Column(Float)
 
     userID = Column(Integer, ForeignKey("users.userID"))
     user: Mapped["User"] = relationship("User", back_populates="hawker")

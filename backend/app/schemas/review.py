@@ -23,7 +23,7 @@ class Review(BaseModel):
     stallID: int
     stall: Stall
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 

@@ -1,3 +1,4 @@
+import json
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -18,14 +19,21 @@ class AdminController:
             raise HTTPException(status_code=400, detail="Invalid hawkerID")
 
         hawker_update = hawker_schemas.HawkerUpdate(
+            name=hawker_db.user.name,
+            emailAddress=hawker_db.user.emailAddress,
+            userID=hawker_db.userID,
+            profilePhoto=hawker_db.user.profilePhoto,
             hawkerID=hawker_db.hawkerID,
             contactNumber=hawker_db.contactNumber,
-            geometry=hawker_db.geometry,
+            latitude=hawker_db.latitude,
+            longitude=hawker_db.longitude,
+            # geometry=json.dumps(hawker_db.geometry),
             address=hawker_db.address,
             verifyStatus=True,
         )
 
         hawker_update_db = hawker_services.update_hawker(db, hawker_update)
+
         return hawker_update_db
 
     # ------------------------------------------------------------ #

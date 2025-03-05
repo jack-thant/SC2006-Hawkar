@@ -4,12 +4,12 @@ from typing import Optional
 
 class Dish(BaseModel):
     dishID: int
-    stallID: int
+    stallID: Optional[int] = None  # Changed to Optional with None default
     dishName: str
     price: float
     photo: Optional[str] = None
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 

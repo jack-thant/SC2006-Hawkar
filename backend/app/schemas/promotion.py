@@ -5,17 +5,17 @@ from typing import Optional
 
 class Promotion(BaseModel):
     promotionID: int
-    dishID: int
+    dishID: Optional[int] = None
     startDate: datetime
     endDate: datetime
     discountedPrice: float
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
 class PromotionCreate(BaseModel):
-    dishID: int
+    dishID: Optional[int] = None
     startDate: datetime
     endDate: datetime
     discountedPrice: float

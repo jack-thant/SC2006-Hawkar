@@ -10,18 +10,14 @@ def get_promotion_by_promotion_id(db: Session, promotionID: int):
     db_promotion = (
         db.query(Promotion).filter(Promotion.promotionID == promotionID).first()
     )
-
-    if not db_promotion:
-        raise HTTPException(status_code=400, detail="Invalid promotionID")
-
     return db_promotion
 
 
 def get_promotions_by_dish_id(db: Session, dishID: int):
     db_promotions = db.query(Promotion).filter(Promotion.dishID == dishID)
 
-    if not db_promotions:
-        raise HTTPException(status_code=400, detail="Invalid dishID")
+    # if not db_promotions:
+    #     raise HTTPException(status_code=400, detail="Invalid dishID")
 
     return db_promotions
 

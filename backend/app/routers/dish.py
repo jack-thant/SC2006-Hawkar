@@ -70,7 +70,7 @@ async def get_dish_by_dish_id(dish_id: str, db: Session = Depends(get_db)):
 
 @router.get(
     "/dish/stallid/{stall_id}",
-    response_model=dish_schemas.Dish,
+    response_model=list[dish_schemas.Dish],
     tags=["Dish (CRUD)"],
 )
 async def get_dish_by_stall_id(stall_id: str, db: Session = Depends(get_db)):

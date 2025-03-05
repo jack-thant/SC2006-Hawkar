@@ -1,5 +1,5 @@
-from schemas.user import Role
 from datetime import datetime
+from schemas.user import Role
 
 import bcrypt
 
@@ -117,7 +117,8 @@ DATABASE_SEED_DATA = {
             "businessName": "A Hot Hideout (NTU)",
             "contactNumber": "95874723",
             "address": "Nanyang Technological University",
-            "geometry": '{"type": "Point","latitude": 1.35397,"longitude": 103.68779}',
+            "latitude": 1.35397,
+            "longitude": 103.68779,
             "verifyStatus": True,
             "userID": 5,
         },
@@ -126,7 +127,8 @@ DATABASE_SEED_DATA = {
             "businessName": "North Spine Koufu - Cai Fan Store",
             "contactNumber": "95874723",
             "address": "Nanyang Technological University",
-            "geometry": '{"type": "Point","latitude": 1.34713048855579,"longitude": 103.680033789538}',
+            "latitude": 1.35397,
+            "longitude": 103.68779,
             "verifyStatus": True,
             "userID": 6,
         },
@@ -135,7 +137,8 @@ DATABASE_SEED_DATA = {
             "businessName": "The Crowded Bowl",
             "contactNumber": "95874723",
             "address": "Nanyang Technological University",
-            "geometry": '{"type": "Point","latitude": 1.34703048855579,"longitude": 103.680523789538}',
+            "latitude": 1.35397,
+            "longitude": 103.68779,
             "verifyStatus": True,
             "userID": 7,
         },
@@ -144,7 +147,8 @@ DATABASE_SEED_DATA = {
             "businessName": "Chicken Rice Store (NTU)",
             "contactNumber": "95874723",
             "address": "Nanyang Technological University",
-            "geometry": '{"type": "Point","latitude": 1.34382260860561,"longitude": 103.682773793248}',
+            "latitude": 1.35397,
+            "longitude": 103.68779,
             "verifyStatus": True,
             "userID": 8,
         },
@@ -153,7 +157,8 @@ DATABASE_SEED_DATA = {
             "businessName": "Noodles Store (NTU)",
             "contactNumber": "95874723",
             "address": "Nanyang Technological University",
-            "geometry": '{"type": "Point","latitude": 1.35019111576677,"longitude": 103.68110625844}',
+            "latitude": 1.35397,
+            "longitude": 103.68779,
             "verifyStatus": True,
             "userID": 9,
         },
@@ -293,49 +298,49 @@ DATABASE_SEED_DATA = {
         # ----- For A Hot Hideout (hawkerID 5) ----- #
         {
             "dishID": 1,
+            "stallID": 1,
             "dishName": "Mala Xiang Guo",
             "price": 6.0,
             "photo": "[Seed]mala-xiang-guo.jpg",
-            "stallID": 1,
         },
         {
             "dishID": 2,
+            "stallID": 2,
             "dishName": "Korean BBQ Set",
             "price": 10.0,
             "photo": "[Seed]korea BBQ set.jpg",
-            "stallID": 2,
         },
         # ----- For North Spine Kofu Cai Fan (stallID 6) ----- #
         {
             "dishID": 3,
+            "stallID": 3,
             "dishName": "Cai Fan",
             "price": 4.0,
             "photo": "[Seed]cai-fan.jpg",
-            "stallID": 3,
         },
         # ----- For The Crowded Bowl (stallID 7) ----- #
         {
             "dishID": 4,
+            "stallID": 4,
             "dishName": "Mixed Rice",
             "price": 4.0,
             "photo": "[Seed]mixed-rice.jpg",
-            "stallID": 4,
         },
         # ----- For Chicken Rice Store (stallID 8) ----- #
         {
             "dishID": 5,
+            "stallID": 5,
             "dishName": "Chicken Rice",
             "price": 3.5,
             "photo": "[Seed]chicken-rice.jpg",
-            "stallID": 5,
         },
         # ----- For Noodles Store (stallID 9) ----- #
         {
             "dishID": 6,
+            "stallID": 6,
             "dishName": "Noodles",
             "price": 3.0,
             "photo": "[Seed]noodles.jpg",
-            "stallID": 6,
         },
     ],
     # ---------- Promotion ---------- #
@@ -349,28 +354,28 @@ DATABASE_SEED_DATA = {
         },
         {
             "promotionID": 2,
-            "dishID": 3,
+            "dishID": 2,
             "startDate": datetime(2021, 1, 1),
             "endDate": datetime(2021, 12, 31),
             "discountedPrice": 3.0,
         },
         {
             "promotionID": 3,
-            "dishID": 4,
+            "dishID": 3,
             "startDate": datetime(2021, 1, 1),
             "endDate": datetime(2021, 12, 31),
             "discountedPrice": 3.0,
         },
         {
             "promotionID": 4,
-            "dishID": 5,
+            "dishID": 4,
             "startDate": datetime(2021, 1, 1),
             "endDate": datetime(2021, 12, 31),
             "discountedPrice": 3.0,
         },
         {
             "promotionID": 5,
-            "dishID": 6,
+            "dishID": 5,
             "startDate": datetime(2021, 1, 1),
             "endDate": datetime(2021, 12, 31),
             "discountedPrice": 2.5,

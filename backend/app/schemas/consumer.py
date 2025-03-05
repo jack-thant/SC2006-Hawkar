@@ -8,7 +8,7 @@ class Consumer(BaseModel):
     userID: int
     user: User
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 

@@ -44,6 +44,15 @@ async def get_promotion_by_promotion_id(
     return PromotionController.getPromotionByPromotionId(db, promotion_id)
 
 
+@router.get(
+    "/promotion/dishid/{dish_id}",
+    response_model=promotion_schemas.Promotion,
+    tags=["Promotion (CRUD)"],
+)
+async def get_promotions_by_dish_id(dish_id: int, db: Session = Depends(get_db)):
+    return PromotionController.getPromotionsByDishId(db, dish_id)
+
+
 @router.put(
     "/promotion/update",
     response_model=promotion_schemas.Promotion,

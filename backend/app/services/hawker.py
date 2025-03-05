@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-import json
+from fastapi import HTTPException
 
 import services.user as user_services
 import schemas.hawker as hawker_schemas
@@ -11,8 +11,11 @@ from models.user import User
 def get_hawker_by_user_id(db: Session, userID: int):
     hawker = db.query(Hawker).filter(Hawker.userID == userID).first()
 
-    # convert geometry json to dict
-    hawker.geometry = json.loads(hawker.geometry)
+    if not hawker:
+        raise HTTPException(status_code=404, detail="Hawker not found")
+
+    # # convert geometry json to dict
+    # hawker.geometry = json.loads(hawker.geometry)
 
     return hawker
 
@@ -20,7 +23,10 @@ def get_hawker_by_user_id(db: Session, userID: int):
 def get_hawker_by_hawker_id(db: Session, hawkerID: int):
     hawker = db.query(Hawker).filter(Hawker.hawkerID == hawkerID).first()
 
-    hawker.geometry = json.loads(hawker.geometry)
+    if not hawker:
+        raise HTTPException(status_code=404, detail="Hawker not found")
+
+    # hawker.geometry = json.loads(hawker.geometry)
 
     return hawker
 
@@ -28,13 +34,17 @@ def get_hawker_by_hawker_id(db: Session, hawkerID: int):
 def get_all_hawkers(db: Session, skip: int = 0, limit: int = 100):
     hawkers = db.query(Hawker).offset(skip).limit(limit).all()
 
-    for hawker in hawkers:
-        hawker.geometry = json.loads(hawker.geometry)
+    # for hawker in hawkers:
+    #     hawker.geometry = json.loads(hawker.geometry)
 
     return hawkers
 
 
 def create_hawker(db: Session, user: hawker_schemas.HawkerCreate):
+    db_user = db.query(User).filter(User.emailAddress == user.emailAddress).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
     user_to_create = user_schemas.UserCreate(
         name=user.name,
         emailAddress=user.emailAddress,
@@ -47,21 +57,31 @@ def create_hawker(db: Session, user: hawker_schemas.HawkerCreate):
     if not db_user:
         return None
 
+    # # Convert geometry to JSON string if it's not already
+    # geometry_json = (
+    #     user.geometry.model_dump_json()
+    #     if hasattr(user.geometry, "model_dump_json")
+    #     else json.dumps(user.geometry)
+    # )
+
     db_hawker = Hawker(
         userID=db_user.userID,
         hawkerID=db_user.userID,
         businessName=user.businessName,
         address=user.address,
-        geometry=user.geometry.model_dump_json(),
-        verifyStatus=True,
+        # geometry=geometry_json,
+        latitude=user.latitude,
+        longitude=user.longitude,
+        contactNumber=user.contactNumber if hasattr(user, "contactNumber") else None,
+        verifyStatus=user.verifyStatus if hasattr(user, "verifyStatus") else False,
     )
 
     db.add(db_hawker)
     db.commit()
     db.refresh(db_hawker)
 
-    # load json for response
-    db_hawker.geometry = json.loads(db_hawker.geometry)
+    # # load json for response
+    # db_hawker.geometry = json.loads(db_hawker.geometry)
 
     return db_hawker
 
@@ -86,10 +106,11 @@ def update_hawker(db: Session, updated_hawker: hawker_schemas.HawkerUpdate):
     # Update Hawker
     updated_hawker_data = updated_hawker.model_dump(exclude_unset=True)
     for key, value in updated_hawker_data.items():
-        if key.lower() == "geometry":
-            setattr(db_hawker, key, json.dumps(value))
-        else:
-            setattr(db_hawker, key, value)
+        setattr(db_hawker, key, value)
+        # if key.lower() == "geometry":
+        #     setattr(db_hawker, key, json.dumps(value))
+        # else:
+        #     setattr(db_hawker, key, value)
 
     db.add(db_hawker)
     db.commit()

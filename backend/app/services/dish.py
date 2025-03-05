@@ -10,24 +10,24 @@ def get_dish_by_dish_id(db: Session, dishID: int):
     db_dish = db.query(Dish).filter(Dish.dishID == dishID).first()
 
     if not db_dish:
-        raise HTTPException(status_code=400, detail="Invalid dishID")
+        raise HTTPException(status_code=404, detail="Dish not found")
 
     return db_dish
 
 
 def get_dishes_by_stall_id(db: Session, stallID: int):
-    db_dishs = db.query(Dish).filter(Dish.stallID == stallID)
+    db_dishes = db.query(Dish).filter(Dish.stallID == stallID)
 
-    if not db_dishs:
+    if not db_dishes:
         raise HTTPException(status_code=400, detail="Invalid stallID")
 
-    return db_dishs
+    return db_dishes
 
 
 def get_all_dishes(db: Session, skip: int = 0, limit: int = 100):
-    db_dishs = db.query(Dish).offset(skip).limit(limit).all()
+    db_dishes = db.query(Dish).offset(skip).limit(limit).all()
 
-    return db_dishs
+    return db_dishes
 
 
 def create_dish(db: Session, dish: dish_schemas.DishCreate):

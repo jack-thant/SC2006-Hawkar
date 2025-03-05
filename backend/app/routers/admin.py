@@ -22,9 +22,9 @@ tags_metadata = [
 # -------------------------------------------------------- #
 
 
-@router.post(
+@router.put(
     "/admin-controller/verify-hawker/{hawkerID}",
-    response_model=hawker_schemas.HawkerUpdate,
+    response_model=hawker_schemas.Hawker,
     tags=["Admin Controller"],
 )
 async def verify_hawker(hawkerID: int, db: Session = Depends(get_db)):

@@ -11,11 +11,11 @@ def get_stall_by_stall_id(db: Session, stallID: int):
     db_stall = db.query(Stall).filter(Stall.stallID == stallID).first()
 
     if not db_stall:
-        raise HTTPException(status_code=400, detail="Invalid stallID")
+        raise HTTPException(status_code=404, detail="Stall not found")
 
-    # convert geometry json to dict
-    if db_stall.hawker:
-        db_stall.hawker.geometry = json.loads(db_stall.hawker.geometry)
+    # # convert geometry json to dict
+    # if db_stall.hawker:
+    #     db_stall.hawker.geometry = json.loads(db_stall.hawker.geometry)
 
     return db_stall
 
@@ -26,9 +26,9 @@ def get_stalls_by_hawker_id(db: Session, hawkerID: int):
     if not db_stalls:
         raise HTTPException(status_code=400, detail="Invalid hawkerID")
 
-    for db_stall in db_stalls:
-        if db_stall.hawker and not isinstance(db_stall.hawker.geometry, dict):
-            db_stall.hawker.geometry = json.loads(db_stall.hawker.geometry)
+    # for db_stall in db_stalls:
+    #     if db_stall.hawker and not isinstance(db_stall.hawker.geometry, dict):
+    #         db_stall.hawker.geometry = json.loads(db_stall.hawker.geometry)
 
     return db_stalls
 
@@ -36,9 +36,9 @@ def get_stalls_by_hawker_id(db: Session, hawkerID: int):
 def get_all_stalls(db: Session, skip: int = 0, limit: int = 100):
     db_stalls = db.query(Stall).offset(skip).limit(limit).all()
 
-    for db_stall in db_stalls:
-        if db_stall.hawker and not isinstance(db_stall.hawker.geometry, dict):
-            db_stall.hawker.geometry = json.loads(db_stall.hawker.geometry)
+    # for db_stall in db_stalls:
+    #     if db_stall.hawker and not isinstance(db_stall.hawker.geometry, dict):
+    #         db_stall.hawker.geometry = json.loads(db_stall.hawker.geometry)
 
     return db_stalls
 
@@ -63,8 +63,8 @@ def create_stall(db: Session, stall: stall_schemas.StallCreate):
     db.commit()
     db.refresh(db_stall)
 
-    if db_hawker.hawker:
-        db_hawker.hawker.geometry = json.loads(db_hawker.hawker.geometry)
+    # if db_hawker:
+    #     db_hawker.geometry = json.loads(db_hawker.geometry)
 
     return db_stall
 
@@ -83,8 +83,7 @@ def update_stall(db: Session, updated_stall: stall_schemas.StallUpdate):
     db.commit()
     db.refresh(db_stall)
 
-    if db_stall.hawker and isinstance(db_stall.hawker.geometry, dict):
-        db_stall.hawker.geometry = json.dumps(db_stall.hawker.geometry)
+    # db_stall.hawker.geometry = json.loads(db_stall.hawker.geometry)
 
     return db_stall
 
@@ -95,8 +94,8 @@ def delete_stall(db: Session, stallID: int) -> bool:
     if not db_stall:
         raise HTTPException(status_code=400, detail="Invalid stallID")
 
-    if db_stall.hawker and isinstance(db_stall.hawker.geometry, dict):
-        db_stall.hawker.geometry = json.dumps(db_stall.hawker.geometry)
+    # if db_stall.hawker and isinstance(db_stall.hawker.geometry, dict):
+    #     db_stall.hawker.geometry = json.dumps(db_stall.hawker.geometry)
 
     db.delete(db_stall)
     db.commit()

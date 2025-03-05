@@ -95,3 +95,7 @@ class UserController:
         if user is None:
             raise HTTPException(status_code=404, detail="User not found")
         return user
+
+    def createUser(db: Session, new_user: user_schemas.UserCreate):
+        user = user_services.create_user(db, new_user)
+        return user

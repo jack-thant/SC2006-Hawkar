@@ -1,7 +1,5 @@
 from sqlalchemy import event
 
-from .seed_data import DATABASE_SEED_DATA
-
 from models.user import User
 from models.admin import Admin
 from models.consumer import Consumer
@@ -10,6 +8,8 @@ from models.review import Review
 from models.stall import Stall
 from models.dish import Dish
 from models.promotion import Promotion
+
+from .seed_data import DATABASE_SEED_DATA
 
 
 # This method receives a table, a connection and inserts data to that table.

@@ -30,7 +30,7 @@ class Stall(BaseModel):
     cuisineType: Optional[CuisineType] = None
     estimatedWaitTime: Optional[int] = None
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
