@@ -11,9 +11,11 @@ from routers import (
     stall,
     promotion,
     dish,
+    search,
 )
-from database import Base, engine
+from database import Base, engine, SessionLocal
 from assets.database_seed.helper import add_event_listener_to_seed_database
+from services.search import setup_search_index
 
 # Seed database
 # Uncomment the line below if you want to seed the database
@@ -22,6 +24,13 @@ add_event_listener_to_seed_database()
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
+
+# Initialize search index after database is created
+db = SessionLocal()
+try:
+    setup_search_index(db)
+finally:
+    db.close()
 
 origins = ["http://localhost:3000"]
 
@@ -42,6 +51,7 @@ app.include_router(review.router)
 app.include_router(stall.router)
 app.include_router(promotion.router)
 app.include_router(dish.router)
+app.include_router(search.router)
 
 
 @app.get("/")
