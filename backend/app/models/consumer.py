@@ -13,5 +13,3 @@ class Consumer(Base):
     userID = Column(Integer, ForeignKey("users.userID"))
     user: Mapped["User"] = relationship("User", back_populates="consumer")
     reviews: Mapped[list["Review"]] = relationship("Review", back_populates="consumer")
-    # pickup_jobs: Mapped[list["PickupJob"]] = relationship("PickupJob", back_populates="consumer")
-    # priority_requests: Mapped[list["PriorityRequest"]] = relationship("PriorityRequest", back_populates="consumer")

@@ -16,6 +16,12 @@ def test_get_promotion_by_id_fail(client):
     assert response.json() == {"detail": "Promotion not found"}
 
 
+def test_get_promotion_by_dish_id(client):
+    response = client.get("/promotion/dishid/1")
+    assert response.status_code == 200
+    assert response.json()["dishID"] == 1
+
+
 def test_add_promotion(client):
     response = client.post(
         "/dish-controller/add-promotion",

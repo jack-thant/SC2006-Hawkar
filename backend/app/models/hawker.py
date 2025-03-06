@@ -12,11 +12,11 @@ class Hawker(Base):
     hawkerID = Column(Integer, primary_key=True, index=True)
     businessName = Column(String)
     contactNumber = Column(String)
-    verifyStatus = Column(Boolean)
     address = Column(String)
     # geometry = Column(String)
     latitude = Column(Float)
     longitude = Column(Float)
+    verifyStatus = Column(Boolean)
 
     userID = Column(Integer, ForeignKey("users.userID"))
     user: Mapped["User"] = relationship("User", back_populates="hawker")

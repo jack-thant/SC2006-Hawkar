@@ -10,26 +10,17 @@ from models.stall import Stall
 def get_review_by_review_id(db: Session, reviewID: int):
     db_review = db.query(Review).filter(Review.reviewID == reviewID).first()
 
-    if not db_review:
-        raise HTTPException(status_code=400, detail="Invalid reviewID")
-
     return db_review
 
 
 def get_reviews_by_consumer_id(db: Session, consumerID: int):
-    db_reviews = db.query(Review).filter(Review.consumerID == consumerID)
-
-    if not db_reviews:
-        raise HTTPException(status_code=400, detail="Invalid consumerID")
+    db_reviews = db.query(Review).filter(Review.consumerID == consumerID).all()
 
     return db_reviews
 
 
 def get_reviews_by_stall_id(db: Session, stallID: int):
-    db_reviews = db.query(Review).filter(Review.stallID == stallID)
-
-    if not db_reviews:
-        raise HTTPException(status_code=400, detail="Invalid stallID")
+    db_reviews = db.query(Review).filter(Review.stallID == stallID).all()
 
     return db_reviews
 

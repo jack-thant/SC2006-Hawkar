@@ -9,11 +9,11 @@ class Hawker(BaseModel):
     hawkerID: int
     businessName: str
     contactNumber: str
-    verifyStatus: bool = False
+    address: str
     latitude: float
     longitude: float
     # geometry: Optional[Geometry] = None
-    address: str
+    verifyStatus: bool = False
     userID: int
     user: User
 
@@ -24,19 +24,19 @@ class Hawker(BaseModel):
 class HawkerCreate(UserCreate):
     role: Role = Role.HAWKER
     businessName: str
+    contactNumber: Optional[str] = None
     address: str
-    # geometry: Optional[Geometry] = None
     latitude: float
     longitude: float
-    contactNumber: Optional[str] = None
+    # geometry: Optional[Geometry] = None
     verifyStatus: bool = False
 
 
 class HawkerUpdate(UserUpdate):
     hawkerID: int
     contactNumber: str
-    verifyStatus: bool
-    # geometry: Union[Geometry, str]
+    address: str
     latitude: float
     longitude: float
-    address: str
+    # geometry: Optional[Geometry] = None
+    verifyStatus: bool = False

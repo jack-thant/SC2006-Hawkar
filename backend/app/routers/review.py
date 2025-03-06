@@ -36,7 +36,7 @@ async def get_review_by_review_id(review_id: str, db: Session = Depends(get_db))
 
 @router.get(
     "/review/stallid/{stall_id}",
-    response_model=review_schemas.Review,
+    response_model=list[review_schemas.Review],
     tags=["Review (CRUD)"],
 )
 async def get_review_by_stall_id(stall_id: str, db: Session = Depends(get_db)):
@@ -45,7 +45,7 @@ async def get_review_by_stall_id(stall_id: str, db: Session = Depends(get_db)):
 
 @router.get(
     "/review/userid/{user_id}",
-    response_model=review_schemas.Review,
+    response_model=list[review_schemas.Review],
     tags=["Review (CRUD)"],
 )
 async def get_review_by_user_id(user_id: str, db: Session = Depends(get_db)):

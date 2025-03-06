@@ -26,24 +26,25 @@ tags_metadata = [
 async def create_user(user: user_schemas.UserCreate, db: Session = Depends(get_db)):
     return UserController.createUser(db, user)
 
-# ---------- Hawker ---------- #
-@router.get("/user-controller/get-all-public-hawkers", tags=["User Controller"])
-async def get_all_public_hawkers():
-    hawkersLocation = UserController.getAllPublicHawkers()
-    if hawkersLocation is None:
-        raise HTTPException(status_code=404, detail="Public Hawkers not found")
-    return hawkersLocation
+
+# # ---------- Hawker ---------- #
+# @router.get("/user-controller/get-all-public-hawkers", tags=["User Controller"])
+# async def get_all_public_hawkers():
+#     hawkersLocation = UserController.getAllPublicHawkers()
+#     if hawkersLocation is None:
+#         raise HTTPException(status_code=404, detail="Public Hawkers not found")
+#     return hawkersLocation
 
 
-@router.get(
-    "/user-controller/get-all-hawkers",
-    response_model=list[hawker_schemas.Hawker],
-    tags=["User Controller"],
-)
-async def get_all_hawkers(
-    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
-):
-    return UserController.getAllHawkers(db, skip, limit)
+# @router.get(
+#     "/user-controller/get-all-hawkers",
+#     response_model=list[hawker_schemas.Hawker],
+#     tags=["User Controller"],
+# )
+# async def get_all_hawkers(
+#     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+# ):
+#     return UserController.getAllHawkers(db, skip, limit)
 
 
 @router.get(
@@ -55,7 +56,6 @@ def search_hawker(
     businessName: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 ):
     return UserController.searchHawker(db, skip, limit, search_value=businessName)
-
 
 
 # ------------------------------------------------------------ #

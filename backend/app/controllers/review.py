@@ -18,7 +18,7 @@ class ReviewController:
 
     def getReviewsByConsumerId(db: Session, consumerID: int):
         review = review_services.get_reviews_by_consumer_id(db, consumerID=consumerID)
-        if review is None:
+        if not review:
             raise HTTPException(
                 status_code=404, detail="No review found for queried consumer id"
             )
@@ -26,7 +26,7 @@ class ReviewController:
 
     def getReviewsByStallId(db: Session, stallID: int):
         review = review_services.get_reviews_by_stall_id(db, stallID=stallID)
-        if review is None:
+        if review == []:
             raise HTTPException(
                 status_code=404, detail="No review found for queried stall id"
             )

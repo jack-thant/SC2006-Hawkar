@@ -19,51 +19,51 @@ class UserController:
     def getAllHawkers(db: Session, skip: int, limit: int):
         return hawker_services.get_all_hawkers(db, skip=skip, limit=limit)
 
-    def getAllPublicHawkers():
-        with open("assets/data/HawkerCentresGEOJSON.geojson") as geojson_file:
-            raw_json = json.loads(geojson_file.read())
+    # def getAllPublicHawkers():
+    #     with open("assets/data/HawkerCentresGEOJSON.geojson") as geojson_file:
+    #         raw_json = json.loads(geojson_file.read())
 
-            # Parse data
-            publicHawkers: list[hawker_schemas.Hawker] = []
-            for hawker_json in raw_json["features"]:
-                address = (
-                    hawker_json["properties"]["Description"]["ADDRESSBUILDINGNAME"]
-                    + " "
-                    + hawker_json["properties"]["Description"]["ADDRESSBUILDINGNAME"]
-                    + " "
-                    + hawker_json["properties"]["Description"]["ADDRESSPOSTALCODE"]
-                )
+    #         # Parse data
+    #         publicHawkers: list[hawker_schemas.Hawker] = []
+    #         for hawker_json in raw_json["features"]:
+    #             address = (
+    #                 hawker_json["properties"]["Description"]["ADDRESSBUILDINGNAME"]
+    #                 + " "
+    #                 + hawker_json["properties"]["Description"]["ADDRESSBUILDINGNAME"]
+    #                 + " "
+    #                 + hawker_json["properties"]["Description"]["ADDRESSPOSTALCODE"]
+    #             )
 
-                hawker: hawker_schemas.Hawker = {
-                    "userID": 0,
-                    "user": {
-                        "userID": 0,
-                        "name": "Public Hawker",
-                        "emailAddress": "-",
-                        "password": "-",
-                        "profilePhoto": hawker_json["properties"]["Description"][
-                            "PHOTOURL"
-                        ],
-                        "role": user_schemas.Role.HAWKER,
-                    },
-                    "hawkerID": 0,
-                    "businessName": hawker_json["properties"]["Description"]["NAME"],
-                    "contactNumber": "Unknown",
-                    "verifyStatus": False,
-                    "address": address,
-                    "geometry": {
-                        "type": hawker_json["properties"]["geometry"]["type"],
-                        "latitude": hawker_json["properties"]["geometry"][
-                            "coordinates"
-                        ][1],
-                        "longitude": hawker_json["properties"]["geometry"][
-                            "coordinates"
-                        ][0],
-                    },
-                }
-                publicHawkers.append(hawker)
+    #             hawker: hawker_schemas.Hawker = {
+    #                 "userID": 0,
+    #                 "user": {
+    #                     "userID": 0,
+    #                     "name": "Public Hawker",
+    #                     "emailAddress": "-",
+    #                     "password": "-",
+    #                     "profilePhoto": hawker_json["properties"]["Description"][
+    #                         "PHOTOURL"
+    #                     ],
+    #                     "role": user_schemas.Role.HAWKER,
+    #                 },
+    #                 "hawkerID": 0,
+    #                 "businessName": hawker_json["properties"]["Description"]["NAME"],
+    #                 "contactNumber": "Unknown",
+    #                 "verifyStatus": False,
+    #                 "address": address,
+    #                 "geometry": {
+    #                     "type": hawker_json["properties"]["geometry"]["type"],
+    #                     "latitude": hawker_json["properties"]["geometry"][
+    #                         "coordinates"
+    #                     ][1],
+    #                     "longitude": hawker_json["properties"]["geometry"][
+    #                         "coordinates"
+    #                     ][0],
+    #                 },
+    #             }
+    #             publicHawkers.append(hawker)
 
-            return publicHawkers
+    #         return publicHawkers
 
     def searchHawker(db: Session, skip: int, limit: int, search_value: str):
         """Searches Hawkers by `business_name`"""

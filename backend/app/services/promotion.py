@@ -14,12 +14,9 @@ def get_promotion_by_promotion_id(db: Session, promotionID: int):
 
 
 def get_promotions_by_dish_id(db: Session, dishID: int):
-    db_promotions = db.query(Promotion).filter(Promotion.dishID == dishID)
+    db_promotion = db.query(Promotion).filter(Promotion.dishID == dishID).first()
 
-    # if not db_promotions:
-    #     raise HTTPException(status_code=400, detail="Invalid dishID")
-
-    return db_promotions
+    return db_promotion
 
 
 def get_all_promotions(db: Session, skip: int = 0, limit: int = 100):

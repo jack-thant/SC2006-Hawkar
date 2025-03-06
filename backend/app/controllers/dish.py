@@ -14,10 +14,9 @@ class DishController:
     # -------------------------------------------------------- #
 
     def addPromotion(db: Session, promotion: promotion_schemas.PromotionCreate):
-        # This line needs to execute the query with .all()
         existedPromotion = promotion_services.get_promotions_by_dish_id(
             db, promotion.dishID
-        ).all()
+        )
 
         if existedPromotion:  # Changed to check if the list has any items
             raise HTTPException(status_code=400, detail="Promotion already exists")

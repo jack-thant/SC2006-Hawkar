@@ -66,7 +66,7 @@ async def get_stall_by_stall_id(stall_id: str, db: Session = Depends(get_db)):
 
 @router.get(
     "/stall/hawkerid/{hawker_id}",
-    response_model=stall_schemas.Stall,
+    response_model=list[stall_schemas.Stall],
     tags=["Stall (CRUD)"],
 )
 async def get_stall_by_hawker_id(hawker_id: str, db: Session = Depends(get_db)):

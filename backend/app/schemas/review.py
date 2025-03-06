@@ -14,8 +14,8 @@ class ReviewAction(Enum):
 
 class Review(BaseModel):
     reviewID: int
-    rating: float
     reviewText: Optional[str] = ""
+    rating: float
 
     consumerID: int
     consumer: Consumer
