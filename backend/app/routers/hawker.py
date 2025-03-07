@@ -96,3 +96,11 @@ async def get_hawker_by_user_id(user_id: str, db: Session = Depends(get_db)):
 )
 def update_hawker(hawker: hawker_schemas.HawkerUpdate, db: Session = Depends(get_db)):
     return HawkerController.updateHawker(db, hawker)
+
+
+@router.delete("/hawker/delete/{hawker_id}", tags=["Hawker (CRUD)"])
+def delete_hawker(hawker_id: int, db: Session = Depends(get_db)):
+    result = HawkerController.deleteHawker(db, hawker_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Hawker not found")
+    return {"detail": "Hawker deleted successfully"}

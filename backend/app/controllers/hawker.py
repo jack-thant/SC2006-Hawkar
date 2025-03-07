@@ -61,3 +61,6 @@ class HawkerController:
         # hawker.geometry = json.loads(hawker.geometry)
 
         return hawker
+
+    def deleteHawker(db: Session, hawkerID: int):
+        return hawker_services.delete_hawker(db, hawkerID)

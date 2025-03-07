@@ -38,3 +38,12 @@ def test_add_hawker(client):
         response.json() == {"detail": "Email already registered"}
         or response.json()["businessName"] == "test"
     )
+
+
+# def test_delete_hawker(client):
+#     response = client.delete("/hawker/delete/9")
+#     assert response.status_code == 200
+#     assert response.json() == {"detail": "Hawker deleted successfully"}
+#     response = client.get("/hawker/9")
+#     assert response.status_code == 404
+#     assert response.json() == {"detail": "Hawker not found"}
