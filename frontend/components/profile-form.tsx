@@ -18,13 +18,17 @@ interface ProfileFormProps {
 export default function ProfileForm({ formData, setFormData, onSubmit }: ProfileFormProps) {
     const [profileImage, setProfileImage] = useState<string | null>(null)
 
+    const cuisines = ["Chinese", "Indian", "Malay", "Indonesian", "Japanese", "Korean", "Thai"]
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setFormData({ ...formData, [name]: value })
     }
 
-    const handleRoleChange = (value: string) => {
-        setFormData({ ...formData, role: value })
+    const handleSelectFieldChange = (fieldName: string) => {
+        return (value: string) => {
+            setFormData({ ...formData, [fieldName]: value });
+        };
     }
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,8 +45,8 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
         }
     }
     return (
-        <div className="grid md:grid-cols-2 gap-8 mt-10">
-            <div className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-10">
+            <div className="flex flex-col justify-center space-y-4 md:p-4">
                 <h1 className="text-3xl font-bold">Complete Your Profile to Get Started!</h1>
                 <p className="text-gray-600">
                     Just a few more details, and you&apos;ll be all set. Once completed, we&apos;ll take you to your home page!
@@ -50,67 +54,66 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
             </div>
 
             <div>
-                <form onSubmit={onSubmit} className="space-y-4">
-                    <div className="flex justify-center mb-4">
-                        <div className="relative">
-                            <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                                {profileImage ? (
-                                    <Image
-                                        src={profileImage || "/placeholder.svg"}
-                                        alt="Profile"
-                                        width={96}
-                                        height={96}
-                                        className="object-cover w-full h-full"
-                                    />
-                                ) : (
-                                    <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-12 w-12 text-gray-400"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={1}
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                            />
-                                        </svg>
-                                    </div>
-                                )}
-                            </div>
-                            <input
-                                type="file"
-                                id="profile-picture"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                className="hidden"
-                            />
-                            <label
-                                htmlFor="profile-picture"
-                                className="absolute -right-4 top-0 cursor-pointer text-xs text-gray-600 w-32 text-center"
-                            >
-                                Click on the profile picture to upload your photo
-                            </label>
+                <form onSubmit={onSubmit} className="space-y-6">
+                    <div className="flex flex-row items-center gap-4 mb-4">
+                        <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden">
+                            {profileImage ? (
+                                <Image
+                                    src={profileImage || "/placeholder.svg"}
+                                    alt="Profile"
+                                    width={96}
+                                    height={96}
+                                    className="object-cover w-full h-full"
+                                />
+                            ) : (
+                                <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-8 w-8 text-gray-400"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={1}
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                        />
+                                    </svg>
+                                </div>
+                            )}
                         </div>
+                        <input
+                            type="file"
+                            id="profile-picture"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                        />
+                        <label
+                            htmlFor="profile-picture"
+                            className="cursor-pointer text-xs text-gray-600 w-40 text-center"
+                        >
+                            Click on the profile picture to upload your photo
+                        </label>
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="role">Role</Label>
-                        <Select value={formData.role} onValueChange={handleRoleChange}>
-                            <SelectTrigger className="bg-gray-200 border-0">
+                        <Select value={formData.role} onValueChange={handleSelectFieldChange('role')}>
+                            <SelectTrigger className="bg-gray-200 border-0 w-full py-6">
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="Consumer">Consumer</SelectItem>
                                 <SelectItem value="Hawker">Hawker</SelectItem>
+                                <SelectItem value="Admin">Admin</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
-                    {formData.role === "Hawker" ? (
+                    {formData.role === "Hawker" && (
                         <>
                             <div className="space-y-2">
                                 <Label htmlFor="sfaLicenseNumber">SFA licence num</Label>
@@ -118,8 +121,9 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
                                     id="sfaLicenseNumber"
                                     name="sfaLicenseNumber"
                                     value={formData.sfaLicenseNumber || ""}
+                                    placeholder="SFA123456"
                                     onChange={handleInputChange}
-                                    className="bg-gray-200 border-0"
+                                    className="bg-gray-200 py-6"
                                     required
                                 />
                             </div>
@@ -130,7 +134,8 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
                                     name="address"
                                     value={formData.address || ""}
                                     onChange={handleInputChange}
-                                    className="bg-gray-200 border-0"
+                                    className="bg-gray-200 py-6"
+                                    placeholder="123, ABC Street, Singapore, Singapore, 123456"
                                     required
                                 />
                             </div>
@@ -140,73 +145,120 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
                                     id="contactNumber"
                                     name="contactNumber"
                                     value={formData.contactNumber || ""}
+                                    placeholder="+65 1234 5678"
                                     onChange={handleInputChange}
-                                    className="bg-gray-200 border-0"
-                                    required
-                                />
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <div className="space-y-2">
-                                <Label htmlFor="address">Address</Label>
-                                <Input
-                                    id="address"
-                                    name="address"
-                                    value={formData.address || ""}
-                                    onChange={handleInputChange}
-                                    className="bg-gray-200 border-0"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="contactNumber">Contact Number</Label>
-                                <Input
-                                    id="contactNumber"
-                                    name="contactNumber"
-                                    value={formData.contactNumber || ""}
-                                    onChange={handleInputChange}
-                                    className="bg-gray-200 border-0"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="dietaryPreference">Dietary preference</Label>
-                                <Input
-                                    id="dietaryPreference"
-                                    name="dietaryPreference"
-                                    value={formData.dietaryPreference || ""}
-                                    onChange={handleInputChange}
-                                    className="bg-gray-200 border-0"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="preferredCuisines">Preferred cuisines</Label>
-                                <Input
-                                    id="preferredCuisines"
-                                    name="preferredCuisines"
-                                    value={formData.preferredCuisines || ""}
-                                    onChange={handleInputChange}
-                                    className="bg-gray-200 border-0"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="ambulatoryStatus">Ambulatory status</Label>
-                                <Input
-                                    id="ambulatoryStatus"
-                                    name="ambulatoryStatus"
-                                    value={formData.ambulatoryStatus || ""}
-                                    onChange={handleInputChange}
-                                    className="bg-gray-200 border-0"
+                                    className="bg-gray-200 py-6"
                                     required
                                 />
                             </div>
                         </>
                     )}
 
-                    <Button type="submit" className="w-full bg-[#1F1B2D] hover:bg-[#2d2842] text-white">
+                    {
+                        formData.role === "Consumer" && (
+                            (
+                                <>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="address">Address</Label>
+                                        <Input
+                                            id="address"
+                                            name="address"
+                                            value={formData.address || ""}
+                                            onChange={handleInputChange}
+                                            placeholder="123, ABC Street, Singapore, Singapore, 123456"
+                                            className="bg-gray-200 py-6"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="contactNumber">Contact Number</Label>
+                                        <Input
+                                            id="contactNumber"
+                                            name="contactNumber"
+                                            value={formData.contactNumber || ""}
+                                            onChange={handleInputChange}
+                                            placeholder="+65 1234 5678"
+                                            className="bg-gray-200 py-6"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="dietaryPreference">Dietary preference</Label>
+                                        <Select value={formData.dietaryPreference} onValueChange={handleSelectFieldChange('dietaryPreference')}>
+                                            <SelectTrigger className="bg-gray-200 border-0 w-full py-6">
+                                                <SelectValue placeholder="Select a dietary preference" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="vegetarian">Vegetarian</SelectItem>
+                                                <SelectItem value="halal">Halal</SelectItem>
+                                                <SelectItem value="glutenFree">Gluten Free</SelectItem>
+                                                <SelectItem value="no-restriction">No Restrictions</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="preferredCuisines">Preferred cuisines</Label>
+                                        <Select value={formData.preferredCuisines} onValueChange={handleSelectFieldChange('preferredCuisines')}>
+                                            <SelectTrigger className="bg-gray-200 border-0 w-full py-6">
+                                                <SelectValue placeholder="Select preferred cuisines" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {cuisines.map((cuisine) => (
+                                                    <SelectItem key={cuisine} value={cuisine}>
+                                                        {cuisine}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="ambulatoryStatus">Ambulatory status</Label>
+                                        <Select value={formData.ambulatoryStatus} onValueChange={handleSelectFieldChange('ambulatoryStatus')}>
+                                            <SelectTrigger className="bg-gray-200 border-0 w-full py-6">
+                                                <SelectValue placeholder="Select ambulatory status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="ambulatory">Fully Ambulatory</SelectItem>
+                                                <SelectItem value="wheelchair">Wheelchair User</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </>
+                            )
+                        )
+                    }
+                    {
+                        formData.role === "Admin" && (
+                            <>
+                                <div className="space-y-2">
+                                    <Label htmlFor="adminUID">Admin Unique ID</Label>
+                                    <Input
+                                        id="adminUID"
+                                        name="adminUID"
+                                        value={formData.adminUID || ""}
+                                        onChange={handleInputChange}
+                                        placeholder="Admin123"
+                                        className="bg-gray-200 py-6"
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="contactNumber">Contact Number</Label>
+                                    <Input
+                                        id="contactNumber"
+                                        name="contactNumber"
+                                        value={formData.contactNumber || ""}
+                                        onChange={handleInputChange}
+                                        placeholder="+65 1234 5678"
+                                        className="bg-gray-200 py-6"
+                                        required
+                                    />
+                                </div>
+                            </>
+                        )
+                    }
+
+                    <Button type="submit" className="w-full bg-primary hover:bg-black text-white py-6">
                         Get Started
                     </Button>
                 </form>
