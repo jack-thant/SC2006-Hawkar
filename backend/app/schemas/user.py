@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, Dict, Literal, Any
 from enum import Enum
 
 
@@ -37,3 +37,7 @@ class UserUpdate(UserBase):
 class UserLogin(BaseModel):
     emailAddress: EmailStr
     password: str
+
+class UserSignup(BaseModel):
+    userType: Literal["admin", "consumer", "hawker"]
+    data: Dict[str, Any]

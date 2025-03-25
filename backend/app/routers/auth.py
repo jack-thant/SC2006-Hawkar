@@ -24,30 +24,31 @@ tags_metadata = [
 # -------------------------------------------------------- #
 # -------------------- Business Logic -------------------- #
 # -------------------------------------------------------- #
-@router.post(
-    "/signup/admin", response_model=admin_schemas.Admin, tags=["Auth Controller"]
-)
-async def signup_admin(user: admin_schemas.AdminCreate, db: Session = Depends(get_db)):
-    return AuthController.signup(db, user)
 
 
 @router.post(
-    "/signup/consumer",
-    response_model=consumer_schemas.Consumer,
+    "/signup",
+    response_model=Union[
+        admin_schemas.Admin,
+        consumer_schemas.Consumer,
+        hawker_schemas.Hawker,
+    ],
     tags=["Auth Controller"],
 )
-async def signup_consumer(
-    user: consumer_schemas.ConsumerCreate, db: Session = Depends(get_db)
-):
-    return AuthController.signup(db, user)
+async def signup(user_signup: user_schemas.UserSignup, db: Session = Depends(get_db)):
+    userType = user_signup.userType
+    data = user_signup.data
 
+    if userType == "admin":
+        user = admin_schemas.AdminCreate(**data)
+    elif userType == "consumer":
+        user = consumer_schemas.ConsumerCreate(**data)
+    elif userType == "hawker":
+        user = hawker_schemas.HawkerCreate(**data)
+    else:
+        print("Invalid user type")
+        return None
 
-@router.post(
-    "/signup/hawker", response_model=hawker_schemas.Hawker, tags=["Auth Controller"]
-)
-async def signup_hawker(
-    user: hawker_schemas.HawkerCreate, db: Session = Depends(get_db)
-):
     return AuthController.signup(db, user)
 
 
