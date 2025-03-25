@@ -65,7 +65,7 @@ export default function SearchBar() {
         </div>
         <Button variant="outline" onClick={() => setIsFilterOpen(true)} className="flex items-center gap-2 py-6">
           <Filter className="h-4 w-4" />
-          <span>Filter</span>
+          <span>Filters</span>
         </Button>
       </div>
 
