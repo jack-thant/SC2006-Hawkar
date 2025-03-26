@@ -55,7 +55,7 @@ export default function StallDishes({ dishes, stallName }: StallDishesProps) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {dishes.map((dish) => (
           <Card key={dish.id} className="overflow-hidden py-0 pb-6">
             <div className="relative h-48">
@@ -75,10 +75,10 @@ export default function StallDishes({ dishes, stallName }: StallDishesProps) {
                     <p className="text-muted-foreground">${dish.price.toFixed(2)}</p>
                   )}
                   {dish.onPromotion && (
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <div className="text-xs text-muted-foreground mt-1">
                       Promotion valid: {new Date(dish.startDate!).toLocaleDateString()} -{" "}
                       {new Date(dish.endDate!).toLocaleDateString()}
-                    </p>
+                    </div>
                   )}
                 </div>
               </div>

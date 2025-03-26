@@ -94,6 +94,7 @@ const stallData = {
 
 export default function StallDetails({ params }: { params: { id: string } }) {
     const [saved, setSaved] = useState(false)
+    const currentUserId = "1" // In a real app, this would come from your auth system
 
     // In a real app, you would fetch the stall data based on the ID
     // const { id } = params;
@@ -197,6 +198,7 @@ export default function StallDetails({ params }: { params: { id: string } }) {
                                     reviews={stallData.reviews}
                                     rating={stallData.rating}
                                     reviewCount={stallData.reviewCount}
+                                    currentUserId={currentUserId}
                                 />
                             </div>
                         </div>

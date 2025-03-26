@@ -2,10 +2,32 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Star } from "lucide-react"
+import { Star, Edit, Trash2, Flag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
+import { toast } from "sonner"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 interface Review {
   id: string
@@ -13,16 +35,29 @@ interface Review {
   userPicture: string
   rating: number
   content: string
+  userId?: string // Added to track review ownership
 }
 
 interface StallReviewsProps {
   reviews: Review[]
   rating: number
   reviewCount: number
+  currentUserId?: string // Added to check if the current user owns a review
 }
 
-export default function StallReviews({ reviews, rating, reviewCount }: StallReviewsProps) {
+export default function StallReviews({ reviews, rating, reviewCount, currentUserId = "1" }: StallReviewsProps) {
   const [sortBy, setSortBy] = useState("recent")
+  const [showAddReviewDialog, setShowAddReviewDialog] = useState(false)
+  const [showEditReviewDialog, setShowEditReviewDialog] = useState(false)
+  const [showReportDialog, setShowReportDialog] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [newReviewRating, setNewReviewRating] = useState(5)
+  const [newReviewContent, setNewReviewContent] = useState("")
+  const [editingReview, setEditingReview] = useState<Review | null>(null)
+  const [reportingReview, setReportingReview] = useState<Review | null>(null)
+  const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null)
+  const [reportType, setReportType] = useState<string>("spam")
+  const [reportReason, setReportReason] = useState("")
 
   // Calculate rating distribution
   const ratingCounts = [0, 0, 0, 0, 0]
@@ -33,6 +68,80 @@ export default function StallReviews({ reviews, rating, reviewCount }: StallRevi
   })
 
   const maxCount = Math.max(...ratingCounts)
+
+  const handleAddReview = () => {
+    // In a real app, you would send this to your API
+    console.log("Adding review:", { rating: newReviewRating, content: newReviewContent })
+    toast("Your review has been successfully submitted!")
+    setShowAddReviewDialog(false)
+    setNewReviewRating(5)
+    setNewReviewContent("")
+  }
+
+  const handleEditReview = () => {
+    if (!editingReview) return
+
+    // In a real app, you would send this to your API
+    console.log("Editing review:", {
+      id: editingReview.id,
+      rating: newReviewRating,
+      content: newReviewContent,
+    })
+
+    toast("Your review has been updated successfully")
+
+    setShowEditReviewDialog(false)
+    setEditingReview(null)
+    setNewReviewRating(5)
+    setNewReviewContent("")
+  }
+
+  const handleDeleteReview = () => {
+    if (!deletingReviewId) return
+
+    // In a real app, you would send this to your API
+    console.log("Deleting review:", deletingReviewId)
+
+    toast("Your review has been deleted successfully")
+
+    setShowDeleteDialog(false)
+    setDeletingReviewId(null)
+  }
+
+  const handleReportReview = () => {
+    if (!reportingReview) return
+
+    // In a real app, you would send this to your API
+    console.log("Reporting review:", {
+      reviewId: reportingReview.id,
+      type: reportType,
+      reason: reportReason,
+    })
+
+    toast("Thank you for your feedback. We'll review this report.")
+
+    setShowReportDialog(false)
+    setReportingReview(null)
+    setReportType("spam")
+    setReportReason("")
+  }
+
+  const openEditDialog = (review: Review) => {
+    setEditingReview(review)
+    setNewReviewRating(review.rating)
+    setNewReviewContent(review.content)
+    setShowEditReviewDialog(true)
+  }
+
+  const openReportDialog = (review: Review) => {
+    setReportingReview(review)
+    setShowReportDialog(true)
+  }
+
+  const openDeleteDialog = (reviewId: string) => {
+    setDeletingReviewId(reviewId)
+    setShowDeleteDialog(true)
+  }
 
   return (
     <div>
@@ -74,7 +183,7 @@ export default function StallReviews({ reviews, rating, reviewCount }: StallRevi
 
         <div className="flex flex-col justify-center items-center gap-4 p-6">
           <p className="text-center">Share your experience at this stall</p>
-          <Button size="lg" className="w-full sm:w-auto">
+          <Button size="lg" className="w-full sm:w-auto" onClick={() => setShowAddReviewDialog(true)}>
             Add Review
           </Button>
         </div>
@@ -95,37 +204,79 @@ export default function StallReviews({ reviews, rating, reviewCount }: StallRevi
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {reviews.map((review) => (
-          <Card key={review.id} className='p-2'>
-            <CardContent className="p-3">
-              <div className="flex items-start gap-4">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                  <Image
-                    src={review.userPicture || "/placeholder.svg"}
-                    alt={review.userName}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium">{review.userName}</p>
-                  <div className="flex items-center gap-1 my-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        size={14}
-                        className={`${
-                          star <= review.rating ? "fill-amber-400 text-amber-400" : "fill-muted text-muted"
-                        }`}
-                      />
-                    ))}
+        {reviews.map((review) => {
+          const isCurrentUserReview = review.userId === currentUserId || review.id === "1" // For demo purposes
+
+          return (
+            <Card key={review.id} className="py-2">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-4">
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden">
+                    <Image
+                      src={review.userPicture || "/placeholder.svg"}
+                      alt={review.userName}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                  <p className="text-sm mt-4 overflow-hidden text-ellipsis">{review.content}</p>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-medium">{review.userName}</p>
+                        <div className="flex items-center gap-1 my-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              size={14}
+                              className={`${
+                                star <= review.rating ? "fill-amber-400 text-amber-400" : "fill-muted text-muted"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex gap-1">
+                        {isCurrentUserReview ? (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                              onClick={() => openEditDialog(review)}
+                            >
+                              <Edit size={16} />
+                              <span className="sr-only">Edit review</span>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                              onClick={() => openDeleteDialog(review.id)}
+                            >
+                              <Trash2 size={16} />
+                              <span className="sr-only">Delete review</span>
+                            </Button>
+                          </>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                            onClick={() => openReportDialog(review)}
+                          >
+                            <Flag size={16} />
+                            <span className="sr-only">Report review</span>
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-sm mt-2">{review.content}</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
 
       {reviews.length > 3 && (
@@ -133,7 +284,170 @@ export default function StallReviews({ reviews, rating, reviewCount }: StallRevi
           <Button variant="outline">Show more reviews</Button>
         </div>
       )}
+
+      {/* Add Review Dialog */}
+      <Dialog open={showAddReviewDialog} onOpenChange={setShowAddReviewDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add Review</DialogTitle>
+            <DialogDescription>
+              Share your experience with this stall. Your review will help others make better choices.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="rating">Rating</Label>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Button
+                    key={star}
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className={`h-5 w-5 ${star <= newReviewRating ? "text-amber-400" : "text-muted-foreground"}`}
+                    onClick={() => setNewReviewRating(star)}
+                  >
+                    <Star className={star <= newReviewRating ? "fill-amber-400" : ""} />
+                    <span className="sr-only">{star} stars</span>
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="review">Review</Label>
+              <Textarea
+                id="review"
+                placeholder="Write your review here..."
+                value={newReviewContent}
+                onChange={(e) => setNewReviewContent(e.target.value)}
+                rows={5}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAddReviewDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddReview} disabled={!newReviewContent.trim()}>
+              Submit Review
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Review Dialog */}
+      <Dialog open={showEditReviewDialog} onOpenChange={setShowEditReviewDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Review</DialogTitle>
+            <DialogDescription>Update your review for this stall.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="rating">Rating</Label>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Button
+                    key={star}
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className={`h-5 w-5 ${star <= newReviewRating ? "text-amber-400" : "text-muted-foreground"}`}
+                    onClick={() => setNewReviewRating(star)}
+                  >
+                    <Star className={star <= newReviewRating ? "fill-amber-400" : ""} />
+                    <span className="sr-only">{star} stars</span>
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="review">Review</Label>
+              <Textarea
+                id="review"
+                placeholder="Write your review here..."
+                value={newReviewContent}
+                onChange={(e) => setNewReviewContent(e.target.value)}
+                rows={5}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditReviewDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleEditReview} disabled={!newReviewContent.trim()}>
+              Update Review
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Report Review Dialog */}
+      <Dialog open={showReportDialog} onOpenChange={setShowReportDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Report Review</DialogTitle>
+            <DialogDescription>Please let us know why you're reporting this review.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-6 py-2">
+            <div className="flex flex-col gap-3">
+              <Label>Reason for reporting</Label>
+              <RadioGroup value={reportType} onValueChange={setReportType}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="spam" id="spam" />
+                  <Label htmlFor="spam">Spam</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="irrelevant" id="irrelevant" />
+                  <Label htmlFor="irrelevant">Irrelevant to food</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="offensive" id="offensive" />
+                  <Label htmlFor="offensive">Offensive</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="reason">Why is it irrelevant?</Label>
+              <Textarea
+                id="reason"
+                placeholder="Please provide additional details..."
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowReportDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleReportReview}>Submit Report</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Review Confirmation */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete your review. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteReview}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
-
