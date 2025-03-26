@@ -126,7 +126,7 @@ export default function HawkerStallList() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
             {stalls.map((stall) => (
-                <div key={stall.id} className="rounded-xl border overflow-hidden cursor-pointer group" onClick={() => router.push(`/stall/${stall.id}`) }>
+                <div key={stall.id} className="rounded-xl border overflow-hidden group">
                     <div className="relative">
                         <div className="aspect-[4/3] relative overflow-hidden">
                             <Image
@@ -149,7 +149,7 @@ export default function HawkerStallList() {
                             <span className="sr-only">Toggle favorite</span>
                         </Button>
                     </div>
-                    <div className="p-4">
+                    <div className="p-4 cursor-pointer" onClick={() => router.push(`/stall/${stall.id}`) }>
                         <div className="flex justify-between items-start">
                             <h3 className="font-medium text-lg">{stall.name}</h3>
                             <div className="flex items-center">

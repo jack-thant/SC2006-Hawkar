@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import StallDishes from "@/components/stall-dishes"
 import StallReviews from "@/components/stall-reviews"
 import PhotoGrid from "@/components/photo-grid"
+import Navbar from "@/components/navbar"
 
 // Sample data for the stall
 const stallData = {
@@ -100,15 +101,13 @@ export default function StallDetails({ params }: { params: { id: string } }) {
     // const { id } = params;
     // const stallData = await fetchStallData(id);
 
+    const handleSaveToggle = () => {
+        setSaved(!saved)
+    }
+
     return (
         <main className="min-h-screen pb-16">
-            {/* Back button and actions */}
-            <div className="sticky top-0 z-10 bg-white p-4 flex items-center justify-between border-b">
-                <Link href="/" className="flex items-center gap-2 text-sm font-medium">
-                    <ArrowLeft size={18} />
-                    Home
-                </Link>
-            </div>
+            <Navbar username="John Doe" stallName={stallData.name} onSaveToggle={handleSaveToggle} isSaved={saved} />
 
             {/* Stall details */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
