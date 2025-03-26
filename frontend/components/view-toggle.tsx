@@ -14,7 +14,7 @@ export default function ViewToggle({ onToggle, currentView }: ViewToggleProps) {
       <Button
         variant={currentView === "list" ? "default" : "ghost"}
         size="sm"
-        className={`rounded-full px-3 ${currentView === "list" ? "bg-[#2A2438] text-white" : ""}`}
+        className={`rounded-full px-3 ${currentView === "list" ? "bg-primary text-white" : ""}`}
         onClick={() => onToggle("list")}
       >
         <List className="h-4 w-4 mr-2" />
@@ -23,7 +23,7 @@ export default function ViewToggle({ onToggle, currentView }: ViewToggleProps) {
       <Button
         variant={currentView === "map" ? "default" : "ghost"}
         size="sm"
-        className={`rounded-full px-3 ${currentView === "map" ? "bg-[#2A2438] text-white" : ""}`}
+        className={`rounded-full px-3 ${currentView === "map" ? "bg-primary text-white" : ""}`}
         onClick={() => onToggle("map")}
       >
         <Map className="h-4 w-4 mr-2" />
@@ -32,7 +32,7 @@ export default function ViewToggle({ onToggle, currentView }: ViewToggleProps) {
       <Button
         variant={currentView === "both" ? "default" : "ghost"}
         size="sm"
-        className={`rounded-full px-3 ${currentView === "both" ? "bg-[#2A2438] text-white" : ""}`}
+        className={`rounded-full px-3 ${currentView === "both" ? "bg-primary text-white" : ""}`}
         onClick={() => onToggle("both")}
       >
         <LayoutGrid className="h-4 w-4 mr-2" />

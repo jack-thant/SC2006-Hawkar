@@ -130,7 +130,7 @@ export default function FilterModal({ isOpen, onClose, onApply, initialFilters }
                             <Button
                                 variant="outline"
                                 className={`bg-gray-200 hover:bg-gray-300 border-0 py-6 ${filters.amenities.includes("Washroom")
-                                        ? "bg-[#2A2438] text-white hover:bg-[#2A2438]/90 hover:text-white"
+                                        ? "bg-primary text-white hover:bg-primary/90 hover:text-white"
                                         : ""
                                     }`}
                                 onClick={() => toggleSelection("Washroom", filters.amenities, "amenities")}
@@ -140,7 +140,7 @@ export default function FilterModal({ isOpen, onClose, onApply, initialFilters }
                             <Button
                                 variant="outline"
                                 className={`bg-gray-200 hover:bg-gray-300 border-0 py-6 ${filters.amenities.includes("Parking Space")
-                                        ? "bg-[#2A2438] text-white hover:bg-[#2A2438]/90 hover:text-white"
+                                        ? "bg-primary text-white hover:bg-primary/90 hover:text-white"
                                         : ""
                                     }`}
                                 onClick={() => toggleSelection("Parking Space", filters.amenities, "amenities")}
@@ -157,7 +157,7 @@ export default function FilterModal({ isOpen, onClose, onApply, initialFilters }
                             <Button
                                 variant="outline"
                                 className={`bg-gray-200 hover:bg-gray-300 border-0 py-6 ${filters.accessibility.includes("Wheelchair Access")
-                                        ? "bg-[#2A2438] text-white hover:bg-[#2A2438]/90 hover:text-white"
+                                        ? "bg-primary text-white hover:bg-primary/90 hover:text-white"
                                         : ""
                                     }`}
                                 onClick={() => toggleSelection("Wheelchair Access", filters.accessibility, "accessibility")}
@@ -167,7 +167,7 @@ export default function FilterModal({ isOpen, onClose, onApply, initialFilters }
                             <Button
                                 variant="outline"
                                 className={`bg-gray-200 hover:bg-gray-300 border-0 py-6 ${filters.accessibility.includes("Railing Support")
-                                        ? "bg-[#2A2438] text-white hover:bg-[#2A2438]/90 hover:text-white"
+                                        ? "bg-primary text-white hover:bg-primary/90 hover:text-white"
                                         : ""
                                     }`}
                                 onClick={() => toggleSelection("Railing Support", filters.accessibility, "accessibility")}
@@ -177,7 +177,7 @@ export default function FilterModal({ isOpen, onClose, onApply, initialFilters }
                             <Button
                                 variant="outline"
                                 className={`bg-gray-200 hover:bg-gray-300 border-0 py-6 ${filters.accessibility.includes("Tactile Paving")
-                                        ? "bg-[#2A2438] text-white hover:bg-[#2A2438]/90 hover:text-white"
+                                        ? "bg-primary text-white hover:bg-primary/90 hover:text-white"
                                         : ""
                                     }`}
                                 onClick={() => toggleSelection("Tactile Paving", filters.accessibility, "accessibility")}
@@ -196,7 +196,7 @@ export default function FilterModal({ isOpen, onClose, onApply, initialFilters }
                                     key={food}
                                     variant="outline"
                                     className={`bg-gray-200 hover:bg-gray-300 border-0 py-6 ${filters.foodPreferences.includes(food)
-                                            ? "bg-[#2A2438] text-white hover:bg-[#2A2438]/90 hover:text-white"
+                                            ? "bg-primary text-white hover:bg-primary/90 hover:text-white"
                                             : ""
                                         }`}
                                     onClick={() => toggleSelection(food, filters.foodPreferences, "foodPreferences")}

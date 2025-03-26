@@ -4,6 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { Heart, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useRouter } from 'next/navigation'
 
 interface HawkerStall {
     id: string
@@ -116,6 +117,7 @@ const mockHawkerStalls: HawkerStall[] = [
 
 export default function HawkerStallList() {
     const [stalls, setStalls] = useState<HawkerStall[]>(mockHawkerStalls)
+    const router = useRouter()
 
     const toggleFavorite = (id: string) => {
         setStalls(stalls.map((stall) => (stall.id === id ? { ...stall, isFavorite: !stall.isFavorite } : stall)))
@@ -124,7 +126,7 @@ export default function HawkerStallList() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
             {stalls.map((stall) => (
-                <div key={stall.id} className="rounded-xl border overflow-hidden group">
+                <div key={stall.id} className="rounded-xl border overflow-hidden cursor-pointer group" onClick={() => router.push(`/stall/${stall.id}`) }>
                     <div className="relative">
                         <div className="aspect-[4/3] relative overflow-hidden">
                             <Image

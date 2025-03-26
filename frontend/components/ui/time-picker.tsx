@@ -146,7 +146,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
                 <Button
                   type="button"
                   variant={period === "AM" ? "default" : "outline"}
-                  className={`rounded-r-none px-3 ${period === "AM" ? "bg-[#2A2438]" : ""}`}
+                  className={`rounded-r-none px-3 ${period === "AM" ? "bg-primary" : ""}`}
                   onClick={() => setPeriod("AM")}
                 >
                   AM
@@ -154,7 +154,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
                 <Button
                   type="button"
                   variant={period === "PM" ? "default" : "outline"}
-                  className={`rounded-l-none px-3 ${period === "PM" ? "bg-[#2A2438]" : ""}`}
+                  className={`rounded-l-none px-3 ${period === "PM" ? "bg-primary" : ""}`}
                   onClick={() => setPeriod("PM")}
                 >
                   PM
@@ -162,7 +162,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
               </div>
             </div>
           </div>
-          <Button className="bg-[#2A2438] hover:bg-[#2A2438]/90" onClick={handleTimeChange}>
+          <Button className="bg-primary hover:bg-primary/90" onClick={handleTimeChange}>
             Set Time
           </Button>
         </div>
