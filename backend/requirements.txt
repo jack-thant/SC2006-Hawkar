@@ -5,3 +5,4 @@ httpx
 bcrypt
 python-multipart
 pydantic[email]
+minio
