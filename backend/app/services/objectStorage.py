@@ -18,10 +18,14 @@ class ObjectStorage:
 
     def __init__(self):
         if not self._initialized:
+            minio_endpoint = os.environ.get("MINIO_ENDPOINT", "minio:9000")
+            minio_access_key = os.environ.get("MINIO_ROOT_USER", "tanknam")
+            minio_secret_key = os.environ.get("MINIO_ROOT_PASSWORD", "12345678")
+
             self.client = Minio(
-                endpoint="localhost:9000",
-                access_key="tanknam",
-                secret_key="12345678",
+                endpoint=minio_endpoint,
+                access_key=minio_access_key,
+                secret_key=minio_secret_key,
                 secure=False,
             )
             self._initialized = True
