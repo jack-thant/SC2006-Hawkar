@@ -26,6 +26,7 @@ def create_admin(db: Session, user: admin_schemas.AdminCreate):
         password=user.password,
         role=user_schemas.Role.ADMIN,
         profilePhoto=user.profilePhoto,
+        contactNumber=user.contactNumber
     )
     db_user = user_services.create_user(db, user_to_create)
 

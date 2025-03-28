@@ -53,6 +53,7 @@ def create_hawker(db: Session, user: hawker_schemas.HawkerCreate):
         password=user.password,
         role=user_schemas.Role.HAWKER,
         profilePhoto=user.profilePhoto,
+        contactNumber=user.contactNumber
     )
     db_user = user_services.create_user(db, user_to_create)
 

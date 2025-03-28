@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean
 from sqlalchemy.orm import relationship, Mapped
 
 from database import Base
@@ -11,6 +11,7 @@ class Dish(Base):
     dishName = Column(String)
     price = Column(Float)
     photo = Column(String)
+    # onPromotion = Column(Boolean)
 
     stallID = Column(Integer, ForeignKey("stalls.stallID"))
     stall: Mapped["Stall"] = relationship("Stall", back_populates="dishes")

@@ -17,6 +17,7 @@ class UserBase(BaseModel):
 class User(UserBase):
     userID: int
     profilePhoto: Optional[str] = ""
+    contactNumber: Optional[str] = ""
     role: Role
 
     class ConfigDict:
@@ -26,17 +27,20 @@ class User(UserBase):
 class UserCreate(UserBase):
     password: str
     role: Role
-    profilePhoto: str
+    profilePhoto: Optional[str] = ""
+    contactNumber: Optional[str] = ""
 
 
 class UserUpdate(UserBase):
     userID: int
     profilePhoto: Optional[str] = ""
+    contactNumber: Optional[str] = ""
 
 
 class UserLogin(BaseModel):
     emailAddress: EmailStr
     password: str
+
 
 class UserSignup(BaseModel):
     userType: Literal["admin", "consumer", "hawker"]

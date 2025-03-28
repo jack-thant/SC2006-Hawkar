@@ -15,7 +15,8 @@ DATABASE_SEED_DATA = {
             "name": "Admin Jane",
             "emailAddress": "admin1@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-girl-1.jpg",
+            "profilePhoto": "[Seed]profile-girl-1.jpg",
+            "contactNumber": "95874723",
             "role": Role.ADMIN,
         },
         {
@@ -23,7 +24,8 @@ DATABASE_SEED_DATA = {
             "name": "Doggo",
             "emailAddress": "admin2@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-dog-1.jpg",
+            "profilePhoto": "[Seed]profile-dog-1.jpg",
+            "contactNumber": "95874723",
             "role": Role.ADMIN,
         },
         # ---------- Consumer ---------- #
@@ -32,7 +34,8 @@ DATABASE_SEED_DATA = {
             "name": "Janice",
             "emailAddress": "consumer1@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-girl-2.jpg",
+            "profilePhoto": "[Seed]profile-girl-2.jpg",
+            "contactNumber": "95874723",
             "role": Role.CONSUMER,
         },
         {
@@ -40,7 +43,8 @@ DATABASE_SEED_DATA = {
             "name": "Alicia",
             "emailAddress": "consumer2@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-girl-3.jpg",
+            "profilePhoto": "[Seed]profile-girl-3.jpg",
+            "contactNumber": "95874723",
             "role": Role.CONSUMER,
         },
         {
@@ -48,7 +52,8 @@ DATABASE_SEED_DATA = {
             "name": "James",
             "emailAddress": "consumer3@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-guy-3.jpg",
+            "profilePhoto": "[Seed]profile-guy-3.jpg",
+            "contactNumber": "95874723",
             "role": Role.CONSUMER,
         },
         # ---------- Hawker ---------- #
@@ -57,7 +62,8 @@ DATABASE_SEED_DATA = {
             "name": "Alex",
             "emailAddress": "hawker1@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-hawker-ntu-hot-hideout.jpg",
+            "profilePhoto": "[Seed]profile-hawker-ntu-hot-hideout.jpg",
+            "contactNumber": "95874723",
             "role": Role.HAWKER,
         },
         {
@@ -65,7 +71,8 @@ DATABASE_SEED_DATA = {
             "name": "Adam",
             "emailAddress": "hawker2@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-hawker-ntu-north-spine.jpeg",
+            "profilePhoto": "[Seed]profile-hawker-ntu-north-spine.jpeg",
+            "contactNumber": "95874723",
             "role": Role.HAWKER,
         },
         {
@@ -73,7 +80,8 @@ DATABASE_SEED_DATA = {
             "name": "Aaron",
             "emailAddress": "hawker3@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-hawker-ntu-crowded-bowl.jpeg",
+            "profilePhoto": "[Seed]profile-hawker-ntu-crowded-bowl.jpeg",
+            "contactNumber": "95874723",
             "role": Role.HAWKER,
         },
         {
@@ -81,7 +89,8 @@ DATABASE_SEED_DATA = {
             "name": "William",
             "emailAddress": "hawker4@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-hawker-chicken-rice-store.jpg",
+            "profilePhoto": "[Seed]profile-hawker-chicken-rice-store.jpg",
+            "contactNumber": "95874723",
             "role": Role.HAWKER,
         },
         {
@@ -89,7 +98,8 @@ DATABASE_SEED_DATA = {
             "name": "Ness",
             "emailAddress": "hawker5@gmail.com",
             "password": common_password,
-            "profile_picture": "[Seed]profile-hawker-noodles-store.jpg",
+            "profilePhoto": "[Seed]profile-hawker-noodles-store.jpg",
+            "contactNumber": "95874723",
             "role": Role.HAWKER,
         },
     ],
@@ -115,7 +125,6 @@ DATABASE_SEED_DATA = {
         {
             "hawkerID": 5,
             "businessName": "A Hot Hideout (NTU)",
-            "contactNumber": "95874723",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
@@ -125,7 +134,6 @@ DATABASE_SEED_DATA = {
         {
             "hawkerID": 6,
             "businessName": "North Spine Koufu - Cai Fan Store",
-            "contactNumber": "95874723",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
@@ -135,7 +143,6 @@ DATABASE_SEED_DATA = {
         {
             "hawkerID": 7,
             "businessName": "The Crowded Bowl",
-            "contactNumber": "95874723",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
@@ -145,7 +152,6 @@ DATABASE_SEED_DATA = {
         {
             "hawkerID": 8,
             "businessName": "Chicken Rice Store (NTU)",
-            "contactNumber": "95874723",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
@@ -155,7 +161,6 @@ DATABASE_SEED_DATA = {
         {
             "hawkerID": 9,
             "businessName": "Noodles Store (NTU)",
-            "contactNumber": "95874723",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,

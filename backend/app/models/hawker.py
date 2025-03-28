@@ -11,7 +11,6 @@ class Hawker(Base):
 
     hawkerID = Column(Integer, primary_key=True, index=True)
     businessName = Column(String)
-    contactNumber = Column(String)
     address = Column(String)
     # geometry = Column(String)
     latitude = Column(Float)

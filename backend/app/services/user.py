@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 import schemas.user as user_schemas
 from models.user import User
+from services.objectStorage import ObjectStorage
 
 import bcrypt
 
@@ -23,6 +24,13 @@ def get_all_users(db: Session, skip: int = 0, limit: int = 100):
 def create_user(db: Session, user: user_schemas.UserCreate):
     # hash password
     user.password = bcrypt.hashpw(user.password.encode("utf-8"), salt=salt)
+    profile_photo_url = None
+    if user.profilePhoto:
+        storage = ObjectStorage()
+        profile_photo_url = storage.upload_profile_photo(
+            user.emailAddress, user.profilePhoto
+        )
+        user.profilePhoto = profile_photo_url
 
     db_user = User(**user.model_dump())
 

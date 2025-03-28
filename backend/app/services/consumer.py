@@ -26,6 +26,7 @@ def create_consumer(db: Session, user: consumer_schemas.ConsumerCreate):
         password=user.password,
         role=user_schemas.Role.CONSUMER,
         profilePhoto=user.profilePhoto,
+        contactNumber=user.contactNumber
     )
     db_user = user_services.create_user(db, user_to_create)
 

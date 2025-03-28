@@ -4,7 +4,7 @@
 
 ```bash
 python -m venv .venv
-. .venv/Scripts/activate # The .venv activation command might differ depending on your operating system
+. .venv/bin/activate # The .venv activation command might differ depending on your operating system
 ```
 
 2. Install the required packages.

@@ -13,6 +13,7 @@ class User(Base):
     emailAddress = Column(String, unique=True, index=True)
     password = Column(String)
     profilePhoto = Column(String)
+    contactNumber = Column(String)
     role = Column(Enum(Role))
 
     admin: Mapped["Admin"] = relationship("Admin", back_populates="user")
