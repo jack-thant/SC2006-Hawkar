@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { logout } from "@/app/lib/actions/auth-actions"
 
 interface NavbarProps {
   username?: string
@@ -156,7 +157,6 @@ export default function Navbar({ username = "User", stallName, onSaveToggle, isS
     setShowEditProfile(false)
   }
 
-
   const markAllNotificationsAsRead = () => {
     // In a real app, you would update this in your database
     setNotificationCount(0)
@@ -257,7 +257,7 @@ export default function Navbar({ username = "User", stallName, onSaveToggle, isS
                 <Bookmark className="h-4 w-4 mr-2" />
                 Saved Stalls
               </DropdownMenuItem>
-              <DropdownMenuItem>Sign Out</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => logout()}>Sign Out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -271,18 +271,12 @@ export default function Navbar({ username = "User", stallName, onSaveToggle, isS
             <DialogDescription>Update your profile information below.</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleProfileUpdate}>
-
             <div className="flex flex-col items-center gap-2 mb-6">
               <Avatar className="h-24 w-24">
                 <AvatarImage src={previewUrl || profileData.profilePicture} alt={profileData.name} />
                 <AvatarFallback>{getInitials(profileData.name)}</AvatarFallback>
               </Avatar>
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                onClick={handleProfilePictureUpdate}
-              >
+              <Button type="button" size="sm" variant="ghost" onClick={handleProfilePictureUpdate}>
                 <span>Change profile picture</span>
               </Button>
               <input
@@ -313,7 +307,7 @@ export default function Navbar({ username = "User", stallName, onSaveToggle, isS
                 </Label>
                 <div className="col-span-3">
                   <Input id="password" type="password" placeholder="••••••••" className="mb-2 py-6" />
-                  <Input id="confirmPassword" type="password" placeholder="Confirm password" className='py-6' />
+                  <Input id="confirmPassword" type="password" placeholder="Confirm password" className="py-6" />
                 </div>
               </div>
               <div className="space-y-3">
@@ -329,7 +323,7 @@ export default function Navbar({ username = "User", stallName, onSaveToggle, isS
               </div>
             </div>
 
-            <DialogFooter className='mt-6'>
+            <DialogFooter className="mt-6">
               <Button type="button" variant="outline" onClick={() => setShowEditProfile(false)}>
                 Cancel
               </Button>

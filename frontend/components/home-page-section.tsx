@@ -6,6 +6,7 @@ import SearchBar from "@/components/search-bar"
 import ViewToggle from "@/components/view-toggle"
 import { useState, useEffect } from "react"
 import dynamic from "next/dynamic";
+import { HomeSectionProps } from "@/app/types/home-section";
 
 // Import MapView dynamically with no SSR to avoid hydration issues
 const MapView = dynamic(() => import("@/components/map-view"), {
@@ -26,7 +27,7 @@ const mapLocations = [
     { id: "6", name: "Ah Hock Fried Hokkien Noodles", lat: 1.3651, lng: 103.8696, price: "$4 - $6" },
 ]
 
-export default function HomePageSection() {
+export default function HomePageSection({ userData }: HomeSectionProps) {
     const [currentView, setCurrentView] = useState<"list" | "map" | "both">("both")
 
     const handleViewToggle = (view: "list" | "map" | "both") => {

@@ -1,0 +1,131 @@
+"use server";
+
+import { cookies } from "next/headers";
+import { SignUpFormData, LoginFormData, UserType } from "@/app/types/auth";
+import { redirect } from "next/navigation";
+
+const API_URL = process.env.NEXT_PUBLIC_DEV_API_URL;
+
+export async function signUp(formData: SignUpFormData) {
+  const modifiedFormData = {
+    userType: formData.role.toLowerCase(),
+    data: {
+      ...formData,
+    },
+  };
+  try {
+    const response = await fetch(`${API_URL}/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(modifiedFormData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || "Failed to create account");
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Sign up error:", error);
+    throw error instanceof Error
+      ? error
+      : new Error("An unexpected error occured during signup");
+  }
+}
+
+export async function login(loginData: LoginFormData) {
+  const cookieStore = await cookies();
+  try {
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || "Invalid email or password");
+    }
+    const userData = await response.json();
+    cookieStore.set({
+      name: "userId",
+      value: userData.userID.toString(),
+      httpOnly: true,
+      path: "/",
+      maxAge: 60 * 60, // 60 mins 60 seconds
+      sameSite: "lax",
+    });
+    cookieStore.set({
+      name: "userData",
+      value: JSON.stringify({
+        name: userData.name,
+        emailAddress: userData.emailAddress,
+        profilePhoto: userData.profilePhoto,
+        contactNumber: userData.contactNumber,
+        role: userData.role,
+      }),
+      httpOnly: true,
+      path: "/",
+      maxAge: 60 * 60,
+      sameSite: "lax",
+    });
+    // Redirect based on user role
+    if (userData.role === UserType.Consumer) {
+      return { success: true, redirectUrl: "/" };
+    } else if (userData.role === UserType.Hawker) {
+      return { success: true, redirectUrl: "/hawker" };
+    } else if (userData.role === UserType.Admin) {
+      return { success: true, redirectUrl: "/admin" };
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Login error: ", error);
+    throw error instanceof Error
+      ? error
+      : new Error("An unexpected login error occurred");
+  }
+}
+
+export async function logout() {
+  const cookieStore = await cookies();
+  cookieStore.delete("userId");
+  cookieStore.delete("userData");
+  redirect("/login")
+}
+
+export async function getSession() {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userId")?.value;
+  const userDataCookie = cookieStore.get("userData")?.value;
+
+  if (!userId || !userDataCookie) {
+    return null;
+  }
+  try {
+    const userData = JSON.parse(userDataCookie);
+    return { userId, userData };
+  } catch (error) {
+    console.error("Error parsing user data:", error);
+    return null;
+  }
+}
+
+export async function getUserData() {
+  const session = await getSession();
+  if (!session) {
+    return null;
+  }
+  try {
+    const response = await fetch(`${API_URL}/user/${session.userId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch user data");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return session.userData;
+  }
+}

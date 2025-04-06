@@ -8,17 +8,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { AmbulatoryStatus, CuisineType, DietaryPreference, UserType } from "@/app/types/auth"
 
 interface ProfileFormProps {
     formData: any
     setFormData: (data: any) => void
     onSubmit: (e: React.FormEvent) => void
+    isLoading: boolean
 }
 
-export default function ProfileForm({ formData, setFormData, onSubmit }: ProfileFormProps) {
+export default function ProfileForm({ formData, setFormData, onSubmit, isLoading }: ProfileFormProps) {
     const [profileImage, setProfileImage] = useState<string | null>(null)
-
-    const cuisines = ["Chinese", "Indian", "Malay", "Indonesian", "Japanese", "Korean", "Thai"]
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -38,7 +38,7 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
             reader.onload = (event) => {
                 if (event.target?.result) {
                     setProfileImage(event.target.result as string)
-                    setFormData({ ...formData, profilePicture: event.target.result })
+                    setFormData({ ...formData, profilePhoto: event.target.result })
                 }
             }
             reader.readAsDataURL(file)
@@ -106,9 +106,13 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="Consumer">Consumer</SelectItem>
-                                <SelectItem value="Hawker">Hawker</SelectItem>
-                                <SelectItem value="Admin">Admin</SelectItem>
+                               {
+                                Object.values(UserType).map((type) => (
+                                    <SelectItem key={type} value={type}>
+                                        {type}
+                                    </SelectItem>
+                                ))
+                               }
                             </SelectContent>
                         </Select>
                     </div>
@@ -189,21 +193,22 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
                                                 <SelectValue placeholder="Select a dietary preference" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                                                <SelectItem value="halal">Halal</SelectItem>
-                                                <SelectItem value="glutenFree">Gluten Free</SelectItem>
-                                                <SelectItem value="no-restriction">No Restrictions</SelectItem>
+                                               {Object.values(DietaryPreference).map((p) => (
+                                                <SelectItem key={p} value={p}>
+                                                    {p}
+                                                </SelectItem>
+                                               ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="preferredCuisines">Preferred cuisines</Label>
-                                        <Select value={formData.preferredCuisines} onValueChange={handleSelectFieldChange('preferredCuisines')}>
+                                        <Label htmlFor="preferredCuisine">Preferred cuisine</Label>
+                                        <Select value={formData.preferredCuisine} onValueChange={handleSelectFieldChange('preferredCuisine')}>
                                             <SelectTrigger className="bg-gray-200 border-0 w-full py-6">
                                                 <SelectValue placeholder="Select preferred cuisines" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {cuisines.map((cuisine) => (
+                                                {Object.values(CuisineType).map((cuisine) => (
                                                     <SelectItem key={cuisine} value={cuisine}>
                                                         {cuisine}
                                                     </SelectItem>
@@ -218,8 +223,11 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
                                                 <SelectValue placeholder="Select ambulatory status" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="ambulatory">Fully Ambulatory</SelectItem>
-                                                <SelectItem value="wheelchair">Wheelchair User</SelectItem>
+                                                {Object.values(AmbulatoryStatus).map((ambulatory) => (
+                                                    <SelectItem key={ambulatory} value={ambulatory}>
+                                                        {ambulatory}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -259,7 +267,7 @@ export default function ProfileForm({ formData, setFormData, onSubmit }: Profile
                     }
 
                     <Button type="submit" className="w-full bg-primary hover:bg-black text-white py-6">
-                        Get Started
+                       { isLoading ? "Creating an account...": "Get Started"}
                     </Button>
                 </form>
             </div>

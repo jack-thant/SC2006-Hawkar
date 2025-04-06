@@ -11,32 +11,23 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import ProfileForm from "@/components/profile-form"
 import Image from "next/image"
-import StepIndicator from "./step-indicator"
-
-type FormData = {
-    name: string
-    email: string
-    password: string
-    role: "Consumer" | "Hawker" | "Admin"
-    adminUID?: string
-    profilePicture?: string
-    address?: string
-    contactNumber?: string
-    sfaLicenseNumber?: string
-    dietaryPreference?: string
-    preferredCuisines?: string
-    ambulatoryStatus?: string
-}
+import { toast } from "sonner"
+import { SignUpFormData, UserType } from "@/app/types/auth"
+import { signUp } from "@/app/lib/actions/auth-actions"
+import { useRouter } from "next/navigation"
 
 export default function SignUpForm() {
     const [currentStep, setCurrentStep] = useState(1)
     const [showPassword, setShowPassword] = useState(false)
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<SignUpFormData>({
         name: "",
-        email: "",
+        emailAddress: "",
         password: "",
-        role: "Consumer",
+        role: UserType.Consumer,
     })
+    const router = useRouter()
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -48,12 +39,20 @@ export default function SignUpForm() {
         setCurrentStep(2)
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // Here you would typically send the data to your backend
-        console.log("Form submitted:", formData)
-        // Redirect to home page or show success message
-        alert("Account created successfully!")
+        setIsLoading(true)
+        setError(null)
+        try {
+            await signUp(formData)
+            toast.success("You're all signed up! Redirecting you to log in...", { duration: 3000})
+            router.push("/login")
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Something went wrong, please try again")
+            toast.error("Oops! Something went wrong. Please try again.")
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const togglePasswordVisibility = () => {
@@ -88,13 +87,13 @@ export default function SignUpForm() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email Address</Label>
+                            <Label htmlFor="emailAddress">Email Address</Label>
                             <Input
-                                id="email"
-                                name="email"
+                                id="emailAddress"
+                                name="emailAddress"
                                 type="email"
                                 placeholder="Email Address"
-                                value={formData.email}
+                                value={formData.emailAddress}
                                 onChange={handleInputChange}
                                 required
                                 className="bg-gray-200 py-6"
@@ -139,21 +138,21 @@ export default function SignUpForm() {
                         </div>
 
                         <Button type="button" variant="outline" className="w-full py-6" onClick={() => console.log("Google sign up")}>
-                            <Image 
+                            <Image
                                 src='/google-icon.svg'
                                 width={20}
                                 height={20}
                                 alt="Google icon"
                                 />
-                            <span>Sign up with Google</span>        
+                            <span>Sign up with Google</span>
                         </Button>
                     </form>
                 </div>
             ) : (
-                <ProfileForm formData={formData} setFormData={setFormData} onSubmit={handleSubmit} />
+                <ProfileForm formData={formData} isLoading={isLoading} setFormData={setFormData} onSubmit={handleSubmit} />
             )}
         </div>
         </>
-        
+
     )
 }
