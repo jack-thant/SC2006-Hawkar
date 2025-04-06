@@ -61,17 +61,18 @@ export async function login(loginData: LoginFormData) {
     cookieStore.set({
       name: "userData",
       value: JSON.stringify({
-        name: userData.name,
-        emailAddress: userData.emailAddress,
-        profilePhoto: userData.profilePhoto,
-        contactNumber: userData.contactNumber,
-        role: userData.role,
+        name: userData.user.name,
+        emailAddress: userData.user.emailAddress,
+        profilePhoto: userData.user.profilePhoto,
+        contactNumber: userData.user.contactNumber,
+        role: userData.user.role,
       }),
       httpOnly: true,
       path: "/",
       maxAge: 60 * 60,
       sameSite: "lax",
     });
+    console.log("role", userData.user.role)
     // Redirect based on user role
     if (userData.role === UserType.Consumer) {
       return { success: true, redirectUrl: "/" };
@@ -115,6 +116,7 @@ export async function getSession() {
 
 export async function getUserData() {
   const session = await getSession();
+  console.log(session?.userId)
   if (!session) {
     return null;
   }
