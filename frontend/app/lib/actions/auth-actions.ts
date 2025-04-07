@@ -66,15 +66,17 @@ export async function login(loginData: LoginFormData) {
         profilePhoto: userData.user.profilePhoto,
         contactNumber: userData.user.contactNumber,
         role: userData.user.role,
+        verifyStatus: userData.verifyStatus,
       }),
       httpOnly: true,
       path: "/",
       maxAge: 60 * 60,
       sameSite: "lax",
     });
-    console.log("role", userData.user.role)
-    // Redirect based on user role
-    if (userData.role === UserType.Consumer) {
+    // Redirect based on user role and verification status
+    if (userData.role === UserType.Hawker && userData.verifyStatus === false) {
+      return { success: true, redirectUrl: "/pending-approval" };
+    } else if (userData.role === UserType.Consumer) {
       return { success: true, redirectUrl: "/" };
     } else if (userData.role === UserType.Hawker) {
       return { success: true, redirectUrl: "/hawker" };
@@ -94,7 +96,7 @@ export async function logout() {
   const cookieStore = await cookies();
   cookieStore.delete("userId");
   cookieStore.delete("userData");
-  redirect("/login")
+  redirect("/login");
 }
 
 export async function getSession() {
@@ -116,7 +118,7 @@ export async function getSession() {
 
 export async function getUserData() {
   const session = await getSession();
-  console.log(session?.userId)
+  console.log(session?.userId);
   if (!session) {
     return null;
   }

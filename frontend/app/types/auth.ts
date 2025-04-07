@@ -56,4 +56,5 @@ export interface UserData {
   profilePicture?: string;
   contactNumber?: string;
   role: UserType;
+  verifyStatus?: boolean;
 }

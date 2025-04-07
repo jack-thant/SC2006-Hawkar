@@ -1,9 +1,9 @@
-import { getSession, getUserData } from "../lib/actions/auth-actions"
+import { getSession, getUserData } from "@/app/lib/actions/auth-actions"
 import { redirect } from "next/navigation"
 import Navbar from "@/components/navbar"
-import HawkerDashboardContent from "@/components/hawker/hawker-dashboard-content"
+import StallManagementContent from "@/components/hawker/stall-management-context"
 
-export default async function HawkerDashboard() {
+export default async function StallManagementPage({ params }: { params: { id: string } }) {
   const session = await getSession()
   const userData = await getUserData()
 
@@ -27,10 +27,12 @@ export default async function HawkerDashboard() {
     redirect("/pending-approval")
   }
 
+  // In a real app, you would fetch the stall data and verify ownership
+
   return (
     <main className="min-h-screen flex flex-col">
       <Navbar username={userData?.name || "Hawker"} />
-     <HawkerDashboardContent userData={userData} />
+      <StallManagementContent stallId={params.id} userData={userData} />
     </main>
   )
 }
