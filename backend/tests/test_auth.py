@@ -61,7 +61,6 @@ def test_signup_hawker(client):
             "password": "test",
             "role": "Hawker",
             "profilePhoto": "Test",
-            "businessName": "Test",
             "address": "Test",
             "latitude": 1.3521,
             "longitude": 103.8198,

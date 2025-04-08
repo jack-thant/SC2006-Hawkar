@@ -47,17 +47,6 @@ async def create_user(user: user_schemas.UserCreate, db: Session = Depends(get_d
 #     return UserController.getAllHawkers(db, skip, limit)
 
 
-@router.get(
-    "/hawkers/search/{businessName}",
-    response_model=list[hawker_schemas.Hawker],
-    tags=["User Controller"],
-)
-def search_hawker(
-    businessName: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
-):
-    return UserController.searchHawker(db, skip, limit, search_value=businessName)
-
-
 # ------------------------------------------------------------ #
 # -------------------- User (CRUD) --------------------------- #
 # ------------------------------------------------------------ #

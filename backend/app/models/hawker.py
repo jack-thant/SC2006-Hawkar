@@ -10,7 +10,6 @@ class Hawker(Base):
     __tablename__ = "hawkers"
 
     hawkerID = Column(Integer, primary_key=True, index=True)
-    businessName = Column(String)
     address = Column(String)
     # geometry = Column(String)
     latitude = Column(Float)

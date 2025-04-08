@@ -7,7 +7,6 @@ from .misc import Geometry
 
 class Hawker(BaseModel):
     hawkerID: int
-    businessName: str
     address: str
     latitude: float
     longitude: float
@@ -22,7 +21,6 @@ class Hawker(BaseModel):
 
 class HawkerCreate(UserCreate):
     role: Role = Role.HAWKER
-    businessName: str
     address: str
     latitude: float
     longitude: float

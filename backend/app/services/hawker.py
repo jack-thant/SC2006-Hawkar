@@ -70,7 +70,6 @@ def create_hawker(db: Session, user: hawker_schemas.HawkerCreate):
     db_hawker = Hawker(
         userID=db_user.userID,
         hawkerID=db_user.userID,
-        businessName=user.businessName,
         address=user.address,
         # geometry=geometry_json,
         latitude=user.latitude,

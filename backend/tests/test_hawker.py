@@ -25,7 +25,6 @@ def test_add_hawker(client):
             "password": "test",
             "role": "Hawker",
             "profilePhoto": "test",
-            "businessName": "test",
             "address": "test",
             "latitude": 1.3521,
             "longitude": 103.8198,
@@ -36,7 +35,7 @@ def test_add_hawker(client):
     assert response.status_code == 200 or response.status_code == 400
     assert (
         response.json() == {"detail": "Email already registered"}
-        or response.json()["businessName"] == "test"
+        or response.json()["emailAddress"] == "test@example.com"
     )
 
 

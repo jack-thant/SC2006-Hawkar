@@ -124,7 +124,6 @@ DATABASE_SEED_DATA = {
     "hawkers": [
         {
             "hawkerID": 5,
-            "businessName": "A Hot Hideout (NTU)",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
@@ -133,7 +132,6 @@ DATABASE_SEED_DATA = {
         },
         {
             "hawkerID": 6,
-            "businessName": "North Spine Koufu - Cai Fan Store",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
@@ -142,7 +140,6 @@ DATABASE_SEED_DATA = {
         },
         {
             "hawkerID": 7,
-            "businessName": "The Crowded Bowl",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
@@ -151,7 +148,6 @@ DATABASE_SEED_DATA = {
         },
         {
             "hawkerID": 8,
-            "businessName": "Chicken Rice Store (NTU)",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
@@ -160,7 +156,6 @@ DATABASE_SEED_DATA = {
         },
         {
             "hawkerID": 9,
-            "businessName": "Noodles Store (NTU)",
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,

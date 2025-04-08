@@ -65,11 +65,6 @@ class UserController:
 
     #         return publicHawkers
 
-    def searchHawker(db: Session, skip: int, limit: int, search_value: str):
-        """Searches Hawkers by `business_name`"""
-        hawkers = hawker_services.get_all_hawkers(db, skip=skip, limit=limit)
-        hawkers_filtered = filter(lambda x: search_value in x.businessName, hawkers)
-        return hawkers_filtered
 
     # ------------------------------------------------------------ #
     # -------------------- User (CRUD) --------------------------- #
