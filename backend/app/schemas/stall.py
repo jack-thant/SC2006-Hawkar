@@ -1,21 +1,11 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
+from datetime import time
 
 from .hawker import Hawker
-
-
-class CuisineType(Enum):
-    CHINESE = "Chinese"
-    INDIAN = "Indian"
-    MALAY = "Malay"
-    WESTERN = "Western"
-    JAPANESE = "Japanese"
-    KOREAN = "Korean"
-    THAI = "Thai"
-    VIETNAMESE = "Vietnamese"
-    FUSION = "Fusion"
-    OTHERS = "Others"
+from .hawkerCenter import HawkerCenter
+from .user import CuisineType, HygieneRating
 
 
 class Stall(BaseModel):
@@ -23,12 +13,16 @@ class Stall(BaseModel):
     stallName: str
     hawkerID: int
     hawker: Hawker
+    hawkerCenterID: Optional[int] = None
+    hawkerCenter: HawkerCenter
+    images: Optional[List[str]] = None
     unitNumber: str
-    openStatus: bool
-    operatingHours: Optional[str] = None
-    hygieneRating: Optional[float] = None
-    cuisineType: Optional[CuisineType] = None
+    startTime: time
+    endTime: time
+    hygieneRating: Optional[str] = None
+    cuisineType: Optional[str] = None
     estimatedWaitTime: Optional[int] = None
+    priceRange: Optional[str] = None
 
     class ConfigDict:
         from_attributes = True
@@ -37,21 +31,27 @@ class Stall(BaseModel):
 class StallCreate(BaseModel):
     stallName: str
     hawkerID: int
+    hawkerCenterID: Optional[int] = None
+    images: Optional[List[str]] = None
     unitNumber: str
-    openStatus: bool
-    operatingHours: Optional[str] = None
-    hygieneRating: Optional[float] = None
-    cuisineType: Optional[CuisineType] = None
+    startTime: time
+    endTime: time
+    hygieneRating: Optional[str] = None
+    cuisineType: Optional[str] = None
     estimatedWaitTime: Optional[int] = None
+    priceRange: Optional[str] = None
 
 
 class StallUpdate(BaseModel):
     stallID: int
     stallName: Optional[str] = None
     hawkerID: Optional[int] = None
-    unitNumber: Optional[str] = None
-    openStatus: Optional[bool] = None
-    operatingHours: Optional[str] = None
-    hygieneRating: Optional[float] = None
-    cuisineType: Optional[CuisineType] = None
+    hawkerCenterID: Optional[int] = None
+    images: Optional[List[str]] = None
+    unitNumber: str
+    startTime: time
+    endTime: time
+    hygieneRating: Optional[str] = None
+    cuisineType: Optional[str] = None
     estimatedWaitTime: Optional[int] = None
+    priceRange: Optional[str] = None

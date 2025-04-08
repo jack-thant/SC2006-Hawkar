@@ -5,8 +5,6 @@ import schemas.dish as dish_schemas
 from models.dish import Dish
 from models.stall import Stall
 
-from search.hawker_dish_trie import hawker_dish_search
-
 
 def get_dish_by_dish_id(db: Session, dishID: int):
     db_dish = db.query(Dish).filter(Dish.dishID == dishID).first()
@@ -45,8 +43,6 @@ def create_dish(db: Session, dish: dish_schemas.DishCreate):
     db.commit()
     db.refresh(db_dish)
 
-    # Update Dish Trie Search Index
-    hawker_dish_search.add_dish(db_dish.dishName, db_dish.dishID)
 
     return db_dish
 
@@ -68,12 +64,6 @@ def update_dish(db: Session, updated_dish: dish_schemas.DishUpdate):
     db.commit()
     db.refresh(db_dish)
 
-    # Update search index if name changed
-    if old_dish_name != db_dish.dishName:
-        hawker_dish_search.update_dish(
-            old_dish_name, {"dishID": db_dish.dishID, "dishName": db_dish.dishName}
-        )
-
     return db_dish
 
 
@@ -82,8 +72,6 @@ def delete_dish(db: Session, dishID: int) -> bool:
 
     if not db_dish:
         raise HTTPException(status_code=400, detail="Invalid dishID")
-
-    hawker_dish_search.remove_dish(db_dish.dishName)
 
     db.delete(db_dish)
     db.commit()

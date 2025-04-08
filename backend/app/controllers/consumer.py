@@ -29,6 +29,7 @@ class ConsumerController:
         consumer = consumer_services.get_consumer_by_user_id(db, userID=userID)
         if consumer is None:
             raise HTTPException(status_code=404, detail="Consumer not found")
+
         return consumer
 
     def getConsumerByConsumerId(db: Session, consumerID: int):
@@ -37,10 +38,14 @@ class ConsumerController:
         )
         if consumer is None:
             raise HTTPException(status_code=404, detail="Consumer not found")
+
         return consumer
 
     def getAllConsumers(db: Session, skip: int, limit: int):
         consumers = consumer_services.get_all_consumers(db, skip=skip, limit=limit)
+        if consumers is None:
+            raise HTTPException(status_code=404, detail="Consumers not found")
+
         return consumers
 
     def updateConsumer(db: Session, updated_consumer: consumer_schemas.ConsumerUpdate):

@@ -14,8 +14,10 @@ class ReviewAction(Enum):
 
 class Review(BaseModel):
     reviewID: int
-    reviewText: Optional[str] = ""
     rating: float
+    isReported: bool = False
+    reportText: Optional[str] = None
+    reportType: Optional[str] = None
 
     consumerID: int
     consumer: Consumer
@@ -30,6 +32,9 @@ class Review(BaseModel):
 class ReviewCreate(BaseModel):
     reviewText: str
     rating: float
+    isReported: bool = False
+    reportText: Optional[str] = None
+    reportType: Optional[str] = None
 
     consumerID: int
     stallID: int
@@ -37,7 +42,10 @@ class ReviewCreate(BaseModel):
 
 class ReviewUpdate(BaseModel):
     reviewID: int
-    reviewText: str
-    rating: float
+    reviewText: Optional[str] = None
+    rating: Optional[float] = 0.0
+    isReported: Optional[bool] = False
+    reportText: Optional[str] = None
+    reportType: Optional[str] = None
 
     consumerID: int

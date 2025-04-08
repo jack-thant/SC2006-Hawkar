@@ -10,9 +10,9 @@ class Review(Base):
     reviewID = Column(Integer, primary_key=True, index=True)
     reviewText = Column(String)
     rating = Column(Integer)
-    # isReported = Column(Boolean)
-    # reportType = Column(String)
-    # reportText = Column(String)
+    isReported = Column(Boolean)
+    reportType = Column(String)
+    reportText = Column(String)
 
     consumerID = Column(Integer, ForeignKey("consumers.consumerID"))
     consumer: Mapped["Consumer"] = relationship("Consumer", back_populates="reviews")

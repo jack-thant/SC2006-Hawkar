@@ -24,10 +24,7 @@ class AdminController:
             userID=hawker_db.userID,
             profilePhoto=hawker_db.user.profilePhoto,
             hawkerID=hawker_db.hawkerID,
-            contactNumber=hawker_db.contactNumber,
-            latitude=hawker_db.latitude,
-            longitude=hawker_db.longitude,
-            # geometry=json.dumps(hawker_db.geometry),
+            license=hawker_db.license,
             address=hawker_db.address,
             verifyStatus=True,
         )

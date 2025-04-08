@@ -11,9 +11,7 @@ class Hawker(Base):
 
     hawkerID = Column(Integer, primary_key=True, index=True)
     address = Column(String)
-    # geometry = Column(String)
-    latitude = Column(Float)
-    longitude = Column(Float)
+    license = Column(String)
     verifyStatus = Column(Boolean)
 
     userID = Column(Integer, ForeignKey("users.userID"))

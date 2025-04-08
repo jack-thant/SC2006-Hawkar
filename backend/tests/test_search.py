@@ -20,7 +20,6 @@ def test_search_new_hawker(client):
             "password": "test",
             "role": "Hawker",
             "profilePhoto": "test",
-            "businessName": "test",
             "address": "test",
             "latitude": 1.3521,
             "longitude": 103.8198,
@@ -31,11 +30,11 @@ def test_search_new_hawker(client):
     assert response.status_code == 200 or response.status_code == 400
     assert (
         response.json() == {"detail": "Email already registered"}
-        or response.json()["businessName"] == "test"
+        or response.json()["emailAddress"] == "test@example.com"
     )
     response = client.get("/search/test")
     assert response.status_code == 200
-    assert response.json()["hawkers"][0]["businessName"] == "test"
+    assert response.json()["hawkers"][0]["emailAddress"] == "test@example.com"
 
 
 def test_search_new_dish(client):

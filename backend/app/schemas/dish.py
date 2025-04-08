@@ -8,6 +8,7 @@ class Dish(BaseModel):
     dishName: str
     price: float
     photo: Optional[str] = None
+    onPromotion: Optional[bool] = False
 
     class ConfigDict:
         from_attributes = True
@@ -18,6 +19,7 @@ class DishCreate(BaseModel):
     dishName: str
     price: float
     photo: Optional[str] = None
+    onPromotion: Optional[bool] = False
 
 
 class DishUpdate(BaseModel):
@@ -26,3 +28,4 @@ class DishUpdate(BaseModel):
     dishName: Optional[str] = None
     price: Optional[float] = None
     photo: Optional[str] = None
+    onPromotion: Optional[bool] = False

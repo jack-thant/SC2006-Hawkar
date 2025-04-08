@@ -11,7 +11,7 @@ class Dish(Base):
     dishName = Column(String)
     price = Column(Float)
     photo = Column(String)
-    # onPromotion = Column(Boolean)
+    onPromotion = Column(Boolean)
 
     stallID = Column(Integer, ForeignKey("stalls.stallID"))
     stall: Mapped["Stall"] = relationship("Stall", back_populates="dishes")

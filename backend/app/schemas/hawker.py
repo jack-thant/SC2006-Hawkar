@@ -8,9 +8,7 @@ from .misc import Geometry
 class Hawker(BaseModel):
     hawkerID: int
     address: str
-    latitude: float
-    longitude: float
-    # geometry: Optional[Geometry] = None
+    license: str
     verifyStatus: bool = False
     userID: int
     user: User
@@ -22,16 +20,12 @@ class Hawker(BaseModel):
 class HawkerCreate(UserCreate):
     role: Role = Role.HAWKER
     address: str
-    latitude: float
-    longitude: float
-    # geometry: Optional[Geometry] = None
+    license: str
     verifyStatus: bool = False
 
 
 class HawkerUpdate(UserUpdate):
     hawkerID: int
     address: str
-    latitude: float
-    longitude: float
-    # geometry: Optional[Geometry] = None
+    license: str
     verifyStatus: bool = False

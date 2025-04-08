@@ -47,6 +47,9 @@ def create_review(db: Session, review: review_schemas.ReviewCreate):
         rating=review.rating,
         consumerID=review.consumerID,
         stallID=review.stallID,
+        isReported=review.isReported,
+        reportText=review.reportText,
+        reportType=review.reportType,
     )
 
     db.add(db_review)
