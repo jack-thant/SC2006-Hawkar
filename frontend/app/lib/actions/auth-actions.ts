@@ -22,8 +22,8 @@ export async function signUp(formData: SignUpFormData) {
       body: JSON.stringify(modifiedFormData),
     });
     if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      throw new Error(errorData?.message || "Failed to create account");
+      const errorData = await response.json();
+      throw new Error(errorData?.detail || "Failed to create account");
     }
     return { success: true };
   } catch (error) {
