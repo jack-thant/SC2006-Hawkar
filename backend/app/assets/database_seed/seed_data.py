@@ -105,8 +105,14 @@ DATABASE_SEED_DATA = {
     ],
     # ---------- Admin ---------- #
     "admins": [
-        {"adminID": 1, "userID": 1,},
-        {"adminID": 12, "userID": 12,},
+        {
+            "adminID": 1,
+            "userID": 1,
+        },
+        {
+            "adminID": 12,
+            "userID": 12,
+        },
     ],
     # ---------- Consumer ---------- #
     "consumers": [
@@ -184,7 +190,7 @@ DATABASE_SEED_DATA = {
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
-            "stallID": 1
+            "stallID": 1,
         },
         {
             "hawkerCenterID": 2,
@@ -192,7 +198,7 @@ DATABASE_SEED_DATA = {
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
-            "stallID": 2
+            "stallID": 2,
         },
         {
             "hawkerCenterID": 3,
@@ -200,7 +206,7 @@ DATABASE_SEED_DATA = {
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
-            "stallID": 3
+            "stallID": 3,
         },
         {
             "hawkerCenterID": 4,
@@ -208,7 +214,7 @@ DATABASE_SEED_DATA = {
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
-            "stallID": 4
+            "stallID": 4,
         },
         {
             "hawkerCenterID": 5,
@@ -216,7 +222,7 @@ DATABASE_SEED_DATA = {
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
-            "stallID": 5
+            "stallID": 5,
         },
         {
             "hawkerCenterID": 6,
@@ -224,7 +230,7 @@ DATABASE_SEED_DATA = {
             "address": "Nanyang Technological University",
             "latitude": 1.35397,
             "longitude": 103.68779,
-            "stallID": 6
+            "stallID": 6,
         },
     ],
     # ---------- Stall ---------- #
@@ -238,7 +244,7 @@ DATABASE_SEED_DATA = {
             "startTime": "10:00",
             "endTime": "20:00",
             "hygieneRating": "A",
-            "cuisineType": "Chinese",
+            "cuisineType": "Chinese, Indian",
             "estimatedWaitTime": 15,
             "priceRange": "$4 - $8",
             "hawkerID": 5,
@@ -267,7 +273,7 @@ DATABASE_SEED_DATA = {
             "startTime": "10:00",
             "endTime": "20:00",
             "hygieneRating": "C",
-            "cuisineType": "Chinese",
+            "cuisineType": "Chinese, Indian",
             "estimatedWaitTime": 10,
             "priceRange": "$4 - $8",
             "hawkerID": 6,

@@ -18,14 +18,14 @@ class ObjectStorage:
 
     def __init__(self):
         if not self._initialized:
-            minio_endpoint = os.environ.get("MINIO_ENDPOINT", "minio:9000")
-            minio_access_key = os.environ.get("MINIO_ROOT_USER", "tanknam")
-            minio_secret_key = os.environ.get("MINIO_ROOT_PASSWORD", "12345678")
+            self.minio_endpoint = os.environ.get("MINIO_ENDPOINT", "minio:9000")
+            self.minio_access_key = os.environ.get("MINIO_ROOT_USER", "tanknam")
+            self.minio_secret_key = os.environ.get("MINIO_ROOT_PASSWORD", "12345678")
 
             self.client = Minio(
-                endpoint=minio_endpoint,
-                access_key=minio_access_key,
-                secret_key=minio_secret_key,
+                endpoint=self.minio_endpoint,
+                access_key=self.minio_access_key,
+                secret_key=self.minio_secret_key,
                 secure=False,
             )
             self._initialized = True
@@ -33,7 +33,7 @@ class ObjectStorage:
 
     def _ensure_buckets_exist(self):
         """Ensure required buckets exist in Minio"""
-        required_buckets = ["profile-photo", "review-attachment", "dish"]
+        required_buckets = ["profile-photo", "review-attachment", "dish", "stall"]
 
         for bucket in required_buckets:
             if not self.client.bucket_exists(bucket):
@@ -58,10 +58,35 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return f"http://localhost:9000/profile-photo/{obj_name}"
+            return "http://" + self.minio_endpoint + f"/profile-photo/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading profile photo: {str(e)}")
+            raise e
+
+    def upload_stall_image(self, stallID: int, encoded_image: str) -> str:
+        """Upload stall image to Minio and return URL"""
+        try:
+            header, encoded = encoded_image.split(",", 1)
+            decoded_data = base64.b64decode(encoded)
+
+            # Generate unique ID to avoid overwriting previous photos
+            unique_id = str(uuid.uuid4())[:8]
+            obj_name = f"{stallID}_{unique_id}_stall-image"
+
+            self.client.put_object(
+                "stall",
+                obj_name,
+                io.BytesIO(decoded_data),
+                length=len(decoded_data),
+                content_type="image/jpeg",
+                part_size=10 * 1024 * 1024,
+            )
+
+            return "http://" + self.minio_endpoint + f"/stall/{obj_name}"
+        except Exception as e:
+            # Log the error
+            print(f"Error uploading stall image: {str(e)}")
             raise e
 
     def upload_review_photo(
@@ -84,7 +109,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return f"http://localhost:9000/review-attachment/{obj_name}"
+            return "http://" + self.minio_endpoint + f"/review-attachment/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading review photo: {str(e)}")
@@ -112,7 +137,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return f"http://localhost:9000/dish/{obj_name}"
+            return "http://" + self.minio_endpoint + f"/dish/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading dish photo: {str(e)}")

@@ -17,36 +17,6 @@ tags_metadata = [
     {"name": "Hawker (CRUD)", "description": "API CRUD Endpoints for Hawker Model"},
 ]
 
-# -------------------------------------------------------- #
-# -------------------- Business Logic -------------------- #
-# -------------------------------------------------------- #
-
-
-@router.post(
-    "/hawker-controller/add-stall",
-    response_model=stall_schemas.Stall,
-    tags=["Hawker Controller"],
-)
-def add_stall(stall: stall_schemas.StallCreate, db: Session = Depends(get_db)):
-    return HawkerController.addStall(db, stall)
-
-
-@router.put(
-    "/hawker-controller/edit-stall",
-    response_model=stall_schemas.Stall,
-    tags=["Hawker Controller"],
-)
-def edit_stall(stall: stall_schemas.StallUpdate, db: Session = Depends(get_db)):
-    return HawkerController.editStall(db, stall)
-
-
-@router.delete("/hawker-controller/delete-stall/{stall_id}", tags=["Hawker Controller"])
-def delete_stall(stall_id: int, db: Session = Depends(get_db)):
-    result = HawkerController.deleteStall(db, stall_id)
-    if not result:
-        raise HTTPException(status_code=404, detail="Stall not found")
-    return {"detail": "Stall deleted successfully"}
-
 
 # ------------------------------------------------------------ #
 # -------------------- Hawker (CRUD) ------------------------- #

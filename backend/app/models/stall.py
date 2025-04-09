@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Float, Enum, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, Float, Enum, ForeignKey, Time
 from sqlalchemy.orm import relationship, Mapped
 from typing import List
 
@@ -13,10 +13,10 @@ class Stall(Base):
     stallName = Column(String)
     images = Column(String)
     unitNumber = Column(String)
-    startTime = Column(String)
-    endTime = Column(String)
+    startTime = Column(Time)
+    endTime = Column(Time)
     hygieneRating = Column(Enum(HygieneRating))
-    cuisineType = Column(Enum(CuisineType))
+    cuisineType = Column(String, Enum(CuisineType))
     estimatedWaitTime = Column(Integer)
     priceRange = Column(String)
 
@@ -24,7 +24,9 @@ class Stall(Base):
     hawker: Mapped["Hawker"] = relationship("Hawker", back_populates="stall")
 
     hawkerCenterID = Column(Integer, ForeignKey("hawkerCenters.hawkerCenterID"))
-    hawkerCenter: Mapped["HawkerCenter"] = relationship("HawkerCenter", back_populates="stalls")
+    hawkerCenter: Mapped["HawkerCenter"] = relationship(
+        "HawkerCenter", back_populates="stalls"
+    )
 
     reviews: Mapped[List["Review"]] = relationship("Review", back_populates="stall")
     dishes: Mapped[List["Dish"]] = relationship("Dish", back_populates="stall")

@@ -11,20 +11,6 @@ import schemas.stall as stall_schemas
 
 
 class HawkerController:
-    # -------------------------------------------------------- #
-    # -------------------- Business Logic -------------------- #
-    # -------------------------------------------------------- #
-
-    def addStall(db: Session, stall: stall_schemas.StallCreate):
-        db_stall = stall_services.create_stall(db, stall)
-        return db_stall
-
-    def editStall(db: Session, updated_stall: stall_schemas.StallUpdate):
-        db_stall = stall_services.update_stall(db, updated_stall)
-        return db_stall
-
-    def deleteStall(db: Session, stallID: int):
-        return stall_services.delete_stall(db, stallID)
 
     # ------------------------------------------------------------ #
     # -------------------- Hawker (CRUD) ------------------------- #

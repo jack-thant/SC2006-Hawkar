@@ -5,6 +5,7 @@ from database import get_db
 from controllers.stall import StallController
 import schemas.stall as stall_schemas
 import schemas.dish as dish_schemas
+from schemas.response import StandardResponse
 
 router = APIRouter()
 
@@ -73,6 +74,33 @@ async def get_stall_by_hawker_id(hawker_id: str, db: Session = Depends(get_db)):
     return StallController.getStallByHawkerId(db, hawker_id)
 
 
-@router.put("/stall/update", response_model=stall_schemas.Stall, tags=["Stall (CRUD)"])
-def update_stall(stall: stall_schemas.StallUpdate, db: Session = Depends(get_db)):
-    return StallController.updateStall(db, stall)
+@router.post(
+    "/stall/add",
+    response_model=StandardResponse,
+    tags=["Stall (CRUD)"],
+)
+def add_stall(stall: stall_schemas.StallCreate, db: Session = Depends(get_db)):
+    StallController.addStall(db, stall)
+    return StandardResponse(success=True, message="Stall created successfully")
+
+
+@router.put(
+    "/stall/update/{stall_id}",
+    response_model=StandardResponse,
+    tags=["Stall (CRUD)"],
+)
+def update_stall(
+    stall_id: int, stall: stall_schemas.StallUpdate, db: Session = Depends(get_db)
+):
+    StallController.updateStall(db, stall, stall_id)
+    return StandardResponse(success=True, message="Stall updated successfully")
+
+
+@router.delete(
+    "/stall/delete/{stall_id}", response_model=StandardResponse, tags=["Stall (CRUD)"]
+)
+def delete_stall(stall_id: int, db: Session = Depends(get_db)):
+    result = StallController.deleteStall(db, stall_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Stall not found")
+    return StandardResponse(success=True, message="Stall deleted successfully")

@@ -5,9 +5,10 @@ import json
 import schemas.stall as stall_schemas
 from models.stall import Stall
 from models.hawker import Hawker
+from services.objectStorage import ObjectStorage
 
 
-def convert_images_to_list(images_string):
+def convert_str_to_list(images_string):
     """
     Convert comma-separated image URLs to a list.
 
@@ -22,7 +23,7 @@ def convert_images_to_list(images_string):
     return [] if images_string is None else images_string
 
 
-def convert_images_to_string(images_list):
+def convert_list_to_str(images_list):
     """
     Convert list of image URLs to comma-separated string.
 
@@ -44,7 +45,8 @@ def get_stall_by_stall_id(db: Session, stallID: int):
         raise HTTPException(status_code=404, detail="Stall not found")
 
     # Convert images from string to list
-    db_stall.images = convert_images_to_list(db_stall.images)
+    db_stall.images = convert_str_to_list(db_stall.images)
+    db_stall.cuisineType = convert_str_to_list(db_stall.cuisineType)
     return db_stall
 
 
@@ -56,7 +58,8 @@ def get_stalls_by_hawker_id(db: Session, hawkerID: int):
 
     # Convert images from string to list for each stall
     for stall in db_stalls:
-        stall.images = convert_images_to_list(stall.images)
+        stall.images = convert_str_to_list(stall.images)
+        stall.cuisineType = convert_str_to_list(stall.cuisineType)
     return db_stalls
 
 
@@ -65,7 +68,8 @@ def get_all_stalls(db: Session, skip: int = 0, limit: int = 100):
 
     # Convert images from string to list for each stall
     for stall in db_stalls:
-        stall.images = convert_images_to_list(stall.images)
+        stall.images = convert_str_to_list(stall.images)
+        stall.cuisineType = convert_str_to_list(stall.cuisineType)
     return db_stalls
 
 
@@ -75,18 +79,20 @@ def create_stall(db: Session, stall: stall_schemas.StallCreate):
         raise HTTPException(status_code=400, detail="Invalid hawkerID")
 
     # Convert images from list to string before storing
-    images_string = convert_images_to_string(stall.images)
+    # images_string = convert_list_to_str(stall.images)
+    images_string = "TEMPORARY"
+    cuisine_string = convert_list_to_str(stall.cuisineType)
 
     db_stall = Stall(
         stallName=stall.stallName,
         hawkerID=stall.hawkerID,
-        hawekrCenterID=stall.hawkerCenterID,
+        hawkerCenterID=stall.hawkerCenterID,
         images=images_string,
         unitNumber=stall.unitNumber,
         startTime=stall.startTime,
         endTime=stall.endTime,
         hygieneRating=stall.hygieneRating,
-        cuisineType=stall.cuisineType,
+        cuisineType=cuisine_string,
         estimatedWaitTime=stall.estimatedWaitTime,
         priceRange=stall.priceRange,
     )
@@ -95,13 +101,29 @@ def create_stall(db: Session, stall: stall_schemas.StallCreate):
     db.commit()
     db.refresh(db_stall)
 
+    images_url = []
+    if stall.images:
+        storage = ObjectStorage()
+        for image in stall.images:
+            image_url = storage.upload_stall_image(db_stall.stallID, image)
+            images_url.append(image_url)
+
+        db_stall.images = images_url
+
+    db_stall.images = convert_list_to_str(db_stall.images)
+
+    db.add(db_stall)
+    db.commit()
+    db.refresh(db_stall)
+
     # Convert back to list for API response
-    db_stall.images = convert_images_to_list(db_stall.images)
+    db_stall.images = convert_str_to_list(db_stall.images)
+    db_stall.cuisineType = convert_str_to_list(db_stall.cuisineType)
     return db_stall
 
 
-def update_stall(db: Session, updated_stall: stall_schemas.StallUpdate):
-    db_stall = db.query(Stall).filter(Stall.stallID == updated_stall.stallID).first()
+def update_stall(db: Session, updated_stall: stall_schemas.StallUpdate, stall_id: int):
+    db_stall = db.query(Stall).filter(Stall.stallID == stall_id).first()
     if not db_stall:
         return None
 
@@ -112,8 +134,14 @@ def update_stall(db: Session, updated_stall: stall_schemas.StallUpdate):
     if "images" in updated_stall_data and isinstance(
         updated_stall_data["images"], list
     ):
-        updated_stall_data["images"] = convert_images_to_string(
-            updated_stall_data["images"]
+        updated_stall_data["images"] = convert_list_to_str(updated_stall_data["images"])
+
+    # Convert cuisineType from list to string if present
+    if "cuisineType" in updated_stall_data and isinstance(
+        updated_stall_data["cuisineType"], list
+    ):
+        updated_stall_data["cuisineType"] = convert_list_to_str(
+            updated_stall_data["cuisineType"]
         )
 
     for key, value in updated_stall_data.items():
@@ -124,7 +152,8 @@ def update_stall(db: Session, updated_stall: stall_schemas.StallUpdate):
     db.refresh(db_stall)
 
     # Convert back to list for API response
-    db_stall.images = convert_images_to_list(db_stall.images)
+    db_stall.images = convert_str_to_list(db_stall.images)
+    db_stall.cuisineType = convert_str_to_list(db_stall.cuisineType)
     return db_stall
 
 

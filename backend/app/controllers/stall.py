@@ -43,9 +43,16 @@ class StallController:
     def getAllStalls(db: Session, skip: int, limit: int):
         stalls = stall_services.get_all_stalls(db, skip=skip, limit=limit)
         return stalls
+    
+    def addStall(db: Session, stall: stall_schemas.StallCreate):
+        db_stall = stall_services.create_stall(db, stall)
+        return db_stall
 
-    def updateStall(db: Session, updated_stall: stall_schemas.StallUpdate):
-        stall = stall_services.update_stall(db, updated_stall)
+    def updateStall(db: Session, updated_stall: stall_schemas.StallUpdate, stall_id: int):
+        stall = stall_services.update_stall(db, updated_stall, stall_id)
         if stall is None:
             raise HTTPException(status_code=404, detail="Stall not found")
         return stall
+
+    def deleteStall(db: Session, stallID: int):
+        return stall_services.delete_stall(db, stallID)

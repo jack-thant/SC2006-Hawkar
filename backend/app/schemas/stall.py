@@ -16,11 +16,11 @@ class Stall(BaseModel):
     hawkerCenterID: Optional[int] = None
     hawkerCenter: HawkerCenter
     images: Optional[List[str]] = None
-    unitNumber: str
-    startTime: time
-    endTime: time
+    unitNumber: Optional[str] = None
+    startTime: Optional[time] = None
+    endTime: Optional[time] = None
     hygieneRating: Optional[str] = None
-    cuisineType: Optional[str] = None
+    cuisineType: Optional[List[str]] = None
     estimatedWaitTime: Optional[int] = None
     priceRange: Optional[str] = None
 
@@ -33,11 +33,11 @@ class StallCreate(BaseModel):
     hawkerID: int
     hawkerCenterID: Optional[int] = None
     images: Optional[List[str]] = None
-    unitNumber: str
-    startTime: time
-    endTime: time
+    unitNumber: Optional[str] = None
+    startTime: Optional[time] = None
+    endTime: Optional[time] = None
     hygieneRating: Optional[str] = None
-    cuisineType: Optional[str] = None
+    cuisineType: Optional[List[str]] = None
     estimatedWaitTime: Optional[int] = None
     priceRange: Optional[str] = None
 
@@ -48,10 +48,10 @@ class StallUpdate(BaseModel):
     hawkerID: Optional[int] = None
     hawkerCenterID: Optional[int] = None
     images: Optional[List[str]] = None
-    unitNumber: str
-    startTime: time
-    endTime: time
+    unitNumber: Optional[str] = None
+    startTime: Optional[time] = None
+    endTime: Optional[time] = None
     hygieneRating: Optional[str] = None
-    cuisineType: Optional[str] = None
+    cuisineType: Optional[List[str]] = None
     estimatedWaitTime: Optional[int] = None
     priceRange: Optional[str] = None
