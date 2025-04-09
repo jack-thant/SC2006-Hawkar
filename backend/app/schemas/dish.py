@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 from typing import Optional
 
 
@@ -20,6 +21,9 @@ class DishCreate(BaseModel):
     price: float
     photo: Optional[str] = None
     onPromotion: Optional[bool] = False
+    startDate: Optional[datetime] = None
+    endDate: Optional[datetime] = None
+    discountedPrice: Optional[float] = None
 
 
 class DishUpdate(BaseModel):
@@ -29,3 +33,6 @@ class DishUpdate(BaseModel):
     price: Optional[float] = None
     photo: Optional[str] = None
     onPromotion: Optional[bool] = False
+    startDate: Optional[datetime] = None
+    endDate: Optional[datetime] = None
+    discountedPrice: Optional[float] = None

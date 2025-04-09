@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from controllers.stall import StallController
+from controllers.dish import DishController
 import schemas.stall as stall_schemas
 import schemas.dish as dish_schemas
 from schemas.response import StandardResponse
@@ -22,25 +23,40 @@ tags_metadata = [
 # -------------------------------------------------------- #
 
 
-@router.post(
-    "/stall-controller/add-dish",
-    response_model=dish_schemas.Dish,
-    tags=["Stall Controller"],
+@router.get(
+    "/stall/{stall_id}/dishes",
+    response_model=list[dish_schemas.Dish],
+    tags=["Stall-Dish"],
 )
-def add_dish(dish: dish_schemas.DishCreate, db: Session = Depends(get_db)):
-    return StallController.addDish(db, dish)
+async def get_dish_by_stall_id(stall_id: str, db: Session = Depends(get_db)):
+    return DishController.getDishesByStallId(db, stall_id)
+
+
+@router.post(
+    "/stall/{stall_id}/add-dish",
+    response_model=StandardResponse,
+    tags=["Stall-Dish"],
+)
+def add_dish(
+    stall_id: str, dish: dish_schemas.DishCreate, db: Session = Depends(get_db)
+):
+    StallController.addDish(db, dish)
+    return StandardResponse(success=True, message="Dish added successfully")
 
 
 @router.put(
-    "/stall-controller/edit-dish",
-    response_model=dish_schemas.Dish,
-    tags=["Stall Controller"],
+    "/dish/update/{dish_id}",
+    response_model=StandardResponse,
+    tags=["Stall-Dish"],
 )
-def edit_dish(dish: dish_schemas.DishUpdate, db: Session = Depends(get_db)):
-    return StallController.editDish(db, dish)
+def edit_dish(
+    dish_id: int, dish: dish_schemas.DishUpdate, db: Session = Depends(get_db)
+):
+    StallController.editDish(db, dish)
+    return StandardResponse(success=True, message="Dish updated successfully")
 
 
-@router.delete("/stall-controller/delete-dish/{dish_id}", tags=["Stall Controller"])
+@router.delete("/stall-controller/delete-dish/{dish_id}", tags=["Stall-Dish"])
 def delete_dish(dish_id: int, db: Session = Depends(get_db)):
     result = StallController.deleteDish(db, dish_id)
     if not result:

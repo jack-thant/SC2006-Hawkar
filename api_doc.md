@@ -267,43 +267,40 @@ Removes a stall from the system.
 
 ## Dishes
 
-### `fetchDishesByStallID` - GET
+### `fetchDishesByStallID` - GET ✅
 
 Retrieves all dishes for a specific stall.
 
-**Endpoint:** `/stalls/{stallID}/dishes`
+**Endpoint:** `/stall/{stallID}/dishes`
 
 **Response format:**
 
 ```json
-{
- [
-    {
-      "dishID": "d123456",
-      "dishName": "Chicken Rice",
-      "price": 5.50,
-      "photo": "http://example.com/chicken-rice.jpg",
-      "onPromotion": false
-    },
-    {
-      "dishID": "d234567",
-      "dishName": "Signature Noodles",
-      "price": 7.80,
-      "photo": "http://example.com/noodles.jpg",
-      "onPromotion": true,
-      "startDate": "2025-04-01",
-      "endDate": "2025-04-30",
-      "discountedPrice": 6.50
-    }
-  ]
-}
+[
+  {
+    "dishID": 1,
+    "stallID": 1,
+    "dishName": "Mala Xiang Guo",
+    "price": 6,
+    "photo": "http://minio:9000/profile-photo/user_example.com_55d0ae45_profile-photo",
+    "onPromotion": true
+  },
+  {
+    "dishID": 7,
+    "stallID": 1,
+    "dishName": "Noodles",
+    "price": 3,
+    "photo": "http://minio:9000/profile-photo/user_example.com_55d0ae45_profile-photo",
+    "onPromotion": false
+  }
+]
 ```
 
-### `AddDish` - POST
+### `AddDish` - POST ✅ (will create a promotion when onPromotion==true)
 
 Adds a new dish to a stall.
 
-**Endpoint:** `/stalls/{stallID}/dishes`
+**Endpoint:** `/stall/{stallID}/add-dish`
 
 **Request format:**
 
@@ -339,7 +336,7 @@ Adds a new dish to a stall.
 }
 ```
 
-### `EditDish` - PUT
+### `EditDish` - PUT ✅ (will delete the promotion when onPromotion==false)
 
 Updates an existing dish.
 

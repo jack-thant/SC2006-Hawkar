@@ -68,13 +68,13 @@ async def get_dish_by_dish_id(dish_id: str, db: Session = Depends(get_db)):
     return DishController.getDishByDishId(db, dish_id)
 
 
-@router.get(
-    "/dish/stallid/{stall_id}",
-    response_model=list[dish_schemas.Dish],
-    tags=["Dish (CRUD)"],
-)
-async def get_dish_by_stall_id(stall_id: str, db: Session = Depends(get_db)):
-    return DishController.getDishesByStallId(db, stall_id)
+# @router.get(
+#     "/dish/stallid/{stall_id}",
+#     response_model=list[dish_schemas.Dish],
+#     tags=["Dish (CRUD)"],
+# )
+# async def get_dish_by_stall_id(stall_id: str, db: Session = Depends(get_db)):
+#     return DishController.getDishesByStallId(db, stall_id)
 
 
 @router.put("/dish/update", response_model=dish_schemas.Dish, tags=["Dish (CRUD)"])

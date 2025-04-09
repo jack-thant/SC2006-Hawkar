@@ -2,8 +2,11 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
 import schemas.dish as dish_schemas
+import schemas.promotion as promotion_schemas
 from models.dish import Dish
 from models.stall import Stall
+from models.promotion import Promotion
+import services.promotion as promotion_services
 
 
 def get_dish_by_dish_id(db: Session, dishID: int):
@@ -36,13 +39,27 @@ def create_dish(db: Session, dish: dish_schemas.DishCreate):
         raise HTTPException(status_code=400, detail="Invalid stallID")
 
     db_dish = Dish(
-        dishName=dish.dishName, price=dish.price, stallID=dish.stallID, photo=dish.photo
+        dishName=dish.dishName,
+        price=dish.price,
+        stallID=dish.stallID,
+        photo=dish.photo,
+        onPromotion=dish.onPromotion,
     )
 
     db.add(db_dish)
     db.commit()
     db.refresh(db_dish)
 
+    if dish.onPromotion:
+        promotion_services.create_promotion(
+            db,
+            promotion_schemas.PromotionCreate(
+                dishID=db_dish.dishID,
+                startDate=dish.startDate,
+                endDate=dish.endDate,
+                discountedPrice=dish.discountedPrice,
+            ),
+        )
 
     return db_dish
 
@@ -52,8 +69,23 @@ def update_dish(db: Session, updated_dish: dish_schemas.DishUpdate):
     if not db_dish:
         return None
 
-    # Store old name for trie update
-    old_dish_name = db_dish.dishName
+    if updated_dish.onPromotion:
+        promotion_services.create_promotion(
+            db,
+            promotion_schemas.PromotionCreate(
+                dishID=updated_dish.dishID,
+                startDate=updated_dish.startDate,
+                endDate=updated_dish.endDate,
+                discountedPrice=updated_dish.discountedPrice,
+            ),
+        )
+    else:
+        db_promotion = promotion_services.get_promotions_by_dish_id(
+            db, updated_dish.dishID
+        )
+        if db_promotion:
+            db.delete(db_promotion)
+            db.commit()
 
     # Update Dish
     updated_dish_data = updated_dish.model_dump(exclude_unset=True)
