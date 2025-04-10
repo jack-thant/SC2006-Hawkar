@@ -11,13 +11,19 @@ class ReviewAction(Enum):
     IGNORE = "Ignore"
     CANCEL = "Cancel"
 
+class ReportType(Enum):
+    SPAM = "spam"
+    IRRELEVANT = "irrelevant"
+    OFFENSIVE = "offensive"
+
 
 class Review(BaseModel):
     reviewID: int
+    reviewText: str
     rating: float
     isReported: bool = False
     reportText: Optional[str] = None
-    reportType: Optional[str] = None
+    reportType: Optional[ReportType] = None
 
     consumerID: int
     consumer: Consumer
@@ -34,7 +40,7 @@ class ReviewCreate(BaseModel):
     rating: float
     isReported: bool = False
     reportText: Optional[str] = None
-    reportType: Optional[str] = None
+    reportType: Optional[ReportType] = None
 
     consumerID: int
     stallID: int
@@ -46,6 +52,11 @@ class ReviewUpdate(BaseModel):
     rating: Optional[float] = 0.0
     isReported: Optional[bool] = False
     reportText: Optional[str] = None
-    reportType: Optional[str] = None
+    reportType: Optional[ReportType] = None
 
-    consumerID: int
+    consumerID: Optional[int] = None
+
+class ReviewReport(BaseModel):
+    reviewID: int
+    reportType: ReportType
+    reportText: str

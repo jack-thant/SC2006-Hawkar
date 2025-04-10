@@ -4,9 +4,11 @@ from sqlalchemy.orm import Session
 
 import services.admin as admin_services
 import services.hawker as hawker_services
+import services.review as review_services
 
 import schemas.admin as admin_schemas
 import schemas.hawker as hawker_schemas
+from controllers.review import convert_db_review_to_list
 
 
 class AdminController:
@@ -32,6 +34,28 @@ class AdminController:
         hawker_update_db = hawker_services.update_hawker(db, hawker_update)
 
         return hawker_update_db
+
+    def getAllReportedReviews(db: Session, skip: int, limit: int):
+        reported_reviews = review_services.get_all_reported_reviews(
+            db, skip=skip, limit=limit
+        )
+        if reported_reviews is None:
+            raise HTTPException(status_code=404, detail="No reported reviews found")
+        for review in reported_reviews:
+            review = convert_db_review_to_list(review)
+
+        return reported_reviews
+
+    def ignoreReportedReview(db: Session, reviewID: int):
+        review = review_services.get_review_by_review_id(db, reviewID=reviewID)
+        if review is None:
+            raise HTTPException(status_code=404, detail="Review not found")
+
+        review.isReported = False
+
+        db.commit()
+
+        return review
 
     # ------------------------------------------------------------ #
     # -------------------- Admin (CRUD) -------------------------- #

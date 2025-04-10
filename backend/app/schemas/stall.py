@@ -19,8 +19,8 @@ class Stall(BaseModel):
     unitNumber: Optional[str] = None
     startTime: Optional[time] = None
     endTime: Optional[time] = None
-    hygieneRating: Optional[str] = None
-    cuisineType: Optional[List[str]] = None
+    hygieneRating: Optional[HygieneRating] = None
+    cuisineType: Optional[List[CuisineType]] = None
     estimatedWaitTime: Optional[int] = None
     priceRange: Optional[str] = None
 
@@ -36,8 +36,8 @@ class StallCreate(BaseModel):
     unitNumber: Optional[str] = None
     startTime: Optional[time] = None
     endTime: Optional[time] = None
-    hygieneRating: Optional[str] = None
-    cuisineType: Optional[List[str]] = None
+    hygieneRating: Optional[HygieneRating] = None
+    cuisineType: Optional[List[CuisineType]] = None
     estimatedWaitTime: Optional[int] = None
     priceRange: Optional[str] = None
 
@@ -51,7 +51,7 @@ class StallUpdate(BaseModel):
     unitNumber: Optional[str] = None
     startTime: Optional[time] = None
     endTime: Optional[time] = None
-    hygieneRating: Optional[str] = None
-    cuisineType: Optional[List[str]] = None
+    hygieneRating: Optional[HygieneRating] = None
+    cuisineType: Optional[List[CuisineType]] = None
     estimatedWaitTime: Optional[int] = None
     priceRange: Optional[str] = None

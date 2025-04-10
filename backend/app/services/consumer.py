@@ -41,7 +41,7 @@ def get_consumer_by_user_id(db: Session, userID: int):
     if consumer is None:
         return None
     
-    consumer.favoriteStalls = convert_favorite_stalls_to_list(consumer.favoriteStalls)
+    # consumer.favoriteStalls = convert_favorite_stalls_to_list(consumer.favoriteStalls)
     return consumer
 
 
@@ -50,7 +50,7 @@ def get_consumer_by_consumer_id(db: Session, consumerID: int):
     if consumer is None:
         return None
     
-    consumer.favoriteStalls = convert_favorite_stalls_to_list(consumer.favoriteStalls)
+    # consumer.favoriteStalls = convert_favorite_stalls_to_list(consumer.favoriteStalls)
     return consumer
 
 
@@ -58,8 +58,8 @@ def get_all_consumers(db: Session, skip: int = 0, limit: int = 100):
     consumers = db.query(Consumer).offset(skip).limit(limit).all()
     if consumers is None:
         return None
-    for consumer in consumers:
-        consumer.favoriteStalls = convert_favorite_stalls_to_list(consumer.favoriteStalls)
+    # for consumer in consumers:
+    #     consumer.favoriteStalls = convert_favorite_stalls_to_list(consumer.favoriteStalls)
     return consumers
 
 
@@ -77,7 +77,7 @@ def create_consumer(db: Session, user: consumer_schemas.ConsumerCreate):
     if not db_user:
         return None
     
-    favorite_stalls_str = convert_favorite_stalls_to_string(user.favoriteStalls)
+    # favorite_stalls_str = convert_favorite_stalls_to_string(user.favoriteStalls)
 
     db_consumer = Consumer(
         userID=db_user.userID,
@@ -86,14 +86,14 @@ def create_consumer(db: Session, user: consumer_schemas.ConsumerCreate):
         dietaryPreference=user.dietaryPreference,
         preferredCuisine=user.preferredCuisine,
         ambulatoryStatus=user.ambulatoryStatus,
-        favoriteStalls=favorite_stalls_str,
+        # favoriteStalls=favorite_stalls_str,
     )
 
     db.add(db_consumer)
     db.commit()
     db.refresh(db_consumer)
 
-    db_consumer.favoriteStalls = convert_favorite_stalls_to_list(db_consumer.favoriteStalls)
+    # db_consumer.favoriteStalls = convert_favorite_stalls_to_list(db_consumer.favoriteStalls)
     return db_consumer
 
 
@@ -120,10 +120,10 @@ def update_consumer(db: Session, updated_consumer: consumer_schemas.ConsumerUpda
     # Update Consumer
     updated_consumer_data = updated_consumer.model_dump(exclude_unset=True)
 
-    if "favoriteStalls" in updated_consumer_data:
-        updated_consumer_data["favoriteStalls"] = convert_favorite_stalls_to_string(
-            updated_consumer_data["favoriteStalls"]
-        )
+    # if "favoriteStalls" in updated_consumer_data:
+    #     updated_consumer_data["favoriteStalls"] = convert_favorite_stalls_to_string(
+    #         updated_consumer_data["favoriteStalls"]
+    #     )
 
     for key, value in updated_consumer_data.items():
         setattr(db_consumer, key, value)
@@ -132,5 +132,5 @@ def update_consumer(db: Session, updated_consumer: consumer_schemas.ConsumerUpda
     db.commit()
     db.refresh(db_consumer)
     
-    db_consumer.favoriteStalls = convert_favorite_stalls_to_list(db_consumer.favoriteStalls)
+    # db_consumer.favoriteStalls = convert_favorite_stalls_to_list(db_consumer.favoriteStalls)
     return db_consumer

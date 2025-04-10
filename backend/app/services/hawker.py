@@ -104,10 +104,6 @@ def update_hawker(db: Session, updated_hawker: hawker_schemas.HawkerUpdate):
     updated_hawker_data = updated_hawker.model_dump(exclude_unset=True)
     for key, value in updated_hawker_data.items():
         setattr(db_hawker, key, value)
-        # if key.lower() == "geometry":
-        #     setattr(db_hawker, key, json.dumps(value))
-        # else:
-        #     setattr(db_hawker, key, value)
 
     db.add(db_hawker)
     db.commit()

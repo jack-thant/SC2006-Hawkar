@@ -7,6 +7,7 @@ from models.dish import Dish
 from models.stall import Stall
 from models.promotion import Promotion
 import services.promotion as promotion_services
+from services.objectStorage import ObjectStorage
 
 
 def get_dish_by_dish_id(db: Session, dishID: int):
@@ -37,6 +38,13 @@ def create_dish(db: Session, dish: dish_schemas.DishCreate):
     db_stall = db.query(Stall).filter(Stall.stallID == dish.stallID).first()
     if not db_stall:
         raise HTTPException(status_code=400, detail="Invalid stallID")
+
+    if dish.photo:
+        storage = ObjectStorage()
+        image_url = storage.upload_dish_photo(
+            db_stall.stallID, dish.dishName, dish.photo
+        )
+        dish.photo = image_url
 
     db_dish = Dish(
         dishName=dish.dishName,
@@ -101,6 +109,12 @@ def update_dish(db: Session, updated_dish: dish_schemas.DishUpdate):
 
 def delete_dish(db: Session, dishID: int) -> bool:
     db_dish = db.query(Dish).filter(Dish.dishID == dishID).first()
+
+    if db_dish.onPromotion:
+        db_promotion = promotion_services.get_promotions_by_dish_id(db, dishID)
+        if db_promotion:
+            db.delete(db_promotion)
+            db.commit()
 
     if not db_dish:
         raise HTTPException(status_code=400, detail="Invalid dishID")

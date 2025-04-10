@@ -19,7 +19,7 @@ class Consumer(BaseModel):
     dietaryPreference: DietaryType
     preferredCuisine: CuisineType
     ambulatoryStatus: StatusType
-    favoriteStalls: Optional[List[int]] = None
+    # favoriteStalls: Optional[List[int]] = None
 
     userID: int
     user: User
@@ -34,7 +34,7 @@ class ConsumerCreate(UserCreate):
     dietaryPreference: Optional[DietaryType]
     preferredCuisine: Optional[CuisineType]
     ambulatoryStatus: Optional[StatusType]
-    favoriteStalls: Optional[List[int]] = None
+    # favoriteStalls: Optional[List[int]] = None
 
 
 class ConsumerUpdate(UserUpdate):
@@ -43,4 +43,4 @@ class ConsumerUpdate(UserUpdate):
     dietaryPreference: Optional[DietaryType]
     preferredCuisine: Optional[CuisineType]
     ambulatoryStatus: Optional[StatusType]
-    favoriteStalls: Optional[List[int]] = None
+    # favoriteStalls: Optional[List[int]] = None

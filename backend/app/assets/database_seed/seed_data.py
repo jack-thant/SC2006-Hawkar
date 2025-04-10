@@ -1,5 +1,6 @@
 from datetime import datetime, time
 from schemas.user import Role
+from schemas.review import ReportType
 
 import bcrypt
 
@@ -122,7 +123,7 @@ DATABASE_SEED_DATA = {
             "dietaryPreference": "Vegetarian",
             "preferredCuisine": "Chinese",
             "ambulatoryStatus": "Normal",
-            "favoriteStalls": "1, 2",
+            # "favoriteStalls": "1, 2",
             "userID": 2,
         },
         {
@@ -131,7 +132,7 @@ DATABASE_SEED_DATA = {
             "dietaryPreference": "Normal",
             "preferredCuisine": "Chinese",
             "ambulatoryStatus": "Normal",
-            "favoriteStalls": "1, 2",
+            # "favoriteStalls": "1, 2",
             "userID": 3,
         },
         {
@@ -140,7 +141,7 @@ DATABASE_SEED_DATA = {
             "dietaryPreference": "Normal",
             "preferredCuisine": "Chinese",
             "ambulatoryStatus": "Normal",
-            "favoriteStalls": "1, 2",
+            # "favoriteStalls": "1, 2",
             "userID": 4,
         },
     ],
@@ -178,7 +179,7 @@ DATABASE_SEED_DATA = {
             "hawkerID": 9,
             "address": "Nanyang Technological University",
             "license": "123456789",
-            "verifyStatus": True,
+            "verifyStatus": False,
             "userID": 9,
         },
     ],
@@ -332,9 +333,9 @@ DATABASE_SEED_DATA = {
             "reviewID": 1,
             "reviewText": "Hot and spicy! It is very delicious!! 😋",
             "rating": 5.0,
-            "isReported": False,
-            "reportType": None,
-            "reportText": None,
+            "isReported": True,
+            "reportType": ReportType.SPAM,
+            "reportText": "This review is spam",
             "consumerID": 2,
             "stallID": 1,
         },
@@ -342,9 +343,9 @@ DATABASE_SEED_DATA = {
             "reviewID": 2,
             "reviewText": "Nice and cosy environment to eat mala with friends >.<",
             "rating": 5.0,
-            "isReported": False,
-            "reportType": None,
-            "reportText": None,
+            "isReported": True,
+            "reportType": ReportType.IRRELEVANT,
+            "reportText": "This review is irrelevant",
             "consumerID": 3,
             "stallID": 1,
         },
@@ -502,6 +503,21 @@ DATABASE_SEED_DATA = {
             "startDate": datetime(2021, 1, 1),
             "endDate": datetime(2021, 12, 31),
             "discountedPrice": 2.5,
+        },
+    ],
+    # ---------- LikeStall ---------- #
+    "like_stalls": [
+        {
+            "userID": 2,
+            "stallID": 1,
+        },
+        {
+            "userID": 2,
+            "stallID": 2,
+        },
+        {
+            "userID": 3,
+            "stallID": 3,
         },
     ],
 }

@@ -14,7 +14,7 @@ class Consumer(Base):
     dietaryPreference = Column(Enum(DietaryType))
     preferredCuisine = Column(Enum(CuisineType))
     ambulatoryStatus = Column(Enum(StatusType))
-    favoriteStalls = Column(String)
+    # favoriteStalls = Column(String)
 
     userID = Column(Integer, ForeignKey("users.userID"))
     user: Mapped["User"] = relationship("User", back_populates="consumer")

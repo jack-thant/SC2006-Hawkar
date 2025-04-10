@@ -6,6 +6,8 @@ from controllers.admin import AdminController
 
 import schemas.admin as admin_schemas
 import schemas.hawker as hawker_schemas
+import schemas.review as review_schemas
+from schemas.response import StandardResponse
 
 router = APIRouter()
 
@@ -23,12 +25,39 @@ tags_metadata = [
 
 
 @router.put(
-    "/admin-controller/verify-hawker/{hawkerID}",
-    response_model=hawker_schemas.Hawker,
-    tags=["Admin Controller"],
+    "/admin/verify-hawker/{hawkerID}",
+    response_model=StandardResponse,
+    tags=["Admin-Hawker"],
 )
 async def verify_hawker(hawkerID: int, db: Session = Depends(get_db)):
-    return AdminController.verifyHawker(db, hawkerID)
+    AdminController.verifyHawker(db, hawkerID)
+    return StandardResponse(
+        success=True,
+        message="Hawker approved successfully")
+
+
+@router.get(
+    "/admin/reported_reviews",
+    response_model=list[review_schemas.Review],
+    tags=["Admin-Review"],
+)
+def get_all_reported_reviews(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
+    return AdminController.getAllReportedReviews(db, skip, limit)
+
+
+@router.put(
+    "/admin/reports/{reviewID}/ignore",
+    response_model=StandardResponse,
+    tags=["Admin-Review"],
+)
+def ignore_reported_review(reviewID: int, db: Session = Depends(get_db)):
+    AdminController.ignoreReportedReview(db, reviewID)
+    return StandardResponse(
+        success=True,
+        message="Report marked as resolved",
+    )
 
 
 # ------------------------------------------------------------ #

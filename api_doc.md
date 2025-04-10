@@ -365,11 +365,11 @@ Updates an existing dish.
 }
 ```
 
-### `DeleteDish` - DELETE
+### `DeleteDish` - DELETE ✅
 
 Removes a dish from the system.
 
-**Endpoint:** `/dishes/{dishID}`
+**Endpoint:** `/dish/delete/{dishID}`
 
 **Response format:**
 
@@ -384,7 +384,7 @@ Removes a dish from the system.
 
 ## Reviews
 
-### `fetchReviewByStallID` - GET
+### `fetchReviewByStallID` - GET ✅
 
 Retrieves all reviews for a specific stall.
 
@@ -393,27 +393,159 @@ Retrieves all reviews for a specific stall.
 **Response format:**
 
 ```json
-{
-    [
-      {
-        "reviewID": "r123456",
-        "userID": "u789012",
-        "rating": 4.5,
-        "reviewText": "The food here is absolutely delicious and worth the wait!",
-      },
-      {
-        "reviewID": "r234567",
-        "userID": "u890123",
-        "rating": 3.0,
-        "comment": "Food is good but the portion is a bit small for the price.",
+[
+  [
+  {
+    "reviewID": 1,
+    "reviewText": "Hot and spicy! It is very delicious!! 😋",
+    "rating": 5,
+    "isReported": false,
+    "reportText": null,
+    "reportType": null,
+    "consumerID": 2,
+    "consumer": {
+      "consumerID": 2,
+      "address": "Nanyang Technological University",
+      "dietaryPreference": "Vegetarian",
+      "preferredCuisine": "Chinese",
+      "ambulatoryStatus": "Normal",
+      "favoriteStalls": [
+        1,
+        2
+      ],
+      "userID": 2,
+      "user": {
+        "name": "Janice",
+        "emailAddress": "consumer1@gmail.com",
+        "userID": 2,
+        "profilePhoto": "http://minio:9000/profile-photo/user_example.com_55d0ae45_profile-photo",
+        "contactNumber": "95874723",
+        "role": "Consumer"
       }
-    ]
-}
+    },
+    "stallID": 1,
+    "stall": {
+      "stallID": 1,
+      "stallName": "Mala Store",
+      "hawkerID": 5,
+      "hawker": {
+        "hawkerID": 5,
+        "address": "Nanyang Technological University",
+        "license": "123456789",
+        "verifyStatus": true,
+        "userID": 5,
+        "user": {
+          "name": "Alex",
+          "emailAddress": "hawker1@gmail.com",
+          "userID": 5,
+          "profilePhoto": "http://minio:9000/profile-photo/user10_example.com_15dc5a24_profile-photo",
+          "contactNumber": "95874723",
+          "role": "Hawker"
+        }
+      },
+      "hawkerCenterID": 1,
+      "hawkerCenter": {
+        "hawkerCenterID": 1,
+        "name": "NTU",
+        "address": "Nanyang Technological University",
+        "latitude": 1.35397,
+        "longitude": 103.68779
+      },
+      "images": [
+        "http://minio:9000/profile-photo/user_example.com_55d0ae45_profile-photo",
+        "http://minio:9000/profile-photo/user10_example.com_15dc5a24_profile-photo"
+      ],
+      "unitNumber": "01-01",
+      "startTime": "10:00:00",
+      "endTime": "20:00:00",
+      "hygieneRating": "A",
+      "cuisineType": [
+        "Chinese",
+        "Indian"
+      ],
+      "estimatedWaitTime": 15,
+      "priceRange": "$4 - $8"
+    }
+  },
+  {
+    "reviewID": 2,
+    "reviewText": "Nice and cosy environment to eat mala with friends >.<",
+    "rating": 5,
+    "isReported": false,
+    "reportText": null,
+    "reportType": null,
+    "consumerID": 3,
+    "consumer": {
+      "consumerID": 3,
+      "address": "Nanyang Technological University",
+      "dietaryPreference": "Normal",
+      "preferredCuisine": "Chinese",
+      "ambulatoryStatus": "Normal",
+      "favoriteStalls": [
+        1,
+        2
+      ],
+      "userID": 3,
+      "user": {
+        "name": "Alicia",
+        "emailAddress": "consumer2@gmail.com",
+        "userID": 3,
+        "profilePhoto": "http://minio:9000/profile-photo/user10_example.com_15dc5a24_profile-photo",
+        "contactNumber": "95874723",
+        "role": "Consumer"
+      }
+    },
+    "stallID": 1,
+    "stall": {
+      "stallID": 1,
+      "stallName": "Mala Store",
+      "hawkerID": 5,
+      "hawker": {
+        "hawkerID": 5,
+        "address": "Nanyang Technological University",
+        "license": "123456789",
+        "verifyStatus": true,
+        "userID": 5,
+        "user": {
+          "name": "Alex",
+          "emailAddress": "hawker1@gmail.com",
+          "userID": 5,
+          "profilePhoto": "http://minio:9000/profile-photo/user10_example.com_15dc5a24_profile-photo",
+          "contactNumber": "95874723",
+          "role": "Hawker"
+        }
+      },
+      "hawkerCenterID": 1,
+      "hawkerCenter": {
+        "hawkerCenterID": 1,
+        "name": "NTU",
+        "address": "Nanyang Technological University",
+        "latitude": 1.35397,
+        "longitude": 103.68779
+      },
+      "images": [
+        "http://minio:9000/profile-photo/user_example.com_55d0ae45_profile-photo",
+        "http://minio:9000/profile-photo/user10_example.com_15dc5a24_profile-photo"
+      ],
+      "unitNumber": "01-01",
+      "startTime": "10:00:00",
+      "endTime": "20:00:00",
+      "hygieneRating": "A",
+      "cuisineType": [
+        "Chinese",
+        "Indian"
+      ],
+      "estimatedWaitTime": 15,
+      "priceRange": "$4 - $8"
+    }
+  }
+]
+]
 ```
 
-### `fetchReportedReview` - GET
+### `fetchReportedReview` - GET ✅
 
-Retrieves all reviews for a specific stall.
+Retrieves all reported reviews
 
 **Endpoint:** `/admin/reported_reviews`
 
@@ -423,28 +555,32 @@ Retrieves all reviews for a specific stall.
 {
     [
       {
-        "stallID": 1,
-        "rating": 1.2,
+        "reviewID": 1,
+        "reviewText": "Hot and spicy! It is very delicious!! 😋",
+        "rating": 5,
         "isReported": true,
-        "reviewText": "This is a sample review",
-        "reportType": "type of report",
-        "consumerID": 8,
-        "reportText": "This is not okay"
-      },
+        "reportText": "This review is spam",
+        "reportType": "spam",
+        "consumerID": 2,
+        "stallID": 1,
+        ...
+      }
       {
-        "stallID": 1,
-        "rating": 1.2,
+        "reviewID": 2,
+        "reviewText": "Nice and cosy environment to eat mala with friends >.<",
+        "rating": 5,
         "isReported": true,
-        "reviewText": "This is a sample review",
-        "reportType": "type of report",
-        "consumerID": 8,
-        "reportText": "This is not okay"
+        "reportText": "This review is irrelevant",
+        "reportType": "irrelevant",
+        "consumerID": 3,
+        "stallID": 1,
+        ...
       },
     ]
 }
 ```
 
-### `AddReview` - POST
+### `AddReview` - POST ✅
 
 Adds a new review for a stall.
 
@@ -454,8 +590,10 @@ Adds a new review for a stall.
 
 ```json
 {
-  "rating": 5.0,
-  "comment": "One of the best hawker stalls I've been to! The chicken rice is amazing.",
+  "reviewText": "Very Good!",
+  "rating": 4.5,
+  "consumerID": 2,
+  "stallID": 1
 }
 ```
 
@@ -468,18 +606,19 @@ Adds a new review for a stall.
 }
 ```
 
-### `EditReview` - PUT
+### `EditReview` - PUT ✅
 
 Updates an existing review.
 
-**Endpoint:** `/reviews/{reviewID}`
+**Endpoint:** `/review/update/{reviewID}`
 
 **Request format:**
 
 ```json
 {
-  "rating": 4.5,
-  "comment": "Updated: Still really good but the service was a bit slow today.",
+  "reviewID": 11,
+  "reviewText": "string",
+  "rating": 3.0
 }
 ```
 
@@ -492,11 +631,11 @@ Updates an existing review.
 }
 ```
 
-### `DeleteReview` - DELETE
+### `DeleteReview` - DELETE ✅
 
 Removes a review from the system.
 
-**Endpoint:** `/reviews/{reviewID}`
+**Endpoint:** `/review/delete/{reviewID}`
 
 **Response format:**
 
@@ -507,18 +646,19 @@ Removes a review from the system.
 }
 ```
 
-### `ReportReview` - POST
+### `ReportReview` - POST ✅
 
 Reports an inappropriate review.
 
-**Endpoint:** `/reviews/{reviewID}/report`
+**Endpoint:** `/review/{reviewID}/report`
 
 **Request format:**
 
 ```json
 {
-  "reportType": "Inappropriate content",
-  "reportText": "This review contains offensive language and is not related to the food."
+  "reviewID": 6,
+  "reportType": "spam",
+  "reportText": "This is spam"
 }
 ```
 
@@ -531,7 +671,7 @@ Reports an inappropriate review.
 }
 ```
 
-### `IgnoreReportedReview` - PUT
+### `IgnoreReportedReview` - PUT ✅
 
 Marks a reported review as reviewed and ignored (not requiring action).
 
@@ -564,70 +704,65 @@ Marks a reported review as reviewed and ignored (not requiring action).
 
 ## Hawker Centres
 
-### `fetchHawkerCentreByStallID` - GET
+### `fetchHawkerCentreByStallID` - GET ✅
 
 Retrieves hawker centre information for a specific stall.
 
-**Endpoint:** `/stalls/{stallID}/hawker-centre`
+**Endpoint:** `/stalls/{stallID}/hawker-center`
 
 **Response format:**
 
 ```json
 {
-    "name": "name of hawker centre",
-    "address": "address",
-    "latitude": 1.2321,
-    "longitude": 1.23213
+  "hawkerCenterID": 1,
+  "name": "NTU",
+  "address": "Nanyang Technological University",
+  "latitude": 1.35397,
+  "longitude": 103.68779
 }
 ```
 
-### `fetchHawkerCentre` - GET
+### `fetchHawkerCentre` - GET ✅
 
 Retrieves a list of all hawker centres or details of a specific hawker centre.
 
-**Endpoint:** `/hawker-centres`
+**Endpoint:** `/hawker-centers`
 
 **Response format (list):**
 
 ```json
-{
-    [
-      {
-        "hawkerCentreID": "h789012",
-        "name": "Maxwell Food Centre",
-        "address": "1 Kadayanallur St, Singapore 069184",
-        "latitude": 1.213,
-        "longitude": 1.2131
-
-      },
-      {
-        "hawkerCentreID": "h789012",
-        "name": "Maxwell Food Centre",
-        "address": "1 Kadayanallur St, Singapore 069184",
-        "latitude": 1.213,
-        "longitude": 1.2131
-
-      },
-    ],
-}
+[
+  {
+    "hawkerCenterID": 1,
+    "name": "NTU",
+    "address": "Nanyang Technological University",
+    "latitude": 1.35397,
+    "longitude": 103.68779
+  },
+  {
+    "hawkerCenterID": 2,
+    "name": "North Spine",
+    "address": "Nanyang Technological University",
+    "latitude": 1.35397,
+    "longitude": 103.68779
+  }
+]
 ```
 
 ---
 
-## Hawker Management
+## Hawker Management 
 
-### `ApproveHawker` - POST
+### `ApproveHawker` - POST ✅
 
 Approves a hawker's registration application.
 
-**Endpoint:** `/api/admin/hawkers/{hawkerID}/approve`
+**Endpoint:** `/admin/verify-hawker/{hawkerID}`
 
 **Request format:**
 
 ```json
-{
-  "verifyStatus": true
-}
+
 ```
 
 **Response format:**
@@ -643,19 +778,15 @@ Approves a hawker's registration application.
 
 ## Likes
 
-### `LikeStall` - POST
+### `LikeStall` - POST ✅
 
 Allows a user to like a stall.
 
-**Endpoint:** `/stalls/{stallID}/like`
+**Endpoint:** `/stall/{userID}/like/{stallID}`
 
 **Request format:**
 
 ```json
-{
-  "stallID": 1,
-  "userID": 1
-}
 ```
 
 **Response format:**
@@ -667,11 +798,11 @@ Allows a user to like a stall.
 }
 ```
 
-### `UnlikeStall` - DELETE
+### `UnlikeStall` - DELETE ✅
 
 Allows a user to unlike a previously liked stall.
 
-**Endpoint:** `/stalls/{stallID}/like`
+**Endpoint:** `/stall/{userID}/unlike/{stallID}`
 
 **Response format:**
 
@@ -682,11 +813,11 @@ Allows a user to unlike a previously liked stall.
 }
 ```
 
-### `FetchLikedStallsByUserID` - GET
+### `FetchLikedStallsByUserID` - GET ✅
 
 Get the liked stalls by the user
 
-**Endpoint:** `/api/stalls/{user}/like`
+**Endpoint:** `/stall/{userID}/liked`
 
 **Response format:**
 

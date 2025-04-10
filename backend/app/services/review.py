@@ -7,10 +7,13 @@ from models.consumer import Consumer
 from models.stall import Stall
 
 
-def get_review_by_review_id(db: Session, reviewID: int):
-    db_review = db.query(Review).filter(Review.reviewID == reviewID).first()
 
-    return db_review
+
+
+def get_review_by_review_id(db: Session, reviewID: int):
+    review = db.query(Review).filter(Review.reviewID == reviewID).first()
+
+    return review
 
 
 def get_reviews_by_consumer_id(db: Session, consumerID: int):
@@ -27,6 +30,18 @@ def get_reviews_by_stall_id(db: Session, stallID: int):
 
 def get_all_reviews(db: Session, skip: int = 0, limit: int = 100):
     db_reviews = db.query(Review).offset(skip).limit(limit).all()
+
+    return db_reviews
+
+
+def get_all_reported_reviews(db: Session, skip: int = 0, limit: int = 100):
+    db_reviews = (
+        db.query(Review)
+        .filter(Review.isReported == True)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
     return db_reviews
 
@@ -66,18 +81,45 @@ def update_review(db: Session, updated_review: review_schemas.ReviewUpdate):
     if not db_review:
         return None
 
-    db_consumer = (
-        db.query(Consumer)
-        .filter(Consumer.consumerID == updated_review.consumerID)
-        .first()
-    )
-    if not db_consumer:
-        raise HTTPException(status_code=400, detail="Invalid consumerID")
+    # db_consumer = (
+    #     db.query(Consumer)
+    #     .filter(Consumer.consumerID == updated_review.consumerID)
+    #     .first()
+    # )
+    # if not db_consumer:
+    #     raise HTTPException(status_code=400, detail="Invalid consumerID")
 
     # Update Review
     updated_review_data = updated_review.model_dump(exclude_unset=True)
     for key, value in updated_review_data.items():
         setattr(db_review, key, value)
+
+    db.add(db_review)
+    db.commit()
+    db.refresh(db_review)
+
+    return db_review
+
+
+def report_review(db: Session, reviewID: int, reportType: str, reportText: str):
+    db_review = db.query(Review).filter(Review.reviewID == reviewID).first()
+
+    if not db_review:
+        raise HTTPException(status_code=400, detail="Invalid reviewID")
+
+    # Handle the case when reportType is already an enum
+    if isinstance(reportType, review_schemas.ReportType):
+        pass  # Already an enum, no conversion needed
+    else:
+        # Convert string to enum
+        try:
+            reportType = review_schemas.ReportType[reportType]
+        except KeyError:
+            raise HTTPException(status_code=400, detail="Invalid reportType")
+
+    db_review.isReported = True
+    db_review.reportType = reportType
+    db_review.reportText = reportText
 
     db.add(db_review)
     db.commit()

@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Enum
 from sqlalchemy.orm import relationship, Mapped
 
 from database import Base
+from schemas.review import ReportType
 
 
 class Review(Base):
@@ -11,7 +12,7 @@ class Review(Base):
     reviewText = Column(String)
     rating = Column(Integer)
     isReported = Column(Boolean)
-    reportType = Column(String)
+    reportType = Column(Enum(ReportType))
     reportText = Column(String)
 
     consumerID = Column(Integer, ForeignKey("consumers.consumerID"))

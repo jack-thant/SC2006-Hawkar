@@ -5,6 +5,7 @@ import json
 import schemas.stall as stall_schemas
 from models.stall import Stall
 from models.hawker import Hawker
+from models.hawkerCenter import HawkerCenter
 from services.objectStorage import ObjectStorage
 
 
@@ -34,7 +35,11 @@ def convert_list_to_str(images_list):
         Comma-separated string of image URLs
     """
     if images_list and isinstance(images_list, list):
-        return ", ".join(images_list)
+        string_values = [
+            str(item.value) if hasattr(item, "value") else str(item)
+            for item in images_list
+        ]
+        return ", ".join(string_values)
     return images_list
 
 
@@ -71,6 +76,12 @@ def get_all_stalls(db: Session, skip: int = 0, limit: int = 100):
         stall.images = convert_str_to_list(stall.images)
         stall.cuisineType = convert_str_to_list(stall.cuisineType)
     return db_stalls
+
+
+def get_all_hawker_centers(db: Session, skip: int = 0, limit: int = 100):
+    db_hawker_centers = db.query(HawkerCenter).offset(skip).limit(limit).all()
+
+    return db_hawker_centers
 
 
 def create_stall(db: Session, stall: stall_schemas.StallCreate):

@@ -9,6 +9,7 @@ from models.stall import Stall
 from models.dish import Dish
 from models.promotion import Promotion
 from models.hawkerCenter import HawkerCenter
+from models.likeStall import LikeStall
 
 from .seed_data import DATABASE_SEED_DATA
 
@@ -30,3 +31,5 @@ def add_event_listener_to_seed_database():
     event.listen(Stall.__table__, "after_create", seed_table)
     event.listen(Dish.__table__, "after_create", seed_table)
     event.listen(Promotion.__table__, "after_create", seed_table)
+    event.listen(LikeStall.__table__, "after_create", seed_table)
+

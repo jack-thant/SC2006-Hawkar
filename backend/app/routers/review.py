@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from controllers.review import ReviewController
 import schemas.review as review_schemas
+from schemas.response import StandardResponse
 
 router = APIRouter()
 
@@ -34,13 +35,13 @@ async def get_review_by_review_id(review_id: str, db: Session = Depends(get_db))
     return ReviewController.getReviewByReviewId(db, review_id)
 
 
-@router.get(
-    "/review/stallid/{stall_id}",
-    response_model=list[review_schemas.Review],
-    tags=["Review (CRUD)"],
-)
-async def get_review_by_stall_id(stall_id: str, db: Session = Depends(get_db)):
-    return ReviewController.getReviewsByStallId(db, stall_id)
+# @router.get(
+#     "/review/stallid/{stall_id}",
+#     response_model=list[review_schemas.Review],
+#     tags=["Review (CRUD)"],
+# )
+# async def get_review_by_stall_id(stall_id: str, db: Session = Depends(get_db)):
+#     return ReviewController.getReviewsByStallId(db, stall_id)
 
 
 @router.get(
@@ -53,7 +54,26 @@ async def get_review_by_user_id(user_id: str, db: Session = Depends(get_db)):
 
 
 @router.put(
-    "/review/update", response_model=review_schemas.Review, tags=["Review (CRUD)"]
+    "/review/update/{review_id}", response_model=StandardResponse, tags=["Review (CRUD)"]
 )
-def update_review(review: review_schemas.ReviewUpdate, db: Session = Depends(get_db)):
-    return ReviewController.updateReview(db, review)
+def update_review(review_id: int, review: review_schemas.ReviewUpdate, db: Session = Depends(get_db)):
+    ReviewController.updateReview(db, review)
+    return StandardResponse(success=True, message="Review updated successfully")
+
+@router.delete(
+    "/review/delete/{review_id}",
+    response_model=StandardResponse,
+    tags=["Review (CRUD)"],
+)
+def delete_review(review_id: int, db: Session = Depends(get_db)) -> bool:
+    ReviewController.deleteReview(db, review_id)
+    return StandardResponse(success=True, message="Review deleted successfully")
+
+@router.post(
+    "/review/{review_id}/report",
+    response_model=StandardResponse,
+    tags=["Review (CRUD)"],
+)
+def report_review(review_id: int, report: review_schemas.ReviewReport, db: Session = Depends(get_db)):
+    ReviewController.reportReview(db, review_id, report.reportType, report.reportText)
+    return StandardResponse(success=True, message="Review reported successfully")

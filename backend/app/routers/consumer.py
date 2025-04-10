@@ -22,22 +22,22 @@ tags_metadata = [
 # -------------------------------------------------------- #
 
 
-@router.post(
-    "/consumer-controller/submit-review",
-    response_model=review_schemas.Review,
-    tags=["Consumer Controller"],
-)
-def submit_review(review: review_schemas.ReviewCreate, db: Session = Depends(get_db)):
-    return ConsumerController.submitReview(db, review)
+# @router.post(
+#     "/consumer-controller/submit-review",
+#     response_model=review_schemas.Review,
+#     tags=["Consumer Controller"],
+# )
+# def submit_review(review: review_schemas.ReviewCreate, db: Session = Depends(get_db)):
+#     return ConsumerController.submitReview(db, review)
 
 
-@router.put(
-    "/consumer-controller/edit-review",
-    response_model=review_schemas.Review,
-    tags=["Consumer Controller"],
-)
-def edit_review(review: review_schemas.ReviewUpdate, db: Session = Depends(get_db)):
-    return ConsumerController.editReview(db, review)
+# @router.put(
+#     "/consumer-controller/edit-review",
+#     response_model=review_schemas.Review,
+#     tags=["Consumer Controller"],
+# )
+# def edit_review(review: review_schemas.ReviewUpdate, db: Session = Depends(get_db)):
+#     return ConsumerController.editReview(db, review)
 
 
 # ------------------------------------------------------------ #
