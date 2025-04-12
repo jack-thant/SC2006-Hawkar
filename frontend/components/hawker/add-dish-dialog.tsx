@@ -9,28 +9,20 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { X, ImageIcon } from "lucide-react"
 import Image from "next/image"
+import { Dish, DishFormData } from "@/app/types/dish"
 
-interface Dish {
-  id: string
-  name: string
-  price: number
-  photo: string
-  onPromotion: boolean
-  startDate?: string
-  endDate?: string
-  discountedPrice?: number
-}
 
 interface AddDishDialogProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (dish: any) => void
+  onSubmit: (dish: DishFormData) => void
   editingDish: Dish | null
+  isLoading?: boolean
 }
 
-export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }: AddDishDialogProps) {
+export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish, isLoading }: AddDishDialogProps) {
   const [formData, setFormData] = useState({
-    name: "",
+    dishName: "",
     price: "",
     photo: "",
     onPromotion: false,
@@ -46,7 +38,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
   useEffect(() => {
     if (editingDish) {
       setFormData({
-        name: editingDish.name,
+        dishName: editingDish.dishName,
         price: editingDish.price.toString(),
         photo: editingDish.photo,
         onPromotion: editingDish.onPromotion,
@@ -62,7 +54,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
 
   const resetForm = () => {
     setFormData({
-      name: "",
+      dishName: "",
       price: "",
       photo: "",
       onPromotion: false,
@@ -91,31 +83,32 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
     setFormData({ ...formData, onPromotion: checked })
   }
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      setPhotoFile(file)
-
-      // Create preview URL
-      const previewUrl = URL.createObjectURL(file)
-
-      // Revoke previous URL to avoid memory leaks
-      if (photoPreviewUrl && !photoPreviewUrl.startsWith("/")) {
-        URL.revokeObjectURL(photoPreviewUrl)
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+  
+    // Set the single file
+    setPhotoFile(file)
+  
+    // Create preview URL
+    const previewUrl = URL.createObjectURL(file)
+    setPhotoPreviewUrl(previewUrl)
+  
+    // Convert image to base64
+    const base64String = await new Promise<string>((resolve) => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        resolve(reader.result as string)
       }
+      reader.readAsDataURL(file)
+    })
 
-      setPhotoPreviewUrl(previewUrl)
-
-      // In a real app, you would upload this file to your server
-      // and get back a URL to use in the form submission
-
-      // For now, we'll just use the preview URL
-      setFormData({
-        ...formData,
-        photo: previewUrl,
-      })
-    }
+    setFormData({
+      ...formData,
+      photo: base64String
+    })
   }
+  
 
   const removePhoto = () => {
     if (photoFile) {
@@ -138,7 +131,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
     e.preventDefault()
 
     // Validate form
-    if (!formData.name || !formData.price || !formData.photo) {
+    if (!formData.dishName || !formData.price || !formData.photo) {
       alert("Please fill in all required fields")
       return
     }
@@ -172,15 +165,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
       endDate: formData.onPromotion ? formData.endDate : undefined,
     }
 
-    if (editingDish) {
-      onSubmit({
-        ...submissionData,
-        id: editingDish.id,
-      })
-    } else {
-      onSubmit(submissionData)
-    }
-
+    onSubmit(submissionData)
     // Reset form
     resetForm()
   }
@@ -200,11 +185,11 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid gap-6">
             <div className="grid gap-3">
-              <Label htmlFor="name">Dish Name *</Label>
+              <Label htmlFor="dishName">Dish Name *</Label>
               <Input
-                id="name"
-                name="name"
-                value={formData.name}
+                id="dishName"
+                name="dishName"
+                value={formData.dishName}
                 onChange={handleInputChange}
                 placeholder="Enter dish name"
                 required

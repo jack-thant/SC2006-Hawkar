@@ -28,7 +28,9 @@ export async function addDish(stallID: number, formData: DishFormData) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify({
+                stallID: stallID,
+                ...formData}),
         });
         if (!response.ok) {
             const errorData = await response.json();
@@ -46,12 +48,21 @@ export async function addDish(stallID: number, formData: DishFormData) {
 
 export async function editDish(stallID: number, dishID: number, formData: DishFormData) {
     try {
-        const response = await fetch(`${API_URL}/dishes/${dishID}`, {
+        console.log({
+            stallID: stallID,
+            dishID: dishID,
+            ...formData
+        })
+        const response = await fetch(`${API_URL}/dish/update/${dishID}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify({
+                stallID: stallID,
+                dishID: dishID,
+                ...formData
+            }),
         });
         if (!response.ok) {
             const errorData = await response.json();
@@ -80,7 +91,6 @@ export async function deleteDish(stallID: number, dishID: number) {
             throw new Error(errorData?.detail || "Failed to delete dish");
         }
         revalidatePath(`/hawker/stall/${stallID}`)
-        return response
     } catch (error) {
         console.error("Failed to delete dish error:", error);
         throw error instanceof Error

@@ -2,10 +2,15 @@ import { getSession, getUserData } from "@/app/lib/actions/auth-actions"
 import { redirect } from "next/navigation"
 import Navbar from "@/components/navbar"
 import StallManagementContent from "@/components/hawker/stall-management-context"
+import { fetchStallByStallID } from "@/app/lib/actions/stall-actions"
+import { fetchDishesByStallID } from "@/app/lib/actions/dish-actions"
 
 export default async function StallManagementPage({ params }: { params: { id: string } }) {
   const session = await getSession()
   const userData = await getUserData()
+  const { id } = await params
+  const stall = await fetchStallByStallID(parseInt(id))
+  const dishes = await fetchDishesByStallID(parseInt(id))
 
   if (!session) {
     redirect("/login")
@@ -32,7 +37,7 @@ export default async function StallManagementPage({ params }: { params: { id: st
   return (
     <main className="min-h-screen flex flex-col">
       <Navbar username={userData?.name || "Hawker"} />
-      <StallManagementContent stallId={params.id} userData={userData} />
+      <StallManagementContent stall={stall} dishes={dishes} userData={userData} />
     </main>
   )
 }
