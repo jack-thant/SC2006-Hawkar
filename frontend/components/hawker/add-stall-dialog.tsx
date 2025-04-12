@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,89 +9,54 @@ import { TimePicker } from "@/components/ui/time-picker"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X, ImageIcon } from "lucide-react"
 import Image from "next/image"
+import { type Stall, type StallFormData, HygieneRating, PriceRange } from "@/app/types/stall"
+import { CuisineType } from "@/app/types/auth"
+import { SelectGroup } from "@radix-ui/react-select"
+import type { HawkerCenter } from "@/app/types/hawker"
 
-interface HawkerStall {
-  id: string
-  name: string
-  hawkerCenter: string
-  startTime: string
-  endTime: string
-  cuisineTypes: string[]
-  priceRange: string
-  photos: string[]
-  dishCount: number
-}
+// Cuisine types from enum
+const cuisineTypes = Object.values(CuisineType)
+
+// Price ranges from enum
+const priceRanges = Object.values(PriceRange)
+
+// Hygiene ratings from enum
+const hygieneRatings = Object.values(HygieneRating)
 
 interface AddStallDialogProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (stall: any) => void
-  editingStall: HawkerStall | null
+  onSubmit: (stall: StallFormData) => void
+  editingStall: Stall | null
+  hawkerID?: number
+  isLoading?: boolean
+  hawkerCenters: Array<HawkerCenter>
 }
 
-// Mock data for hawker centers in Singapore
-const hawkerCenters = [
-  "Maxwell Food Centre",
-  "Chinatown Complex",
-  "Tekka Centre",
-  "Old Airport Road Food Centre",
-  "Tiong Bahru Market",
-  "Chomp Chomp Food Centre",
-  "Newton Food Centre",
-  "Adam Road Food Centre",
-  "Geylang Serai Market",
-  "Lau Pa Sat",
-  "Amoy Street Food Centre",
-  "Hong Lim Food Centre",
-  "Bedok Interchange Hawker Centre",
-  "Whampoa Food Centre",
-  "ABC Brickworks Food Centre",
-  "Berseh Food Centre",
-  "Bukit Timah Market",
-  "Changi Village Hawker Centre",
-  "Commonwealth Crescent Market",
-  "Golden Mile Food Centre",
-]
-
-// Cuisine types
-const cuisineTypes = [
-  "Chinese",
-  "Malay",
-  "Indian",
-  "Western",
-  "Japanese",
-  "Korean",
-  "Thai",
-  "Vietnamese",
-  "Indonesian",
-  "Local",
-  "Seafood",
-  "Vegetarian",
-  "Halal",
-  "Dessert",
-  "Drinks",
-  "Noodles",
-  "Rice",
-  "BBQ",
-  "Soup",
-  "Fast Food",
-]
-
-// Price ranges
-const priceRanges = ["$3 - $5", "$4 - $6", "$5 - $8", "$6 - $10", "$8 - $12", "$10 - $15", "$15 - $20", "$20+"]
-
-export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall }: AddStallDialogProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    hawkerCenter: "",
+export default function AddStallDialog({
+  isOpen,
+  onClose,
+  onSubmit,
+  editingStall,
+  hawkerID,
+  isLoading = false,
+  hawkerCenters,
+}: AddStallDialogProps) {
+  const [formData, setFormData] = useState<StallFormData>({
+    stallName: "",
+    hawkerID: hawkerID || 0,
+    hawkerCenterID: 1,
+    unitNumber: "",
     startTime: "10:00",
     endTime: "20:00",
-    cuisineTypes: [] as string[],
-    priceRange: "$4 - $6",
-    photos: [] as string[],
+    cuisineType: [] as CuisineType[],
+    priceRange: PriceRange.RANGE_4_TO_6,
+    hygieneRating: HygieneRating.A,
+    estimatedWaitTime: 0,
+    images: [] as string[],
   })
 
-  const [selectedCuisines, setSelectedCuisines] = useState<string[]>([])
+  const [selectedCuisines, setSelectedCuisines] = useState<CuisineType[]>([])
   const [photoFiles, setPhotoFiles] = useState<File[]>([])
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([])
 
@@ -100,30 +64,38 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
   useEffect(() => {
     if (editingStall) {
       setFormData({
-        name: editingStall.name,
-        hawkerCenter: editingStall.hawkerCenter,
+        stallName: editingStall.stallName,
+        hawkerID: editingStall.hawkerID,
+        hawkerCenterID: editingStall.hawkerCenterID,
+        unitNumber: editingStall.unitNumber || "",
         startTime: editingStall.startTime,
         endTime: editingStall.endTime,
-        cuisineTypes: editingStall.cuisineTypes,
-        priceRange: editingStall.priceRange,
-        photos: editingStall.photos,
+        cuisineType: editingStall.cuisineType as CuisineType[],
+        priceRange: editingStall.priceRange as PriceRange,
+        hygieneRating: (editingStall.hygieneRating as HygieneRating) || HygieneRating.A,
+        estimatedWaitTime: editingStall.estimatedWaitTime || 0,
+        images: editingStall.images,
       })
-      setSelectedCuisines(editingStall.cuisineTypes)
-      setPhotoPreviewUrls(editingStall.photos)
+      setSelectedCuisines(editingStall.cuisineType as CuisineType[])
+      setPhotoPreviewUrls(editingStall.images)
     } else {
       resetForm()
     }
-  }, [editingStall, isOpen])
+  }, [editingStall, isOpen, hawkerID])
 
   const resetForm = () => {
     setFormData({
-      name: "",
-      hawkerCenter: "",
+      stallName: "",
+      hawkerID: hawkerID || 0,
+      hawkerCenterID: 1,
+      unitNumber: "",
       startTime: "10:00",
       endTime: "20:00",
-      cuisineTypes: [],
-      priceRange: "$4 - $6",
-      photos: [],
+      cuisineType: [],
+      priceRange: PriceRange.RANGE_4_TO_6,
+      hygieneRating: HygieneRating.A,
+      estimatedWaitTime: 0,
+      images: [],
     })
     setSelectedCuisines([])
     setPhotoFiles([])
@@ -139,38 +111,49 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
     setFormData({ ...formData, [field]: value })
   }
 
-  const handleSelectChange = (field: string, value: string) => {
+  const handleSelectChange = (field: string, value: any) => {
     setFormData({ ...formData, [field]: value })
   }
 
-  const toggleCuisineSelection = (cuisine: string) => {
+  const toggleCuisineSelection = (cuisine: CuisineType) => {
     if (selectedCuisines.includes(cuisine)) {
       const newSelection = selectedCuisines.filter((c) => c !== cuisine)
       setSelectedCuisines(newSelection)
-      setFormData({ ...formData, cuisineTypes: newSelection })
+      setFormData({ ...formData, cuisineType: newSelection })
     } else {
       const newSelection = [...selectedCuisines, cuisine]
       setSelectedCuisines(newSelection)
-      setFormData({ ...formData, cuisineTypes: newSelection })
+      setFormData({ ...formData, cuisineType: newSelection })
     }
   }
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const newFiles = Array.from(e.target.files)
       setPhotoFiles([...photoFiles, ...newFiles])
 
-      // Create preview URLs
+      // Create preview URLs for display
       const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file))
       setPhotoPreviewUrls([...photoPreviewUrls, ...newPreviewUrls])
 
-      // In a real app, you would upload these files to your server
-      // and get back URLs to use in the form submission
+      // Convert images to base64 for API
+      const base64Promises = newFiles.map((file) => {
+        return new Promise<string>((resolve) => {
+          const reader = new FileReader()
+          reader.onloadend = () => {
+            const base64String = reader.result as string
+            resolve(base64String)
+          }
+          reader.readAsDataURL(file)
+        })
+      })
 
-      // For now, we'll just use the preview URLs
+      const base64Images = await Promise.all(base64Promises)
+
+      // Update the form data with the new images
       setFormData({
         ...formData,
-        photos: [...photoPreviewUrls, ...newPreviewUrls],
+        images: [...formData.images, ...base64Images],
       })
     }
   }
@@ -190,9 +173,12 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
     newPreviewUrls.splice(index, 1)
     setPhotoPreviewUrls(newPreviewUrls)
 
+    const newImages = [...formData.images]
+    newImages.splice(index, 1)
+
     setFormData({
       ...formData,
-      photos: newPreviewUrls,
+      images: newImages,
     })
   }
 
@@ -200,21 +186,19 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
     e.preventDefault()
 
     // Validate form
-    if (!formData.name || !formData.hawkerCenter || formData.cuisineTypes.length === 0) {
+    if (!formData.stallName || !formData.hawkerCenterID || formData.cuisineType.length === 0) {
       alert("Please fill in all required fields")
       return
     }
 
-    // Submit form
-    if (editingStall) {
-      onSubmit({
-        ...formData,
-        id: editingStall.id,
-        dishCount: editingStall.dishCount,
-      })
-    } else {
-      onSubmit(formData)
+    // Make sure hawkerID is set
+    const submitData: StallFormData = {
+      ...formData,
+      hawkerID: hawkerID || (editingStall ? editingStall.hawkerID : 0),
     }
+
+    // Submit form
+    onSubmit(submitData)
 
     // Reset form
     resetForm()
@@ -235,34 +219,50 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid gap-6">
             <div className="grid gap-3">
-              <Label htmlFor="name">Stall Name *</Label>
+              <Label htmlFor="stallName">Stall Name *</Label>
               <Input
-                id="name"
-                name="name"
-                value={formData.name}
+                id="stallName"
+                name="stallName"
+                value={formData.stallName}
                 onChange={handleInputChange}
                 placeholder="Enter stall name"
                 required
+                disabled={isLoading}
               />
             </div>
 
             <div className="grid gap-3">
-              <Label htmlFor="hawkerCenter">Hawker Center *</Label>
+              <Label htmlFor="hawkerCenterID">Hawker Center *</Label>
               <Select
-                value={formData.hawkerCenter}
-                onValueChange={(value) => handleSelectChange("hawkerCenter", value)}
+                value={String(formData.hawkerCenterID)}
+                onValueChange={(value) => handleSelectChange("hawkerCenterID", Number(value))}
+                disabled={isLoading}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select hawker center" />
                 </SelectTrigger>
                 <SelectContent>
-                  {hawkerCenters.map((center) => (
-                    <SelectItem key={center} value={center}>
-                      {center}
-                    </SelectItem>
-                  ))}
+                  <SelectGroup>
+                    {hawkerCenters.map((center) => (
+                      <SelectItem key={center.hawkerCenterID} value={String(center.hawkerCenterID)}>
+                        {center.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="grid gap-3">
+              <Label htmlFor="unitNumber">Unit Number</Label>
+              <Input
+                id="unitNumber"
+                name="unitNumber"
+                value={formData.unitNumber}
+                onChange={handleInputChange}
+                placeholder="e.g. 01-23"
+                disabled={isLoading}
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -283,9 +283,10 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
                   <Button
                     key={cuisine}
                     type="button"
-                    variant={selectedCuisines.includes(cuisine) ? "default" : "outline"}
+                    variant={selectedCuisines.includes(cuisine as CuisineType) ? "default" : "outline"}
                     className="rounded-full"
-                    onClick={() => toggleCuisineSelection(cuisine)}
+                    onClick={() => toggleCuisineSelection(cuisine as CuisineType)}
+                    disabled={isLoading}
                   >
                     {cuisine}
                   </Button>
@@ -298,7 +299,11 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
 
             <div className="grid gap-3">
               <Label htmlFor="priceRange">Price Range *</Label>
-              <Select value={formData.priceRange} onValueChange={(value) => handleSelectChange("priceRange", value)}>
+              <Select
+                value={formData.priceRange}
+                onValueChange={(value) => handleSelectChange("priceRange", value as PriceRange)}
+                disabled={isLoading}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select price range" />
                 </SelectTrigger>
@@ -306,6 +311,26 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
                   {priceRanges.map((range) => (
                     <SelectItem key={range} value={range}>
                       {range}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-3">
+              <Label htmlFor="hygieneRating">Hygiene Rating</Label>
+              <Select
+                value={formData.hygieneRating}
+                onValueChange={(value) => handleSelectChange("hygieneRating", value as HygieneRating)}
+                disabled={isLoading}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select hygiene rating" />
+                </SelectTrigger>
+                <SelectContent>
+                  {hygieneRatings.map((rating) => (
+                    <SelectItem key={rating} value={rating}>
+                      {rating}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -329,13 +354,23 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
                       size="icon"
                       className="absolute top-1 right-1 h-6 w-6 rounded-full"
                       onClick={() => removePhoto(index)}
+                      disabled={isLoading}
                     >
                       <X className="h-3 w-3" />
                     </Button>
                   </div>
                 ))}
-                <label className="border border-dashed rounded-md flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-muted/50 aspect-square">
-                  <input type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoUpload} />
+                <label
+                  className={`border border-dashed rounded-md flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-muted/50 aspect-square ${isLoading ? "opacity-50 pointer-events-none" : ""}`}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handlePhotoUpload}
+                    disabled={isLoading}
+                  />
                   <ImageIcon className="h-8 w-8 text-muted-foreground mb-2" />
                   <span className="text-sm text-muted-foreground text-center">Upload Photos</span>
                 </label>
@@ -347,10 +382,12 @@ export default function AddStallDialog({ isOpen, onClose, onSubmit, editingStall
           </div>
 
           <div className="flex justify-end gap-3 mt-8">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
               Cancel
             </Button>
-            <Button type="submit">{editingStall ? "Save Changes" : "Add Stall"}</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (editingStall ? "Saving..." : "Adding...") : editingStall ? "Save Changes" : "Add Stall"}
+            </Button>
           </div>
         </form>
       </div>

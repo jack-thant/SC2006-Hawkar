@@ -49,7 +49,6 @@ export default function LoginForm() {
 
     try {
       const result = await login(data)
-      console.log(result)
       if (result.redirectUrl) {
         router.push(result.redirectUrl)
       } else {

@@ -2,10 +2,16 @@ import { getSession, getUserData } from "../lib/actions/auth-actions"
 import { redirect } from "next/navigation"
 import Navbar from "@/components/navbar"
 import HawkerDashboardContent from "@/components/hawker/hawker-dashboard-content"
+import { fetchHawkerCenters, fetchStallsByHawkerID } from "../lib/actions/stall-actions"
 
 export default async function HawkerDashboard() {
-  const session = await getSession()
-  const userData = await getUserData()
+
+  const [session, userData, stalls, hawkerCenters] = await Promise.all([
+    getSession(),
+    getUserData(),
+    fetchStallsByHawkerID(),
+    fetchHawkerCenters()
+  ]);
 
   if (!session) {
     redirect("/login")
@@ -30,7 +36,7 @@ export default async function HawkerDashboard() {
   return (
     <main className="min-h-screen flex flex-col">
       <Navbar username={userData?.name || "Hawker"} />
-     <HawkerDashboardContent userData={userData} />
+      <HawkerDashboardContent stalls={stalls} hawkerCenters={hawkerCenters} userId={session.userId} />
     </main>
   )
 }
