@@ -58,7 +58,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return "http://" + self.minio_endpoint + f"/profile-photo/{obj_name}"
+            return f"http://localhost:9000/profile-photo/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading profile photo: {str(e)}")
@@ -83,7 +83,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return "http://" + self.minio_endpoint + f"/stall/{obj_name}"
+            return f"http://localhost:9000/stall/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading stall image: {str(e)}")
@@ -109,7 +109,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return "http://" + self.minio_endpoint + f"/review-attachment/{obj_name}"
+            return f"http://localhost:9000/review-attachment/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading review photo: {str(e)}")
@@ -137,7 +137,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return "http://" + self.minio_endpoint + f"/dish/{obj_name}"
+            return f"http://localhost:9000/dish/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading dish photo: {str(e)}")
