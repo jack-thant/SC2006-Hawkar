@@ -12,127 +12,72 @@ import AddDishDialog from "./add-dish-dialog"
 import { toast } from "sonner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import StallReviewsSection from "./stall-reviews-section"
+import { Dish, DishFormData } from "@/app/types/dish"
+import { Stall } from "@/app/types/stall"
+import { addDish, deleteDish, editDish } from "@/app/lib/actions/dish-actions"
 
-interface Dish {
-  id: string
-  name: string
-  price: number
-  photo: string
-  onPromotion: boolean
-  startDate?: string
-  endDate?: string
-  discountedPrice?: number
-}
-
-interface Stall {
-  id: string
-  name: string
-  hawkerCenter: string
-  cuisineTypes: string[]
-}
 
 interface StallManagementContentProps {
-  stallId: string
+  stall: Stall
+  dishes: Array<Dish>
   userData: UserData | null
 }
 
-export default function StallManagementContent({ stallId, userData }: StallManagementContentProps) {
+export default function StallManagementContent({ stall, dishes, userData }: StallManagementContentProps) {
   const router = useRouter()
-  const [stall, setStall] = useState<Stall | null>(null)
-  const [dishes, setDishes] = useState<Dish[]>([])
   const [isAddDishOpen, setIsAddDishOpen] = useState(false)
   const [editingDish, setEditingDish] = useState<Dish | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [dishToDelete, setDishToDelete] = useState<string | null>(null)
+  const [dishToDelete, setDishToDelete] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState("dishes")
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Mock data for stall and dishes - in a real app, you would fetch this from your API
-  useEffect(() => {
-    // Simulate API call to get stall details
-    const mockStall: Stall = {
-      id: stallId,
-      name: "Delicious Chicken Rice",
-      hawkerCenter: "Maxwell Food Centre",
-      cuisineTypes: ["Chinese", "Local"],
+  const handleAddDish = async(newDish: DishFormData) => {
+    try {
+      setIsLoading(true)
+      await addDish(stall.stallID, newDish)
+      toast.success("Dish Added successfully")
+      router.refresh()
+    } catch (error) {
+      console.error("Error adding dish: ", error)
+      toast.error(error instanceof Error ? error.message : "An error occurred while adding the dish")
+    } finally {
+      setIsLoading(false)
+      setIsAddDishOpen(false)
     }
-
-    // Simulate API call to get dishes
-    const mockDishes: Dish[] = [
-      {
-        id: "1",
-        name: "Chicken Rice (Regular)",
-        price: 4.5,
-        photo: "/images/chicken_rice_1.jpg",
-        onPromotion: false,
-      },
-      {
-        id: "2",
-        name: "Chicken Rice (Large)",
-        price: 5.5,
-        photo: "/images/chicken_rice_2.jpg",
-        onPromotion: true,
-        startDate: "2023-10-01",
-        endDate: "2023-12-31",
-        discountedPrice: 4.8,
-      },
-      {
-        id: "3",
-        name: "Steamed Chicken (Half)",
-        price: 12,
-        photo: "/images/chicken_rice_3.jpg",
-        onPromotion: false,
-      },
-      {
-        id: "4",
-        name: "Roasted Chicken (Half)",
-        price: 13,
-        photo: "/images/chicken_rice_4.webp",
-        onPromotion: false,
-      },
-      {
-        id: "5",
-        name: "Chicken Soup",
-        price: 3,
-        photo: "/images/chicken_rice_1.jpg",
-        onPromotion: true,
-        startDate: "2023-11-01",
-        endDate: "2023-12-15",
-        discountedPrice: 2.5,
-      },
-    ]
-
-    setStall(mockStall)
-    setDishes(mockDishes)
-  }, [stallId])
-
-  const handleAddDish = (newDish: Omit<Dish, "id">) => {
-    // In a real app, you would send this to your API
-    const dishWithId: Dish = {
-      ...newDish,
-      id: Date.now().toString(),
-    }
-
-    setDishes([...dishes, dishWithId])
-    setIsAddDishOpen(false)
-    toast.success("Dish added successfully!")
   }
 
-  const handleEditDish = (updatedDish: Dish) => {
-    // In a real app, you would send this to your API
-    const updatedDishes = dishes.map((dish) => (dish.id === updatedDish.id ? updatedDish : dish))
+  const handleEditDish = async (updatedDish: DishFormData) => {
+    if (!editingDish) return
 
-    setDishes(updatedDishes)
-    setEditingDish(null)
-    setIsAddDishOpen(false)
-    toast.success("Dish updated successfully!")
+    try {
+      setIsLoading(true)
+      await editDish(stall.stallID, editingDish.dishID, updatedDish)
+      toast.success("Dish updated successfully")
+      router.refresh()
+    } catch (error) {
+      console.error("Error updating stall:", error)
+      toast.error(error instanceof Error ? error.message : "An error occurred while updating dish")
+    } finally {
+      setIsLoading(false)
+      setIsAddDishOpen(false)
+      setEditingDish(null)
+    }
   }
 
-  const handleDeleteDish = (id: string) => {
-    // In a real app, you would send this to your API
-    setDishes(dishes.filter((dish) => dish.id !== id))
-    setDishToDelete(null)
-    setIsDeleteDialogOpen(false)
-    toast.success("Dish deleted successfully!")
+  const handleDeleteDish = async () => {
+    if (!dishToDelete) return
+
+    try {
+      await deleteDish(stall.stallID, dishToDelete)
+    } catch (error) {
+      console.error("Error deleting dish:", error)
+      toast.error(error instanceof Error ? error.message : "An error occurred while deleting the dish")
+    } finally {
+      setIsLoading(false)
+      setIsDeleteDialogOpen(false)
+      setDishToDelete(null)
+    }
   }
 
   const openEditDialog = (dish: Dish) => {
@@ -140,8 +85,8 @@ export default function StallManagementContent({ stallId, userData }: StallManag
     setIsAddDishOpen(true)
   }
 
-  const openDeleteDialog = (id: string) => {
-    setDishToDelete(id)
+  const openDeleteDialog = (dishID: number) => {
+    setDishToDelete(dishID)
     setIsDeleteDialogOpen(true)
   }
 
@@ -160,8 +105,8 @@ export default function StallManagementContent({ stallId, userData }: StallManag
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-2xl font-bold">{stall.name}</h1>
-          <p className="text-muted-foreground">{stall.hawkerCenter}</p>
+          <h1 className="text-2xl font-bold">{stall.stallName}</h1>
+          <p className="text-muted-foreground">{stall.hawkerCenter.name}</p>
         </div>
       </div>
 
@@ -194,14 +139,14 @@ export default function StallManagementContent({ stallId, userData }: StallManag
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {dishes.map((dish) => (
-                <Card key={dish.id} className="overflow-hidden">
+                <Card key={dish.dishID} className="overflow-hidden">
                   <div className="relative h-48">
-                    <Image src={dish.photo || "/placeholder.svg"} alt={dish.name} fill className="object-cover" />
+                    <Image src={dish.photo || "/placeholder.svg"} alt={dish.dishName} fill className="object-cover" />
                     {dish.onPromotion && <Badge className="absolute top-2 right-2 bg-red-500">Promotion</Badge>}
                   </div>
 
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">{dish.name}</CardTitle>
+                    <CardTitle className="text-lg">{dish.dishName}</CardTitle>
                   </CardHeader>
 
                   <CardContent className="pb-2">
@@ -232,7 +177,7 @@ export default function StallManagementContent({ stallId, userData }: StallManag
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => openDeleteDialog(dish.id)}
+                        onClick={() => openDeleteDialog(dish.dishID)}
                         className="text-destructive hover:text-destructive"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -249,7 +194,7 @@ export default function StallManagementContent({ stallId, userData }: StallManag
         </TabsContent>
 
         <TabsContent value="reviews">
-          <StallReviewsSection stallId={stallId} stallName={stall.name} />
+          {/* <StallReviewsSection stallId={stall.stallID} stallName={stall.name} /> */}
         </TabsContent>
       </Tabs>
 
@@ -261,6 +206,7 @@ export default function StallManagementContent({ stallId, userData }: StallManag
         }}
         onSubmit={editingDish ? handleEditDish : handleAddDish}
         editingDish={editingDish}
+        isLoading={isLoading}
       />
 
       {/* Delete Confirmation Dialog */}
@@ -279,7 +225,7 @@ export default function StallManagementContent({ stallId, userData }: StallManag
               >
                 Cancel
               </Button>
-              <Button variant="destructive" onClick={() => handleDeleteDish(dishToDelete)}>
+              <Button variant="destructive" onClick={() => handleDeleteDish()}>
                 Delete
               </Button>
             </div>
