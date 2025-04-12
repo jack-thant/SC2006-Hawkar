@@ -13,7 +13,6 @@ export async function fetchStalls() {
             throw new Error('Failed to fetch stalls')
         }
         const data = response.json()
-        revalidatePath('/hawker')
         return data;
     } catch (error) {
         console.error("Error fetching stalls data")
@@ -23,14 +22,13 @@ export async function fetchStalls() {
     }
 }
 
-export async function fetchStallsByStallID(stallID: number) {
+export async function fetchStallByStallID(stallID: number) {
     try {
         const response = await fetch(`${API_URL}/stall/${stallID}`)
         if (!response) {
             throw new Error(`Failed to fetch stalls ${stallID}`)
         }
         const data = response.json()
-        revalidatePath(`/hawker/stall/${stallID}`)
         return data;
     } catch (error) {
         console.error(`Error fetching stall data ${stallID}`)
