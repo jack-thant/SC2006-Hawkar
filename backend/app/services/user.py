@@ -45,6 +45,14 @@ def update_user(db: Session, updated_user: user_schemas.UserUpdate):
     if not db_user:
         return None
 
+    profile_photo_url = None
+    if updated_user.profilePhoto:
+        storage = ObjectStorage()
+        profile_photo_url = storage.upload_profile_photo(
+            updated_user.emailAddress, updated_user.profilePhoto
+        )
+        updated_user.profilePhoto = profile_photo_url
+
     updated_user_data = updated_user.model_dump(exclude_unset=True)
     for key, value in updated_user_data.items():
         setattr(db_user, key, value)

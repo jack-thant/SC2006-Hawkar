@@ -141,10 +141,21 @@ def update_stall(db: Session, updated_stall: stall_schemas.StallUpdate, stall_id
     # Update Stall
     updated_stall_data = updated_stall.model_dump(exclude_unset=True)
 
+    images_url = []
+
     # Convert images from list to string if present
     if "images" in updated_stall_data and isinstance(
         updated_stall_data["images"], list
     ):
+        storage = ObjectStorage()
+        for image in updated_stall_data["images"]:
+            if image.startswith("http"):
+                images_url.append(image)
+                continue
+            image_url = storage.upload_stall_image(stall_id, image)
+            images_url.append(image_url)
+        updated_stall_data["images"] = images_url
+
         updated_stall_data["images"] = convert_list_to_str(updated_stall_data["images"])
 
     # Convert cuisineType from list to string if present

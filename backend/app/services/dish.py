@@ -77,6 +77,13 @@ def update_dish(db: Session, updated_dish: dish_schemas.DishUpdate):
     if not db_dish:
         return None
 
+    if updated_dish.photo:
+        storage = ObjectStorage()
+        image_url = storage.upload_dish_photo(
+            db_dish.stallID, updated_dish.dishName, updated_dish.photo
+        )
+        updated_dish.photo = image_url
+
     if updated_dish.onPromotion:
         promotion_services.create_promotion(
             db,
