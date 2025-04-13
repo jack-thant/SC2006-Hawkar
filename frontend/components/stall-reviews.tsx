@@ -28,24 +28,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-
-interface Review {
-  id: string
-  userName: string
-  userPicture: string
-  rating: number
-  content: string
-  userId?: string // Added to track review ownership
-}
+import { ReportFormData, ReportType, Review, ReviewFormData } from "@/app/types/review"
+import { addReview, deleteReview, editReview, reportReview } from "@/app/lib/actions/review-actions"
+import { useRouter } from "next/navigation"
 
 interface StallReviewsProps {
   reviews: Review[]
   rating: number
   reviewCount: number
-  currentUserId?: string // Added to check if the current user owns a review
+  currentUserId: string
+  stallID: number
 }
 
-export default function StallReviews({ reviews, rating, reviewCount, currentUserId = "1" }: StallReviewsProps) {
+export default function StallReviews({ reviews, rating, reviewCount, currentUserId, stallID }: StallReviewsProps) {
   const [sortBy, setSortBy] = useState("recent")
   const [showAddReviewDialog, setShowAddReviewDialog] = useState(false)
   const [showEditReviewDialog, setShowEditReviewDialog] = useState(false)
@@ -55,81 +50,117 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
   const [newReviewContent, setNewReviewContent] = useState("")
   const [editingReview, setEditingReview] = useState<Review | null>(null)
   const [reportingReview, setReportingReview] = useState<Review | null>(null)
-  const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null)
+  const [deletingReviewId, setDeletingReviewId] = useState<number | null>(null)
   const [reportType, setReportType] = useState<string>("spam")
   const [reportReason, setReportReason] = useState("")
+  const router = useRouter()
 
-  // Calculate rating distribution
-  const ratingCounts = [0, 0, 0, 0, 0]
+  const validReviews = reviews.filter(r => !r.isReported)
+
+  const ratingCounts = [0, 0, 0, 0, 0];
+
   reviews.forEach((review) => {
     if (review.rating >= 1 && review.rating <= 5) {
-      ratingCounts[review.rating - 1]++
+      ratingCounts[review.rating - 1]++;
     }
-  })
+  });
+
 
   const maxCount = Math.max(...ratingCounts)
 
-  const handleAddReview = () => {
-    // In a real app, you would send this to your API
-    console.log("Adding review:", { rating: newReviewRating, content: newReviewContent })
-    toast("Your review has been successfully submitted!")
-    setShowAddReviewDialog(false)
-    setNewReviewRating(5)
-    setNewReviewContent("")
+  const handleAddReview = async () => {
+    try {
+      const formData: ReviewFormData = {
+        reviewText: newReviewContent,
+        rating: newReviewRating,
+        consumerID: Number.parseInt(currentUserId),
+        stallID: stallID,
+      }
+
+      await addReview(formData)
+      toast("Your review has been successfully submitted!")
+      setShowAddReviewDialog(false)
+      setNewReviewRating(5)
+      setNewReviewContent("")
+      router.refresh()
+    } catch (error) {
+      toast.error("Failed to submit review. Please try again.")
+      console.error(error)
+    }
   }
 
-  const handleEditReview = () => {
+
+  const handleEditReview = async () => {
     if (!editingReview) return
 
-    // In a real app, you would send this to your API
-    console.log("Editing review:", {
-      id: editingReview.id,
-      rating: newReviewRating,
-      content: newReviewContent,
-    })
+    try {
+      const formData: ReviewFormData = {
+        reviewText: newReviewContent,
+        rating: newReviewRating,
+        consumerID: editingReview.consumerID,
+        stallID: stallID,
+      }
 
-    toast("Your review has been updated successfully")
-
-    setShowEditReviewDialog(false)
-    setEditingReview(null)
-    setNewReviewRating(5)
-    setNewReviewContent("")
+      await editReview(editingReview.reviewID, formData)
+      toast("Your review has been updated successfully")
+      setShowEditReviewDialog(false)
+      setEditingReview(null)
+      setNewReviewRating(5)
+      setNewReviewContent("")
+      router.refresh() // Refresh the reviews
+    } catch (error) {
+      toast.error("Failed to update review. Please try again.")
+      console.error(error)
+    }
   }
 
-  const handleDeleteReview = () => {
+  const handleDeleteReview = async () => {
     if (!deletingReviewId) return
 
-    // In a real app, you would send this to your API
-    console.log("Deleting review:", deletingReviewId)
-
-    toast("Your review has been deleted successfully")
-
-    setShowDeleteDialog(false)
-    setDeletingReviewId(null)
+    try {
+      await deleteReview(deletingReviewId, stallID)
+      toast("Your review has been deleted successfully")
+      setShowDeleteDialog(false)
+      setDeletingReviewId(null)
+      router.refresh()// Refresh the reviews
+    } catch (error) {
+      toast.error("Failed to delete review. Please try again.")
+      console.error(error)
+    }
   }
 
-  const handleReportReview = () => {
+  const handleReportReview = async () => {
     if (!reportingReview) return
 
-    // In a real app, you would send this to your API
-    console.log("Reporting review:", {
-      reviewId: reportingReview.id,
-      type: reportType,
-      reason: reportReason,
-    })
+    try {
+      const reportData: ReportFormData = {
+        reportType: reportType as ReportType,
+        reportText: reportReason,
+      }
 
-    toast("Thank you for your feedback. We'll review this report.")
+      // Since your reportReview function expects ReviewFormData, we need to adapt
+      const formData = {
+        stallID: stallID,
+        ...reportData,
+      }
 
-    setShowReportDialog(false)
-    setReportingReview(null)
-    setReportType("spam")
-    setReportReason("")
+      await reportReview(reportingReview.reviewID, formData as any)
+      toast("Thank you for your feedback. We'll review this report.")
+      setShowReportDialog(false)
+      setReportingReview(null)
+      setReportType("spam")
+      setReportReason("")
+      router.refresh() // Refresh the reviews
+    } catch (error) {
+      toast.error("Failed to submit report. Please try again.")
+      console.error(error)
+    }
   }
 
   const openEditDialog = (review: Review) => {
     setEditingReview(review)
     setNewReviewRating(review.rating)
-    setNewReviewContent(review.content)
+    setNewReviewContent(review.reviewText)
     setShowEditReviewDialog(true)
   }
 
@@ -138,7 +169,7 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
     setShowReportDialog(true)
   }
 
-  const openDeleteDialog = (reviewId: string) => {
+  const openDeleteDialog = (reviewId: number) => {
     setDeletingReviewId(reviewId)
     setShowDeleteDialog(true)
   }
@@ -154,9 +185,8 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
                 <Star
                   key={star}
                   size={18}
-                  className={`${
-                    star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-muted text-muted"
-                  }`}
+                  className={`${star <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-muted text-muted"
+                    }`}
                 />
               ))}
             </div>
@@ -188,33 +218,37 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
           </Button>
         </div>
       </div>
+      {
+        validReviews.length > 0 && (
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-medium">Reviews</h3>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recent">Most Recent</SelectItem>
+                <SelectItem value="highest">Highest Rating</SelectItem>
+                <SelectItem value="lowest">Lowest Rating</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )
+      }
 
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-medium">Reviews</h3>
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="recent">Most Recent</SelectItem>
-            <SelectItem value="highest">Highest Rating</SelectItem>
-            <SelectItem value="lowest">Lowest Rating</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {reviews.map((review) => {
-          const isCurrentUserReview = review.userId === currentUserId || review.id === "1" // For demo purposes
+        {validReviews.map((review) => {
+          const isCurrentUserReview = review.consumerID === parseInt(currentUserId)
 
           return (
-            <Card key={review.id} className="py-2">
+            <Card key={review.reviewID} className="py-2">
               <CardContent className="p-4">
                 <div className="flex items-start gap-4">
                   <div className="relative w-10 h-10 rounded-full overflow-hidden">
                     <Image
-                      src={review.userPicture || "/placeholder.svg"}
-                      alt={review.userName}
+                      src={review.consumer.user.profilePhoto}
+                      alt={review.consumer.user.name}
                       fill
                       className="object-cover"
                     />
@@ -222,15 +256,14 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="font-medium">{review.userName}</p>
+                        <p className="font-medium">{review.consumer.user.name}</p>
                         <div className="flex items-center gap-1 my-1">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <Star
                               key={star}
                               size={14}
-                              className={`${
-                                star <= review.rating ? "fill-amber-400 text-amber-400" : "fill-muted text-muted"
-                              }`}
+                              className={`${star <= review.rating ? "fill-amber-400 text-amber-400" : "fill-muted text-muted"
+                                }`}
                             />
                           ))}
                         </div>
@@ -251,7 +284,7 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                              onClick={() => openDeleteDialog(review.id)}
+                              onClick={() => openDeleteDialog(review.reviewID)}
                             >
                               <Trash2 size={16} />
                               <span className="sr-only">Delete review</span>
@@ -270,7 +303,7 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
                         )}
                       </div>
                     </div>
-                    <p className="text-sm mt-2">{review.content}</p>
+                    <p className="text-sm mt-2">{review.reviewText}</p>
                   </div>
                 </div>
               </CardContent>

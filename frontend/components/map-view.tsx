@@ -4,26 +4,15 @@ import { useEffect, useRef, useState } from "react"
 import { Loader2 } from "lucide-react"
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import { PriceRange, Stall } from "@/app/types/stall"
+import { HawkerCenter } from "@/app/types/hawker"
 
-// Import mapboxgl dynamically to avoid SSR issues
-// let mapboxgl: any
-// if (typeof window !== "undefined") {
-//   // Only import on client side
-//   mapboxgl = require("mapbox-gl")
-//   require("mapbox-gl/dist/mapbox-gl.css")
-// }
 
 interface MapViewProps {
-  locations: Array<{
-    id: string
-    name: string
-    lat: number
-    lng: number
-    price: string
-  }>
+  stalls: Array<Stall>
 }
 
-export default function MapView({ locations }: MapViewProps) {
+export default function MapView({ stalls }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -103,31 +92,31 @@ export default function MapView({ locations }: MapViewProps) {
     const bounds = new mapboxgl.LngLatBounds()
 
     // Add markers for each location
-    locations.forEach((location) => {
+    stalls.forEach((stall) => {
       try {
         // Create custom popup
         const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
-            <div style="padding: 8px;">
-              <h3 style="font-weight: 500; margin-bottom: 4px;">${location.name}</h3>
-              <p style="font-size: 14px; margin: 0;">Price: ${location.price}</p>
+            <div style="padding: 12px;">
+              <h3 style="font-weight: 500; margin-bottom: 4px;">${stall.stallName}</h3>
+              <p style="font-size: 14px; margin: 0;">Price: ${stall.priceRange}</p>
             </div>
           `)
 
         // Add marker
-        const marker = new mapboxgl.Marker().setLngLat([location.lng, location.lat]).setPopup(popup).addTo(map)
+        const marker = new mapboxgl.Marker().setLngLat([stall.hawkerCenter.longitude, stall.hawkerCenter.latitude]).setPopup(popup).addTo(map)
 
         // Store marker reference for cleanup
         markersRef.current.push(marker)
 
         // Extend bounds to include this location
-        bounds.extend([location.lng, location.lat])
+        bounds.extend([stall.hawkerCenter.longitude, stall.hawkerCenter.latitude])
       } catch (err) {
         console.error("Error adding marker:", err)
       }
     })
 
     // Only adjust bounds if we have locations
-    if (locations.length > 0) {
+    if (stalls.length > 0) {
       try {
         map.fitBounds(bounds, {
           padding: 50,
@@ -137,7 +126,7 @@ export default function MapView({ locations }: MapViewProps) {
         console.error("Error fitting bounds:", err)
       }
     }
-  }, [map, locations])
+  }, [map, stalls])
 
   // Handle resize when map becomes visible
   useEffect(() => {

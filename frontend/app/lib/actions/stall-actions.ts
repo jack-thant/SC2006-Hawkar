@@ -9,7 +9,7 @@ const API_URL = process.env.NEXT_PUBLIC_DEV_API_URL
 export async function fetchStalls() {
     try {
         const response = await fetch(`${API_URL}/stalls`)
-        if (!response) {
+        if (!response.ok) {
             throw new Error('Failed to fetch stalls')
         }
         const data = response.json()
@@ -25,7 +25,7 @@ export async function fetchStalls() {
 export async function fetchStallByStallID(stallID: number) {
     try {
         const response = await fetch(`${API_URL}/stall/${stallID}`)
-        if (!response) {
+        if (!response.ok) {
             throw new Error(`Failed to fetch stalls ${stallID}`)
         }
         const data = response.json()
@@ -42,7 +42,7 @@ export async function fetchStallsByHawkerID() {
     const session = await getSession()
     try {
         const response = await fetch(`${API_URL}/stall/hawkerid/${session?.userId}`)
-        if (!response) {
+        if (!response.ok) {
             throw new Error(`Failed to fetch stalls by ${session?.userId}`)
         }
         const data = response.json()

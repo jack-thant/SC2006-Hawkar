@@ -18,16 +18,7 @@ const MapView = dynamic(() => import("@/components/map-view"), {
     ),
 })
 
-const mapLocations = [
-    { id: "1", name: "Tian Tian Chicken Rice", lat: 1.2805, lng: 103.8451, price: "$4 - $6" },
-    { id: "2", name: "Hill Street Tai Hwa Pork Noodle", lat: 1.3041, lng: 103.8626, price: "$6 - $10" },
-    { id: "3", name: "Liao Fan Hawker Chan", lat: 1.2815, lng: 103.844, price: "$3 - $5" },
-    { id: "4", name: "Nasi Lemak Kukus", lat: 1.3171, lng: 103.8946, price: "$4 - $7" },
-    { id: "5", name: "Tekka Seafood Delights", lat: 1.3065, lng: 103.8518, price: "$8 - $15" },
-    { id: "6", name: "Ah Hock Fried Hokkien Noodles", lat: 1.3651, lng: 103.8696, price: "$4 - $6" },
-]
-
-export default function HomePageSection({ userData }: HomeSectionProps) {
+export default function HomePageSection({ stalls, userData }: HomeSectionProps) {
     const [currentView, setCurrentView] = useState<"list" | "map" | "both">("both")
 
     const handleViewToggle = (view: "list" | "map" | "both") => {
@@ -43,7 +34,7 @@ export default function HomePageSection({ userData }: HomeSectionProps) {
 
     return (
         <main className="min-h-screen flex flex-col">
-            <Navbar username="John Doe" />
+            <Navbar username={userData?.name || "Consumer"} />
             <div className="flex flex-col items-center justify-center text-center p-8">
                 <h1 className="text-3xl font-bold">Your Guide to the Best Hawker Eats!</h1>
                 <p className="mt-4 text-muted-foreground max-w-2xl">
@@ -62,7 +53,7 @@ export default function HomePageSection({ userData }: HomeSectionProps) {
                     {/* List View */}
                     {(currentView === "list" || currentView === "both") && (
                         <div className={`${currentView === "both" ? "lg:col-span-2" : "lg:col-span-3"}`}>
-                            <HawkerStallList />
+                            <HawkerStallList stalls={stalls}/>
                         </div>
                     )}
 
@@ -74,7 +65,7 @@ export default function HomePageSection({ userData }: HomeSectionProps) {
                       h-[calc(100vh-200px)]
                     `}
                         >
-                            <MapView locations={mapLocations} />
+                            <MapView stalls={stalls} />
                         </div>
                     )}
                 </div>

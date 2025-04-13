@@ -58,3 +58,23 @@ export interface UserData {
   role: UserType;
   verifyStatus?: boolean;
 }
+
+export interface Consumer {
+  consumerID: number;
+  address: string;
+  dietaryPreference: DietaryPreference;
+  preferredCuisine: CuisineType;
+  ambulatoryStatus: string;
+  favoriteStalls: number[];
+  userID: number;
+  user: User;
+}
+
+export interface User {
+  name: string;
+  emailAddress: string;
+  userID: number;
+  profilePhoto: string;
+  contactNumber: number;
+  role: UserType;
+}
