@@ -5,7 +5,7 @@ from typing import Optional
 
 class Dish(BaseModel):
     dishID: int
-    stallID: Optional[int] = None  # Changed to Optional with None default
+    stallID: Optional[int] = None
     dishName: str
     price: float
     photo: Optional[str] = None

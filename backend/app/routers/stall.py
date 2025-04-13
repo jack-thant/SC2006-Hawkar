@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import Union
 
 from database import get_db
 from controllers.stall import StallController
@@ -32,7 +33,7 @@ tags_metadata = [
 
 @router.get(
     "/stall/{stall_id}/dishes",
-    response_model=list[dish_schemas.Dish],
+    response_model=list[dish_schemas.DishUpdate],
     tags=["Stall-Dish"],
 )
 async def get_dish_by_stall_id(stall_id: str, db: Session = Depends(get_db)):

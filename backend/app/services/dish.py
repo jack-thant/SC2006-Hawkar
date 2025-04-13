@@ -20,10 +20,21 @@ def get_dish_by_dish_id(db: Session, dishID: int):
 
 
 def get_dishes_by_stall_id(db: Session, stallID: int):
-    db_dishes = db.query(Dish).filter(Dish.stallID == stallID)
+    db_dishes = db.query(Dish).filter(Dish.stallID == stallID).all()
 
     if not db_dishes:
-        raise HTTPException(status_code=400, detail="Invalid stallID")
+        # Return empty list instead of error if no dishes found
+        return []
+
+    # Enhance dishes with promotion details
+    for dish in db_dishes:
+        if dish.onPromotion:
+            promotion = promotion_services.get_promotions_by_dish_id(db, dish.dishID)
+            if promotion:
+                # Add promotion details to the dish
+                dish.startDate = promotion.startDate
+                dish.endDate = promotion.endDate
+                dish.discountedPrice = promotion.discountedPrice
 
     return db_dishes
 
