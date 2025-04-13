@@ -9,17 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Grid2X2, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Dish } from "@/app/types/dish"
 
-interface Dish {
-  id: string
-  name: string
-  price: number
-  photo: string
-  onPromotion: boolean
-  startDate?: string
-  endDate?: string
-  discountedPrice?: number
-}
 
 interface StallDishesProps {
   dishes: Dish[]
@@ -36,7 +27,7 @@ export default function StallDishes({ dishes, stallName }: StallDishesProps) {
   const regularDishes = dishes.filter((dish) => !dish.onPromotion)
 
   // Filter dishes based on search query
-  const filteredDishes = dishes.filter((dish) => dish.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredDishes = dishes.filter((dish) => dish.dishName.toLowerCase().includes(searchQuery.toLowerCase()))
 
   // Get dishes based on active tab
   const getTabDishes = () => {
@@ -57,15 +48,15 @@ export default function StallDishes({ dishes, stallName }: StallDishesProps) {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {dishes.map((dish) => (
-          <Card key={dish.id} className="overflow-hidden py-0 pb-6">
+          <Card key={dish.dishID} className="overflow-hidden py-0 pb-6">
             <div className="relative h-48">
-              <Image src={dish.photo || "/placeholder.svg"} alt={dish.name} fill className="object-cover" />
+              <Image src={dish.photo || "/placeholder.svg"} alt={dish.dishName} fill className="object-cover" />
               {dish.onPromotion && <Badge className="absolute top-2 right-2 bg-red-500">Promotion</Badge>}
             </div>
             <CardContent className="px-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium">{dish.name}</h3>
+                  <h3 className="font-medium">{dish.dishName}</h3>
                   {dish.onPromotion ? (
                     <div className="flex items-center gap-2">
                       <span className="text-muted-foreground line-through">${dish.price.toFixed(2)}</span>
@@ -114,13 +105,13 @@ export default function StallDishes({ dishes, stallName }: StallDishesProps) {
               <div className="overflow-y-auto max-h-[60vh]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {getTabDishes().map((dish) => (
-                    <Card key={dish.id} className="overflow-hidden py-0 pb-6">
+                    <Card key={dish.dishID} className="overflow-hidden py-0 pb-6">
                       <div className="relative h-40">
-                        <Image src={dish.photo || "/placeholder.svg"} alt={dish.name} fill className="object-cover" />
+                        <Image src={dish.photo || "/placeholder.svg"} alt={dish.dishName} fill className="object-cover" />
                         {dish.onPromotion && <Badge className="absolute top-2 right-2 bg-red-500">Promotion</Badge>}
                       </div>
                       <CardContent className="px-3">
-                        <h3 className="font-medium text-sm">{dish.name}</h3>
+                        <h3 className="font-medium text-sm">{dish.dishName}</h3>
                         {dish.onPromotion ? (
                           <div className="flex items-center gap-2 mt-1">
                             <span className="text-xs text-muted-foreground line-through">${dish.price.toFixed(2)}</span>
@@ -153,13 +144,13 @@ export default function StallDishes({ dishes, stallName }: StallDishesProps) {
               <div className="overflow-y-auto max-h-[60vh]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {getTabDishes().map((dish) => (
-                    <Card key={dish.id} className="overflow-hidden">
+                    <Card key={dish.dishID} className="overflow-hidden">
                       <div className="relative h-40">
-                        <Image src={dish.photo || "/placeholder.svg"} alt={dish.name} fill className="object-cover" />
+                        <Image src={dish.photo || "/placeholder.svg"} alt={dish.dishName} fill className="object-cover" />
                         <Badge className="absolute top-2 right-2 bg-red-500">Promotion</Badge>
                       </div>
                       <CardContent className="p-3">
-                        <h3 className="font-medium text-sm">{dish.name}</h3>
+                        <h3 className="font-medium text-sm">{dish.dishName}</h3>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xs text-muted-foreground line-through">${dish.price.toFixed(2)}</span>
                           <span className="text-sm font-medium text-red-500">${dish.discountedPrice?.toFixed(2)}</span>
@@ -184,12 +175,12 @@ export default function StallDishes({ dishes, stallName }: StallDishesProps) {
               <div className="overflow-y-auto max-h-[60vh]">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {getTabDishes().map((dish) => (
-                    <Card key={dish.id} className="overflow-hidden">
+                    <Card key={dish.dishID} className="overflow-hidden">
                       <div className="relative h-40">
-                        <Image src={dish.photo || "/placeholder.svg"} alt={dish.name} fill className="object-cover" />
+                        <Image src={dish.photo || "/placeholder.svg"} alt={dish.dishName} fill className="object-cover" />
                       </div>
                       <CardContent className="p-3">
-                        <h3 className="font-medium text-sm">{dish.name}</h3>
+                        <h3 className="font-medium text-sm">{dish.dishName}</h3>
                         <p className="text-sm text-muted-foreground mt-1">${dish.price.toFixed(2)}</p>
                       </CardContent>
                     </Card>

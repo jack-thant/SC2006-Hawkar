@@ -1,15 +1,17 @@
-import { IgnoreReportPayload, ReviewFormData } from "@/app/types/review"
+'use server'
+
+import { IgnoreReportPayload, Review, ReviewFormData } from "@/app/types/review"
 import { revalidatePath } from "next/cache"
 
 const API_URL = process.env.NEXT_PUBLIC_DEV_API_URL
 
-export async function fetchReviewByStallID(stallID: number) {
+export async function fetchReviewsByStallID(stallID: number): Promise<Review[]> {
     try {
-        const response = await fetch(`${API_URL}/stalls/${stallID}/reviews`)
-        if (!response) {
+        const response = await fetch(`${API_URL}/stall/${stallID}/reviews`)
+        if (!response.ok) {
             throw new Error(`Failed to fetch reviews by ${stallID}`)
         }
-        const data = response.json()
+        const data = await response.json()
         return data
     } catch (error) {
         console.error(`Fetching reviews ${stallID}`)
@@ -22,10 +24,10 @@ export async function fetchReviewByStallID(stallID: number) {
 export async function fetchReportedReviews() {
     try {
         const response = await fetch(`${API_URL}/admin/reported_reviews`)
-        if (!response) {
+        if (!response.ok) {
             throw new Error(`Failed to fetch reported reviews`)
         }
-        const data = response.json()
+        const data = await response.json()
         return data
     } catch (error) {
         console.error(`Fetching reported reviews`)
@@ -36,8 +38,9 @@ export async function fetchReportedReviews() {
 }
 
 export async function addReview(formData: ReviewFormData) {
+    console.log(formData)
     try {
-        const response = await fetch(`${API_URL}/stalls/${formData.stallID}/reviews`, {
+        const response = await fetch(`${API_URL}/stall/${formData.stallID}/add-review`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -48,7 +51,7 @@ export async function addReview(formData: ReviewFormData) {
             const errorData = await response.json();
             throw new Error(errorData?.detail || "Failed to add review");
         }
-        revalidatePath(`/hawker/stall/${formData.stallID}`)
+        revalidatePath(`/stall/${formData.stallID}`)
         return { success: true };
     } catch (error) {
         console.error("Failed to add review error:", error);
@@ -74,7 +77,7 @@ export async function editReview(reviewID: number, formData: ReviewFormData) {
             const errorData = await response.json();
             throw new Error(errorData?.detail || `Failed to update review ${reviewID}`);
         }
-        revalidatePath(`/hawker/stall/${formData.stallID}`)
+        revalidatePath(`/stall/${formData.stallID}`)
         return { success: true };
     } catch (error) {
         console.error("Failed to update review error:", error);
@@ -96,7 +99,7 @@ export async function deleteReview(reviewID: number, stallID: number) {
             const errorData = await response.json();
             throw new Error(errorData?.detail || "Failed to delete review");
         }
-        revalidatePath(`/hawker/stall/${stallID}`)
+        revalidatePath(`/stall/${stallID}`)
     } catch (error) {
         console.error("Failed to delete review error:", error);
         throw error instanceof Error
@@ -121,7 +124,7 @@ export async function reportReview(reviewID: number, formData: ReviewFormData) {
             const errorData = await response.json();
             throw new Error(errorData?.detail || "Failed to report review");
         }
-        revalidatePath(`/hawker/stall/${formData.stallID}`)
+        revalidatePath(`/stall/${formData.stallID}`)
         return { success: true };
     } catch (error) {
         console.error("Failed to report review error:", error);

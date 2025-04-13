@@ -67,5 +67,14 @@ export interface Consumer {
   ambulatoryStatus: string;
   favoriteStalls: number[];
   userID: number;
-  user: any
+  user: User;
+}
+
+export interface User {
+  name: string;
+  emailAddress: string;
+  userID: number;
+  profilePhoto: string;
+  contactNumber: number;
+  role: UserType;
 }

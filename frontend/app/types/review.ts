@@ -4,7 +4,7 @@ export interface Review {
     reviewID: number;
     reviewText: string;
     rating: number;
-    isReported: false;
+    isReported: boolean;
     reportText?: string;
     reportType?: ReportType;
     consumerID: number;

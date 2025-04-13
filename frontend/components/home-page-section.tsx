@@ -53,7 +53,7 @@ export default function HomePageSection({ stalls, userData }: HomeSectionProps) 
                     {/* List View */}
                     {(currentView === "list" || currentView === "both") && (
                         <div className={`${currentView === "both" ? "lg:col-span-2" : "lg:col-span-3"}`}>
-                            <HawkerStallList stalls={stalls} />
+                            <HawkerStallList stalls={stalls}/>
                         </div>
                     )}
 
