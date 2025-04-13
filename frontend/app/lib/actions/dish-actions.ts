@@ -48,11 +48,6 @@ export async function addDish(stallID: number, formData: DishFormData) {
 
 export async function editDish(stallID: number, dishID: number, formData: DishFormData) {
     try {
-        console.log({
-            stallID: stallID,
-            dishID: dishID,
-            ...formData
-        })
         const response = await fetch(`${API_URL}/dish/update/${dishID}`, {
             method: "PUT",
             headers: {

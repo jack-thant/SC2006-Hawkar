@@ -2,10 +2,13 @@ import HomePageSection from "@/components/home-page-section";
 import { getSession, getUserData } from "./lib/actions/auth-actions";
 import { redirect } from "next/navigation";
 import { UserType } from "./types/auth";
+import { fetchStalls } from "./lib/actions/stall-actions";
 
 export default async function Home() {
   const session = await getSession()
   const userData = await getUserData()
+  const stalls = await fetchStalls()
+
   if (!session) {
     redirect('/login') 
   }
@@ -16,6 +19,6 @@ export default async function Home() {
     redirect("/admin")
   }
   return (
-    <HomePageSection userData={userData}/>
+    <HomePageSection stalls={stalls} userData={userData}/>
   )
 }
