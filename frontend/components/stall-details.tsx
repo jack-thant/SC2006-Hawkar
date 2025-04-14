@@ -23,7 +23,7 @@ interface StallDetailsProps {
     dishes: Array<Dish>;
 }
 
-const getRatingStats = (reviews: Array<Review>): { averageRating: number; totalRatings: number } => {
+export const getRatingStats = (reviews: Array<Review>): { averageRating: number; totalRatings: number } => {
     const validReviews = reviews.filter(r => !r.isReported);
     const count = validReviews.length;
   
@@ -137,6 +137,7 @@ export default function StallDetails({userId, userData, reviews, stall, dishes}:
                                     reviewCount={totalRatings}
                                     currentUserId={userId}
                                     stallID={stall.stallID}
+                                    userData={userData}
                                 />
                             </div>
                         </div>

@@ -11,19 +11,23 @@ import type { UserData } from "@/app/types/auth"
 import AddDishDialog from "./add-dish-dialog"
 import { toast } from "sonner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import StallReviewsSection from "./stall-reviews-section"
 import { Dish, DishFormData } from "@/app/types/dish"
 import { Stall } from "@/app/types/stall"
 import { addDish, deleteDish, editDish } from "@/app/lib/actions/dish-actions"
+import { Review } from "@/app/types/review"
+import { getRatingStats } from "../stall-details"
+import StallReviews from "../stall-reviews"
 
 
 interface StallManagementContentProps {
   stall: Stall
   dishes: Array<Dish>
-  userData: UserData | null
+  userId: string
+  reviews: Array<Review>
+  userData: UserData
 }
 
-export default function StallManagementContent({ stall, dishes, userData }: StallManagementContentProps) {
+export default function StallManagementContent({ stall, dishes, reviews, userId, userData }: StallManagementContentProps) {
   const router = useRouter()
   const [isAddDishOpen, setIsAddDishOpen] = useState(false)
   const [editingDish, setEditingDish] = useState<Dish | null>(null)
@@ -31,6 +35,7 @@ export default function StallManagementContent({ stall, dishes, userData }: Stal
   const [dishToDelete, setDishToDelete] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState("dishes")
   const [isLoading, setIsLoading] = useState(false)
+  const { averageRating, totalRatings } = getRatingStats(reviews)
 
   const handleAddDish = async(newDish: DishFormData) => {
     try {
@@ -194,7 +199,7 @@ export default function StallManagementContent({ stall, dishes, userData }: Stal
         </TabsContent>
 
         <TabsContent value="reviews">
-          {/* <StallReviewsSection stallId={stall.stallID} stallName={stall.name} /> */}
+          <StallReviews reviews={reviews} rating={averageRating} reviewCount={totalRatings} currentUserId={userId} userData={userData} stallID={stall.stallID} />
         </TabsContent>
       </Tabs>
 

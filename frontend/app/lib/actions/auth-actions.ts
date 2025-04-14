@@ -13,6 +13,7 @@ export async function signUp(formData: SignUpFormData) {
       ...formData,
     },
   };
+
   try {
     const response = await fetch(`${API_URL}/auth/signup`, {
       method: "POST",
@@ -233,3 +234,4 @@ export async function getUserData() {
     return session.userData;
   }
 }
+

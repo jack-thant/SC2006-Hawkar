@@ -47,6 +47,9 @@ export default function SignUpForm() {
         try {
             await signUp(formData)
             toast.success("You're all signed up! Redirecting you to log in...", { duration: 3000})
+            if (formData.role === "Hawker") {
+                toast.success("Sign-in successful! Your account is pending approval. You'll be notified once approved.")
+            }
             router.push("/login")
         } catch (err) {
             setError(err instanceof Error ? err.message : "Something went wrong, please try again")

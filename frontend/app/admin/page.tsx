@@ -6,10 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { UserCheck, Flag } from "lucide-react"
+import { fetchAllHawkers } from '../lib/actions/admin-actions'
+import { Hawker } from '../types/hawker'
 
  const AdminDashboard = async () => {
   const session = await getSession()
   const userData = await getUserData()
+  const hawkers: Array<Hawker> = await fetchAllHawkers()
 
   if (!session) {
     redirect('/login')
@@ -29,10 +32,12 @@ import { UserCheck, Flag } from "lucide-react"
     }
   }
 
+  const pendingHawkers = hawkers.filter(r => r.verifyStatus == false)
+
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="min-h-screen flex flex-col ">
       <Navbar username={userData?.name || "Admin"} />
-      <div className="container mx-auto py-8">
+      <div className="container mx-auto py-8 px-4 md:px-8">
         <div className="flex flex-col items-center justify-center text-center mb-8">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
           <p className="mt-4 text-muted-foreground max-w-2xl">
@@ -47,7 +52,7 @@ import { UserCheck, Flag } from "lucide-react"
               <UserCheck className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">2</div>
+              <div className="text-2xl font-bold">{pendingHawkers.length}</div>
               <p className="text-xs text-muted-foreground">Pending approval requests</p>
               <Button asChild className="w-full mt-4">
                 <Link href="/admin/hawker-approvals">Manage Approvals</Link>

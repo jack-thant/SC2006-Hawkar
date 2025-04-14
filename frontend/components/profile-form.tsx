@@ -120,11 +120,11 @@ export default function ProfileForm({ formData, setFormData, onSubmit, isLoading
                     {formData.role === "Hawker" && (
                         <>
                             <div className="space-y-2">
-                                <Label htmlFor="sfaLicenseNumber">SFA licence num</Label>
+                                <Label htmlFor="license">SFA licence number</Label>
                                 <Input
-                                    id="sfaLicenseNumber"
-                                    name="sfaLicenseNumber"
-                                    value={formData.sfaLicenseNumber || ""}
+                                    id="license"
+                                    name="license"
+                                    value={formData.license || ""}
                                     placeholder="SFA123456"
                                     onChange={handleInputChange}
                                     className="bg-gray-200 py-6"

@@ -31,6 +31,7 @@ import {
 import { ReportFormData, ReportType, Review, ReviewFormData } from "@/app/types/review"
 import { addReview, deleteReview, editReview, reportReview } from "@/app/lib/actions/review-actions"
 import { useRouter } from "next/navigation"
+import { UserData } from "@/app/types/auth"
 
 interface StallReviewsProps {
   reviews: Review[]
@@ -38,9 +39,10 @@ interface StallReviewsProps {
   reviewCount: number
   currentUserId: string
   stallID: number
+  userData: UserData
 }
 
-export default function StallReviews({ reviews, rating, reviewCount, currentUserId, stallID }: StallReviewsProps) {
+export default function StallReviews({ reviews, rating, reviewCount, currentUserId, stallID, userData }: StallReviewsProps) {
   const [sortBy, setSortBy] = useState("recent")
   const [showAddReviewDialog, setShowAddReviewDialog] = useState(false)
   const [showEditReviewDialog, setShowEditReviewDialog] = useState(false)
@@ -210,13 +212,17 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
             ))}
           </div>
         </div>
+        {
+          userData.role === "Consumer" && (
+            <div className="flex flex-col justify-center items-center gap-4 p-6">
+              <p className="text-center">Share your experience at this stall</p>
+              <Button size="lg" className="w-full sm:w-auto" onClick={() => setShowAddReviewDialog(true)}>
+                Add Review
+              </Button>
+            </div>
+          )
+        }
 
-        <div className="flex flex-col justify-center items-center gap-4 p-6">
-          <p className="text-center">Share your experience at this stall</p>
-          <Button size="lg" className="w-full sm:w-auto" onClick={() => setShowAddReviewDialog(true)}>
-            Add Review
-          </Button>
-        </div>
       </div>
       {
         validReviews.length > 0 && (
