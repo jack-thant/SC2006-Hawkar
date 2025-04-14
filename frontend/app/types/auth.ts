@@ -50,6 +50,12 @@ export interface LoginFormData {
   password: string;
 }
 
+export interface GoogleUserData {
+  email: string;
+  name: string;
+  picture?: string;
+}
+
 export interface UserData {
   name: string;
   emailAddress: string;
@@ -57,6 +63,7 @@ export interface UserData {
   contactNumber?: string;
   role: UserType;
   verifyStatus?: boolean;
+  isGoogleUser?: boolean;
 }
 
 export interface Consumer {

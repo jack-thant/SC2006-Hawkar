@@ -19,6 +19,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user_example.com_55d0ae45_profile-photo",
             "contactNumber": "95874723",
             "role": Role.ADMIN,
+            "isGoogleUser": False,
         },
         {
             "userID": 12,
@@ -28,6 +29,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user10_example.com_15dc5a24_profile-photo",
             "contactNumber": "95874723",
             "role": Role.ADMIN,
+            "isGoogleUser": False,
         },
         # ---------- Consumer ---------- #
         {
@@ -38,6 +40,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user_example.com_55d0ae45_profile-photo",
             "contactNumber": "95874723",
             "role": Role.CONSUMER,
+            "isGoogleUser": False,
         },
         {
             "userID": 3,
@@ -47,6 +50,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user10_example.com_15dc5a24_profile-photo",
             "contactNumber": "95874723",
             "role": Role.CONSUMER,
+            "isGoogleUser": False,
         },
         {
             "userID": 4,
@@ -56,6 +60,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user_example.com_55d0ae45_profile-photo",
             "contactNumber": "95874723",
             "role": Role.CONSUMER,
+            "isGoogleUser": False,
         },
         # ---------- Hawker ---------- #
         {
@@ -66,6 +71,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user10_example.com_15dc5a24_profile-photo",
             "contactNumber": "95874723",
             "role": Role.HAWKER,
+            "isGoogleUser": False,
         },
         {
             "userID": 6,
@@ -75,6 +81,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user_example.com_55d0ae45_profile-photo",
             "contactNumber": "95874723",
             "role": Role.HAWKER,
+            "isGoogleUser": False,
         },
         {
             "userID": 7,
@@ -84,6 +91,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user10_example.com_15dc5a24_profile-photo",
             "contactNumber": "95874723",
             "role": Role.HAWKER,
+            "isGoogleUser": False,
         },
         {
             "userID": 8,
@@ -93,6 +101,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user10_example.com_15dc5a24_profile-photo",
             "contactNumber": "95874723",
             "role": Role.HAWKER,
+            "isGoogleUser": False,
         },
         {
             "userID": 9,
@@ -102,6 +111,7 @@ DATABASE_SEED_DATA = {
             "profilePhoto": "http://localhost:9000/profile-photo/user10_example.com_15dc5a24_profile-photo",
             "contactNumber": "95874723",
             "role": Role.HAWKER,
+            "isGoogleUser": False,
         },
     ],
     # ---------- Admin ---------- #

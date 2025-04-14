@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum
+from sqlalchemy import Column, Integer, String, Enum, Boolean
 from sqlalchemy.orm import relationship, Mapped
 
 from database import Base
@@ -11,10 +11,11 @@ class User(Base):
     userID = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     emailAddress = Column(String, unique=True, index=True)
-    password = Column(String)
+    password = Column(String, nullable=True)  # Made nullable for Google users
     profilePhoto = Column(String)
     contactNumber = Column(String)
     role = Column(Enum(Role))
+    isGoogleUser = Column(Boolean, default=False)
 
     admin: Mapped["Admin"] = relationship("Admin", back_populates="user")
     consumer: Mapped["Consumer"] = relationship("Consumer", back_populates="user")

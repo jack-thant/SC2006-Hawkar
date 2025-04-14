@@ -21,6 +21,7 @@ import {
 import { useForm } from "react-hook-form";
 import { login } from "@/app/lib/actions/auth-actions";
 import { useRouter } from "next/navigation";
+import GoogleLoginButton from "./google-login-button";
 
 const loginFormSchema = z.object({
   emailAddress: z.string().email({
@@ -136,20 +137,7 @@ export default function LoginForm() {
           <Separator className="flex-1" />
         </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full py-6"
-          onClick={() => console.log("Google sign up")}
-        >
-          <Image
-            src="/google-icon.svg"
-            width={20}
-            height={20}
-            alt="Google icon"
-          />
-          <span>Sign in with Google</span>
-        </Button>
+        <GoogleLoginButton mode="login" />
       </div>
     </div>
   );

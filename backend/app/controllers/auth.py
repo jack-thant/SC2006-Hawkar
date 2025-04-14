@@ -38,6 +38,19 @@ class AuthController:
 
         return db_user
 
-    def loginWithGoogle(db: Session, email: str):
-        user = user_services.get_user_by_email(db, email)
-        return True if user else False
+    def loginOrSignupWithGoogle(db: Session, email: str, name: str, picture: str = ""):
+        """Handle Google authentication - login existing users or create new ones"""
+        print(f"Processing Google authentication for: {email}")
+
+        # The login_or_create_google_user function now returns the appropriate
+        # Admin/Consumer/Hawker object already, so we don't need to do additional mapping
+        result = user_services.login_or_create_google_user(db, email, name, picture)
+
+        if not result:
+            print("Failed to process Google authentication - no result returned")
+            raise HTTPException(
+                status_code=400, detail="Failed to process Google authentication"
+            )
+
+        print(f"Successfully authenticated Google user: {result}")
+        return result

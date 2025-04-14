@@ -42,8 +42,18 @@ class ObjectStorage:
     def upload_profile_photo(self, email_address: str, encoded_image: str) -> str:
         """Upload profile photo to Minio and return URL"""
         try:
-            header, encoded = encoded_image.split(",", 1)
-            decoded_data = base64.b64decode(encoded)
+            # Handle both data URLs and direct URLs (like from Google OAuth)
+            if encoded_image.startswith("http"):
+                # Just return the Google URL directly
+                return encoded_image
+
+            # Handle base64 data URL format
+            if "," in encoded_image:
+                header, encoded = encoded_image.split(",", 1)
+                decoded_data = base64.b64decode(encoded)
+            else:
+                # Raw base64
+                decoded_data = base64.b64decode(encoded_image)
 
             # Generate unique ID to avoid overwriting previous photos
             unique_id = str(uuid.uuid4())[:8]
@@ -60,7 +70,6 @@ class ObjectStorage:
 
             return f"http://localhost:9000/profile-photo/{obj_name}"
         except Exception as e:
-            # Log the error
             print(f"Error uploading profile photo: {str(e)}")
             raise e
 

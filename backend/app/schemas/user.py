@@ -53,16 +53,18 @@ class User(UserBase):
     profilePhoto: Optional[str] = ""
     contactNumber: Optional[str] = ""
     role: Role
+    isGoogleUser: bool = False
 
     class ConfigDict:
         from_attributes = True
 
 
 class UserCreate(UserBase):
-    password: str
+    password: Optional[str] = None
     role: Role
     profilePhoto: Optional[str] = ""
     contactNumber: Optional[str] = ""
+    isGoogleUser: bool = False
 
 
 class UserUpdate(UserBase):
@@ -79,3 +81,9 @@ class UserLogin(BaseModel):
 class UserSignup(BaseModel):
     userType: Literal["admin", "consumer", "hawker"]
     data: Dict[str, Any]
+
+
+class GoogleUser(BaseModel):
+    email: EmailStr
+    name: str
+    picture: Optional[str] = ""

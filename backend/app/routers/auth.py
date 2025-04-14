@@ -69,3 +69,21 @@ def login(user: user_schemas.UserLogin, db: Session = Depends(get_db)):
 @router.get("/login-google/{email}", response_model=bool, tags=["Auth Controller"])
 def login_with_google(email: str, db: Session = Depends(get_db)):
     return AuthController.loginWithGoogle(db, email)
+
+
+@router.post(
+    "/login-google",
+    response_model=Union[
+        user_schemas.User,
+        admin_schemas.Admin,
+        consumer_schemas.Consumer,
+        hawker_schemas.Hawker,
+    ],
+    tags=["Auth Controller"],
+)
+def login_or_signup_with_google(
+    google_user: user_schemas.GoogleUser, db: Session = Depends(get_db)
+):
+    return AuthController.loginOrSignupWithGoogle(
+        db, google_user.email, google_user.name, google_user.picture
+    )

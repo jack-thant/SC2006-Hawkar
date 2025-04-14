@@ -15,6 +15,7 @@ import { toast } from "sonner"
 import { SignUpFormData, UserType } from "@/app/types/auth"
 import { signUp } from "@/app/lib/actions/auth-actions"
 import { useRouter } from "next/navigation"
+import GoogleLoginButton from "./google-login-button"
 
 export default function SignUpForm() {
     const [currentStep, setCurrentStep] = useState(1)
@@ -137,15 +138,7 @@ export default function SignUpForm() {
                             <Separator className="flex-1" />
                         </div>
 
-                        <Button type="button" variant="outline" className="w-full py-6" onClick={() => console.log("Google sign up")}>
-                            <Image
-                                src='/google-icon.svg'
-                                width={20}
-                                height={20}
-                                alt="Google icon"
-                                />
-                            <span>Sign up with Google</span>
-                        </Button>
+                        <GoogleLoginButton mode="signup" />
                     </form>
                 </div>
             ) : (

@@ -3,6 +3,10 @@ from sqlalchemy.orm import Session
 import schemas.user as user_schemas
 from models.user import User
 from services.objectStorage import ObjectStorage
+from models.admin import Admin
+from models.consumer import Consumer
+from models.hawker import Hawker
+from sqlalchemy.orm import joinedload
 
 import bcrypt
 
@@ -72,3 +76,99 @@ def login_user(db: Session, user: user_schemas.UserLogin):
         return db_user
 
     return None
+
+
+def login_or_create_google_user(
+    db: Session, email: str, name: str, profile_photo: str = ""
+):
+    """Login with Google or create a new user if they don't exist"""
+    print(f"Attempting Google login for email: {email}")
+
+    # Check if user already exists
+    db_user = db.query(User).filter(User.emailAddress == email).first()
+    storage = ObjectStorage()
+
+    # If user exists, we need to return the appropriate object based on role
+    if db_user:
+        print(f"Existing user found with ID: {db_user.userID}, role: {db_user.role}")
+
+        # For existing users, we need to return the appropriate object based on role
+        # instead of just the basic User object
+
+        match db_user.role:
+            case user_schemas.Role.ADMIN:
+                admin = (
+                    db.query(Admin)
+                    .options(joinedload(Admin.user))
+                    .filter(Admin.userID == db_user.userID)
+                    .first()
+                )
+                if admin:
+                    print(f"Returned admin object for user {db_user.userID}")
+                    return admin
+
+            case user_schemas.Role.CONSUMER:
+                consumer = (
+                    db.query(Consumer)
+                    .options(joinedload(Consumer.user))
+                    .filter(Consumer.userID == db_user.userID)
+                    .first()
+                )
+                if consumer:
+                    print(f"Returned consumer object for user {db_user.userID}")
+                    return consumer
+
+            case user_schemas.Role.HAWKER:
+                hawker = (
+                    db.query(Hawker)
+                    .options(joinedload(Hawker.user))
+                    .filter(Hawker.userID == db_user.userID)
+                    .first()
+                )
+                if hawker:
+                    print(f"Returned hawker object for user {db_user.userID}")
+                    return hawker
+
+    # If user does not exist, create a new user as Consumer
+    print(f"Creating new user for: {name}, {email}")
+    # Create user without password for Google users
+
+    profile_photo_url = storage.upload_profile_photo(email, profile_photo)
+
+    db_user = User(
+        name=name,
+        emailAddress=email,
+        role=user_schemas.Role.CONSUMER,
+        profilePhoto=profile_photo_url,
+        isGoogleUser=True,
+    )
+
+    # Add and commit the user first to get the user ID
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    print(f"Created new user with ID: {db_user.userID}")
+
+    # Create consumer with default values
+    db_consumer = Consumer(
+        userID=db_user.userID,
+        consumerID=db_user.userID,
+        address="",
+        dietaryPreference=user_schemas.DietaryType.Normal,
+        preferredCuisine=user_schemas.CuisineType.Chinese,
+        ambulatoryStatus=user_schemas.StatusType.Normal,
+    )
+
+    db.add(db_consumer)
+    db.commit()
+    db.refresh(db_consumer)
+    print(f"Created new consumer record with ID: {db_consumer.consumerID}")
+
+    complete_consumer = (
+        db.query(Consumer)
+        .options(joinedload(Consumer.user))
+        .filter(Consumer.consumerID == db_consumer.consumerID)
+        .first()
+    )
+
+    return complete_consumer
