@@ -8,11 +8,14 @@ import Link from "next/link"
 import { UserCheck, Flag } from "lucide-react"
 import { fetchAllHawkers } from '../lib/actions/admin-actions'
 import { Hawker } from '../types/hawker'
+import { Review } from '../types/review'
+import { fetchReportedReviews } from '../lib/actions/review-actions'
 
  const AdminDashboard = async () => {
   const session = await getSession()
   const userData = await getUserData()
   const hawkers: Array<Hawker> = await fetchAllHawkers()
+  const reportedReviews: Array<Review> = await fetchReportedReviews()
 
   if (!session) {
     redirect('/login')
@@ -66,7 +69,7 @@ import { Hawker } from '../types/hawker'
               <Flag className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">5</div>
+              <div className="text-2xl font-bold">{reportedReviews.length}</div>
               <p className="text-xs text-muted-foreground">Reviews flagged by hawkers</p>
               <Button asChild className="w-full mt-4">
                 <Link href="/admin/reported-reviews">Manage Reports</Link>

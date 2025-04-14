@@ -1,6 +1,6 @@
 'use server'
 
-import { IgnoreReportPayload, Review, ReviewFormData } from "@/app/types/review"
+import { Review, ReviewFormData } from "@/app/types/review"
 import { revalidatePath } from "next/cache"
 
 const API_URL = process.env.NEXT_PUBLIC_DEV_API_URL
@@ -134,17 +134,13 @@ export async function reportReview(reviewID: number, formData: ReviewFormData) {
     }
 }
 
-export async function ignoreReportedReview(reviewID: number, payload: IgnoreReportPayload) {
+export async function ignoreReportedReview(reviewID: number) {
     try {
         const response = await fetch(`${API_URL}/admin/reports/${reviewID}/ignore`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                reviewID: reviewID,
-                ...payload
-            }),
         });
         if (!response.ok) {
             const errorData = await response.json();

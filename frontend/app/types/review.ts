@@ -28,13 +28,3 @@ export interface ReportFormData {
     reportType: ReportType;
     reportText: string;
 }
-
-export interface IgnoreReportPayload {
-    stallID: number,
-    rating: number,
-    isReported: boolean,
-    reviewText: string,
-    reportType: string
-    reportText: string
-    consumerID: number
-}
