@@ -1,54 +1,87 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Search, Filter, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import FilterModal from "./filter-modal"
+import { HawkerCenter } from "@/app/types/hawker"
+import { CuisineType } from "@/app/types/auth"
+import { HygieneRating, PriceRange, Stall } from "@/app/types/stall"
+import { countActiveFilters, filterStalls, hasActiveFilters } from "@/app/lib/utils/filter"
 
 export interface FilterState {
   startTime: string
   endTime: string
-  amenities: string[]
-  accessibility: string[]
-  foodPreferences: string[]
-  priceRange: number
+  foodPreferences: CuisineType[]
+  priceRange: string
   location: string
   hygieneRating: string
 }
 
-export default function SearchBar() {
+interface SearchBarProps {
+  hawkerCenters: Array<HawkerCenter>
+  stalls: Array<Stall>
+  onFilteredStallsChange: (filteredStalls: Array<Stall>) => void
+}
+
+export default function SearchBar({ hawkerCenters, stalls, onFilteredStallsChange }: SearchBarProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [appliedFilters, setAppliedFilters] = useState<FilterState | null>(null)
+  const [filteredStalls, setFilteredStalls] = useState<Array<Stall>>(stalls)
 
-  const handleApplyFilters = (filters: FilterState) => {
+  // Filter stalls whenever search query or filters change
+  useEffect(() => {
+    if (stalls.length > 0) {
+      const filtered = filterStalls(stalls, searchQuery, appliedFilters)
+      onFilteredStallsChange(filtered)
+    }
+  }, [searchQuery, appliedFilters, stalls, onFilteredStallsChange])
+
+  // Stable handlers for event callbacks
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }, [])
+
+  const handleOpenFilterModal = useCallback(() => {
+    setIsFilterOpen(true)
+  }, [])
+
+  const handleCloseFilterModal = useCallback(() => {
+    setIsFilterOpen(false)
+  }, [])
+
+  const handleApplyFilters = useCallback((filters: FilterState) => {
     setAppliedFilters(filters)
     setIsFilterOpen(false)
-  }
+  }, [])
 
-  const removeFilter = (filterType: keyof FilterState) => {
+  const handleRemoveFilter = useCallback((filterType: keyof FilterState) => {
     if (!appliedFilters) return
 
     const newFilters = { ...appliedFilters }
 
-    if (filterType === "amenities" || filterType === "accessibility" || filterType === "foodPreferences") {
+    if (filterType === "foodPreferences") {
       newFilters[filterType] = []
-    } else if (filterType === "startTime" || filterType === "endTime") {
-      newFilters[filterType] = ""
-    } else if (filterType === "priceRange") {
-      newFilters[filterType] = 3
     } else {
       newFilters[filterType] = ""
     }
 
     setAppliedFilters(newFilters)
-  }
+  }, [appliedFilters])
 
-  const clearAllFilters = () => {
+  const handleRemoveFoodPreference = useCallback((food: CuisineType) => {
+    if (!appliedFilters) return
+    const newFoods = appliedFilters.foodPreferences.filter((f) => f !== food)
+    setAppliedFilters({ ...appliedFilters, foodPreferences: newFoods })
+  }, [appliedFilters])
+
+  const handleClearAllFilters = useCallback(() => {
     setAppliedFilters(null)
-  }
+    setSearchQuery("")
+  }, [])
 
   return (
     <div className="w-full">
@@ -57,20 +90,24 @@ export default function SearchBar() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search..."
+            placeholder="Search stall name..."
             className="pl-9 py-6"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
-        <Button variant="outline" onClick={() => setIsFilterOpen(true)} className="flex items-center gap-2 py-6">
+        <Button variant="outline" onClick={handleOpenFilterModal} className="flex items-center gap-2 py-6">
           <Filter className="h-4 w-4" />
           <span>Filters</span>
+          {appliedFilters && 
+            hasActiveFilters(appliedFilters) && 
+            <Badge className="ml-2 bg-primary text-white">{countActiveFilters(appliedFilters)}</Badge>
+          }
         </Button>
       </div>
 
       {/* Applied Filters */}
-      {appliedFilters && (
+      {appliedFilters && hasActiveFilters(appliedFilters) && (
         <div className="mt-3 flex flex-wrap gap-2 max-w-3xl mx-auto">
           {appliedFilters.startTime && (
             <Badge variant="secondary" className="flex items-center gap-1">
@@ -79,7 +116,7 @@ export default function SearchBar() {
                 variant="ghost"
                 size="icon"
                 className="h-4 w-4 p-0 ml-1"
-                onClick={() => removeFilter("startTime")}
+                onClick={() => handleRemoveFilter("startTime")}
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -89,45 +126,16 @@ export default function SearchBar() {
           {appliedFilters.endTime && (
             <Badge variant="secondary" className="flex items-center gap-1">
               Closes: {appliedFilters.endTime}
-              <Button variant="ghost" size="icon" className="h-4 w-4 p-0 ml-1" onClick={() => removeFilter("endTime")}>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-4 w-4 p-0 ml-1" 
+                onClick={() => handleRemoveFilter("endTime")}
+              >
                 <X className="h-3 w-3" />
               </Button>
             </Badge>
           )}
-
-          {appliedFilters.amenities.map((amenity) => (
-            <Badge key={amenity} variant="secondary" className="flex items-center gap-1">
-              {amenity}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 p-0 ml-1"
-                onClick={() => {
-                  const newAmenities = appliedFilters.amenities.filter((a) => a !== amenity)
-                  setAppliedFilters({ ...appliedFilters, amenities: newAmenities })
-                }}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          ))}
-
-          {appliedFilters.accessibility.map((item) => (
-            <Badge key={item} variant="secondary" className="flex items-center gap-1">
-              {item}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 p-0 ml-1"
-                onClick={() => {
-                  const newItems = appliedFilters.accessibility.filter((a) => a !== item)
-                  setAppliedFilters({ ...appliedFilters, accessibility: newItems })
-                }}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          ))}
 
           {appliedFilters.foodPreferences.map((food) => (
             <Badge key={food} variant="secondary" className="flex items-center gap-1">
@@ -136,24 +144,21 @@ export default function SearchBar() {
                 variant="ghost"
                 size="icon"
                 className="h-4 w-4 p-0 ml-1"
-                onClick={() => {
-                  const newFoods = appliedFilters.foodPreferences.filter((f) => f !== food)
-                  setAppliedFilters({ ...appliedFilters, foodPreferences: newFoods })
-                }}
+                onClick={() => handleRemoveFoodPreference(food)}
               >
                 <X className="h-3 w-3" />
               </Button>
             </Badge>
           ))}
 
-          {appliedFilters.priceRange > 0 && (
+          {appliedFilters.priceRange && (
             <Badge variant="secondary" className="flex items-center gap-1">
-              Max Price: ${appliedFilters.priceRange}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 p-0 ml-1"
-                onClick={() => removeFilter("priceRange")}
+              Price Range: {appliedFilters.priceRange}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-4 w-4 p-0 ml-1" 
+                onClick={() => handleRemoveFilter("priceRange")}
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -163,7 +168,12 @@ export default function SearchBar() {
           {appliedFilters.location && (
             <Badge variant="secondary" className="flex items-center gap-1">
               Location: {appliedFilters.location}
-              <Button variant="ghost" size="icon" className="h-4 w-4 p-0 ml-1" onClick={() => removeFilter("location")}>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-4 w-4 p-0 ml-1" 
+                onClick={() => handleRemoveFilter("location")}
+              >
                 <X className="h-3 w-3" />
               </Button>
             </Badge>
@@ -176,35 +186,44 @@ export default function SearchBar() {
                 variant="ghost"
                 size="icon"
                 className="h-4 w-4 p-0 ml-1"
-                onClick={() => removeFilter("hygieneRating")}
+                onClick={() => handleRemoveFilter("hygieneRating")}
               >
                 <X className="h-3 w-3" />
               </Button>
             </Badge>
           )}
 
-          {(appliedFilters.startTime ||
-            appliedFilters.endTime ||
-            appliedFilters.amenities.length > 0 ||
-            appliedFilters.accessibility.length > 0 ||
-            appliedFilters.foodPreferences.length > 0 ||
-            appliedFilters.priceRange > 0 ||
-            appliedFilters.location ||
-            appliedFilters.hygieneRating) && (
-            <Button variant="ghost" size="sm" className="text-xs" onClick={clearAllFilters}>
+          {hasActiveFilters(appliedFilters) && (
+            <Button variant="ghost" size="sm" className="text-xs" onClick={handleClearAllFilters}>
               Clear All
             </Button>
           )}
         </div>
       )}
 
+      {searchQuery && (
+        <div className="mt-3 flex items-center max-w-3xl mx-auto">
+          <Badge variant="secondary" className="flex items-center gap-1">
+            Search: {searchQuery}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-4 w-4 p-0 ml-1"
+              onClick={() => setSearchQuery("")}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </Badge>
+        </div>
+      )}
+
       <FilterModal
         isOpen={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
+        onClose={handleCloseFilterModal}
         onApply={handleApplyFilters}
         initialFilters={appliedFilters}
+        hawkerCenters={hawkerCenters}
       />
     </div>
   )
 }
-

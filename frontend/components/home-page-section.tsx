@@ -4,9 +4,10 @@ import HawkerStallList from "@/components/hawker-stall-list"
 import Navbar from "@/components/navbar"
 import SearchBar from "@/components/search-bar"
 import ViewToggle from "@/components/view-toggle"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import dynamic from "next/dynamic";
 import { HomeSectionProps } from "@/app/types/home-section";
+import { Stall } from "@/app/types/stall";
 
 // Import MapView dynamically with no SSR to avoid hydration issues
 const MapView = dynamic(() => import("@/components/map-view"), {
@@ -18,14 +19,18 @@ const MapView = dynamic(() => import("@/components/map-view"), {
     ),
 })
 
-export default function HomePageSection({ stalls, userData }: HomeSectionProps) {
+export default function HomePageSection({ stalls, userData, hawkerCenters }: HomeSectionProps) {
     const [currentView, setCurrentView] = useState<"list" | "map" | "both">("both")
+    const [filteredStalls, setFilteredStalls] = useState<Array<Stall>>(stalls)
+    const [mounted, setMounted] = useState(false)
 
     const handleViewToggle = (view: "list" | "map" | "both") => {
         setCurrentView(view)
     }
 
-    const [mounted, setMounted] = useState(false)
+    const handleFilteredStallsChange = useCallback((newFilteredStalls: Array<Stall>) => {
+        setFilteredStalls(newFilteredStalls)
+    }, [])
 
     // Set mounted state to true after component mounts
     useEffect(() => {
@@ -38,11 +43,15 @@ export default function HomePageSection({ stalls, userData }: HomeSectionProps) 
             <div className="flex flex-col items-center justify-center text-center p-8">
                 <h1 className="text-3xl font-bold">Your Guide to the Best Hawker Eats!</h1>
                 <p className="mt-4 text-muted-foreground max-w-2xl">
-                    From legendary chicken rice to the crispiest prata, uncover Singapore’s best hawker stalls. Browse reviews, discover top-rated dishes, and share your foodie finds!
+                    From legendary chicken rice to the crispiest prata, uncover Singapore's best hawker stalls. Browse reviews, discover top-rated dishes, and share your foodie finds!
                 </p>
             </div>
             <div className="mb-8 px-6">
-                <SearchBar />
+                <SearchBar 
+                    hawkerCenters={hawkerCenters}
+                    stalls={stalls}
+                    onFilteredStallsChange={handleFilteredStallsChange}
+                />
             </div>
             <div className="flex justify-center mb-6">
                 <ViewToggle onToggle={handleViewToggle} currentView={currentView} />
@@ -53,7 +62,7 @@ export default function HomePageSection({ stalls, userData }: HomeSectionProps) 
                     {/* List View */}
                     {(currentView === "list" || currentView === "both") && (
                         <div className={`${currentView === "both" ? "lg:col-span-2" : "lg:col-span-3"}`}>
-                            <HawkerStallList stalls={stalls}/>
+                            <HawkerStallList stalls={filteredStalls}/>
                         </div>
                     )}
 
@@ -65,7 +74,7 @@ export default function HomePageSection({ stalls, userData }: HomeSectionProps) 
                       h-[calc(100vh-200px)]
                     `}
                         >
-                            <MapView stalls={stalls} />
+                            <MapView stalls={filteredStalls} />
                         </div>
                     )}
                 </div>
