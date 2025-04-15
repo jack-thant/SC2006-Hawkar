@@ -10,14 +10,12 @@ from services.objectStorage import ObjectStorage
 
 
 def convert_str_to_list(images_string):
-    """
-    Convert comma-separated image URLs to a list.
+    """Convert comma-separated image URLs to a list.
 
     Args:
-        images_string: String of comma-separated image URLs or None
-
+        images_string (str or None): String of comma-separated image URLs or None.
     Returns:
-        List of image URL strings
+        list: List of image URL strings.
     """
     if images_string and isinstance(images_string, str):
         return [url.strip() for url in images_string.split(",") if url.strip()]
@@ -25,14 +23,12 @@ def convert_str_to_list(images_string):
 
 
 def convert_list_to_str(images_list):
-    """
-    Convert list of image URLs to comma-separated string.
+    """Convert list of image URLs to comma-separated string.
 
     Args:
-        images_list: List of image URL strings or None
-
+        images_list (list or None): List of image URL strings or None.
     Returns:
-        Comma-separated string of image URLs
+        str: Comma-separated string of image URLs.
     """
     if images_list and isinstance(images_list, list):
         string_values = [
@@ -44,6 +40,16 @@ def convert_list_to_str(images_list):
 
 
 def get_stall_by_stall_id(db: Session, stallID: int):
+    """Retrieve a stall by its stall ID.
+
+    Args:
+        db (Session): Database session.
+        stallID (int): ID of the stall.
+    Raises:
+        HTTPException: If the stall is not found.
+    Returns:
+        Stall: The stall object.
+    """
     db_stall = db.query(Stall).filter(Stall.stallID == stallID).first()
 
     if not db_stall:
@@ -56,6 +62,16 @@ def get_stall_by_stall_id(db: Session, stallID: int):
 
 
 def get_stalls_by_hawker_id(db: Session, hawkerID: int):
+    """Retrieve all stalls for a given hawker ID.
+
+    Args:
+        db (Session): Database session.
+        hawkerID (int): ID of the hawker.
+    Raises:
+        HTTPException: If the hawkerID is invalid.
+    Returns:
+        list: List of stalls for the hawker.
+    """
     db_stalls = db.query(Stall).filter(Stall.hawkerID == hawkerID)
 
     if not db_stalls:
@@ -69,6 +85,15 @@ def get_stalls_by_hawker_id(db: Session, hawkerID: int):
 
 
 def get_all_stalls(db: Session, skip: int = 0, limit: int = 100):
+    """Retrieve all stalls with pagination.
+
+    Args:
+        db (Session): Database session.
+        skip (int): Number of records to skip.
+        limit (int): Maximum number of records to return.
+    Returns:
+        list: List of stalls.
+    """
     db_stalls = db.query(Stall).offset(skip).limit(limit).all()
 
     # Convert images from string to list for each stall
@@ -79,12 +104,31 @@ def get_all_stalls(db: Session, skip: int = 0, limit: int = 100):
 
 
 def get_all_hawker_centers(db: Session, skip: int = 0, limit: int = 100):
+    """Retrieve all hawker centers with pagination.
+
+    Args:
+        db (Session): Database session.
+        skip (int): Number of records to skip.
+        limit (int): Maximum number of records to return.
+    Returns:
+        list: List of hawker centers.
+    """
     db_hawker_centers = db.query(HawkerCenter).offset(skip).limit(limit).all()
 
     return db_hawker_centers
 
 
 def create_stall(db: Session, stall: stall_schemas.StallCreate):
+    """Create a new stall.
+
+    Args:
+        db (Session): Database session.
+        stall (StallCreate): Stall creation schema.
+    Raises:
+        HTTPException: If the hawkerID is invalid.
+    Returns:
+        Stall: The created stall object.
+    """
     db_hawker = db.query(Hawker).filter(Hawker.hawkerID == stall.hawkerID).first()
     if not db_hawker:
         raise HTTPException(status_code=400, detail="Invalid hawkerID")
@@ -134,6 +178,15 @@ def create_stall(db: Session, stall: stall_schemas.StallCreate):
 
 
 def update_stall(db: Session, updated_stall: stall_schemas.StallUpdate, stall_id: int):
+    """Update an existing stall's information.
+
+    Args:
+        db (Session): Database session.
+        updated_stall (StallUpdate): Updated stall schema.
+        stall_id (int): ID of the stall to update.
+    Returns:
+        Stall: The updated stall object, or None if not found.
+    """
     db_stall = db.query(Stall).filter(Stall.stallID == stall_id).first()
     if not db_stall:
         return None
@@ -180,6 +233,16 @@ def update_stall(db: Session, updated_stall: stall_schemas.StallUpdate, stall_id
 
 
 def delete_stall(db: Session, stallID: int) -> bool:
+    """Delete a stall by its ID.
+
+    Args:
+        db (Session): Database session.
+        stallID (int): ID of the stall to delete.
+    Raises:
+        HTTPException: If the stallID is invalid.
+    Returns:
+        bool: True if deleted successfully.
+    """
     db_stall = db.query(Stall).filter(Stall.stallID == stallID).first()
 
     if not db_stall:

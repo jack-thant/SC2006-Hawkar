@@ -5,36 +5,58 @@ from datetime import datetime
 import json
 
 
-
-
 class WebSocketConnectionManager:
+    """Manages WebSocket connections for broadcasting and messaging."""
+
     def __init__(self):
+        """Initialize the WebSocketConnectionManager with an empty list of active connections."""
         self.active_connections: List[WebSocket] = []
 
     async def connect(self, websocket: WebSocket):
+        """Accept and register a new WebSocket connection.
+
+        Args:
+            websocket (WebSocket): The WebSocket connection to accept.
+        """
         await websocket.accept()
         self.active_connections.append(websocket)
 
     def disconnect(self, websocket: WebSocket):
+        """Remove a WebSocket connection from the active connections list.
+
+        Args:
+            websocket (WebSocket): The WebSocket connection to remove.
+        """
         self.active_connections.remove(websocket)
 
     async def send_personal_message(self, message: str, websocket: WebSocket):
+        """Send a personal message to a specific WebSocket connection.
+
+        Args:
+            message (str): The message to send.
+            websocket (WebSocket): The WebSocket connection to send the message to.
+        """
         await websocket.send_text(message)
 
     async def broadcast(self, message: str):
+        """Broadcast a message to all active WebSocket connections.
+
+        Args:
+            message (str): The message to broadcast.
+        """
         for connection in self.active_connections:
             await connection.send_text(message)
 
 
-#WHY IS THE BWLOW FUNCTION HERE?
-#--------THE BOTTOM FUNCTION IS POINTLESS SINCE IT SHOULD BE RUN IN THE ROUTE CODE------------#
-"""async def business_logic(
+# The function below is commented out and not used in this module.
+# It is left here for reference and should be moved to the route code if needed.
+"""Handles business logic for WebSocket communication, including message processing and broadcasting.
+async def business_logic(
     web_socket_manager: WebSocketConnectionManager,
     websocket: WebSocket,
     client_id: int,
     db: Session,
 ):
-   
     try:
         while True:
             data = await websocket.receive_text()
@@ -97,4 +119,5 @@ class WebSocketConnectionManager:
             "type": "disconnect",
             "message": "Offline",
         }
-        await web_socket_manager.broadcast(json.dumps(message))"""
+        await web_socket_manager.broadcast(json.dumps(message))
+"""

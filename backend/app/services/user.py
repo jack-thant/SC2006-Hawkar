@@ -14,18 +14,51 @@ salt = bcrypt.gensalt()
 
 
 def get_user_by_id(db: Session, userID: int):
+    """Retrieve a user by their user ID.
+
+    Args:
+        db (Session): Database session.
+        userID (int): User ID of the user.
+    Returns:
+        User: The user object, or None if not found.
+    """
     return db.query(User).filter(User.userID == userID).first()
 
 
 def get_user_by_email(db: Session, email: str):
+    """Retrieve a user by their email address.
+
+    Args:
+        db (Session): Database session.
+        email (str): Email address of the user.
+    Returns:
+        User: The user object, or None if not found.
+    """
     return db.query(User).filter(User.emailAddress == email).first()
 
 
 def get_all_users(db: Session, skip: int = 0, limit: int = 100):
+    """Retrieve all users with pagination.
+
+    Args:
+        db (Session): Database session.
+        skip (int): Number of records to skip.
+        limit (int): Maximum number of records to return.
+    Returns:
+        list: List of users.
+    """
     return db.query(User).offset(skip).limit(limit).all()
 
 
 def create_user(db: Session, user: user_schemas.UserCreate):
+    """Create a new user with hashed password and optional profile photo.
+
+    Args:
+        db (Session): Database session.
+        user (UserCreate): User creation schema.
+    Returns:
+        User: The created user object.
+    """
     # hash password
     user.password = bcrypt.hashpw(user.password.encode("utf-8"), salt=salt)
     profile_photo_url = None
@@ -45,6 +78,14 @@ def create_user(db: Session, user: user_schemas.UserCreate):
 
 
 def update_user(db: Session, updated_user: user_schemas.UserUpdate):
+    """Update an existing user's information.
+
+    Args:
+        db (Session): Database session.
+        updated_user (UserUpdate): Updated user schema.
+    Returns:
+        User: The updated user object, or None if not found.
+    """
     db_user = db.query(User).filter(User.userID == updated_user.userID).first()
     if not db_user:
         return None
@@ -68,6 +109,14 @@ def update_user(db: Session, updated_user: user_schemas.UserUpdate):
 
 
 def login_user(db: Session, user: user_schemas.UserLogin):
+    """Authenticate a user by email and password.
+
+    Args:
+        db (Session): Database session.
+        user (UserLogin): User login schema.
+    Returns:
+        User: The authenticated user object, or None if authentication fails.
+    """
     db_user = db.query(User).filter(User.emailAddress == user.emailAddress).first()
     if not db_user:
         return None
@@ -81,7 +130,16 @@ def login_user(db: Session, user: user_schemas.UserLogin):
 def login_or_create_google_user(
     db: Session, email: str, name: str, profile_photo: str = ""
 ):
-    """Login with Google or create a new user if they don't exist"""
+    """Login with Google or create a new user and consumer if not found.
+
+    Args:
+        db (Session): Database session.
+        email (str): Email address from Google.
+        name (str): Name from Google.
+        profile_photo (str, optional): Profile photo URL from Google. Defaults to "".
+    Returns:
+        User|Admin|Consumer|Hawker: The user or role-specific object.
+    """
     print(f"Attempting Google login for email: {email}")
 
     # Check if user already exists

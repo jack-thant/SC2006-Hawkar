@@ -8,28 +8,25 @@ from models.user import User
 
 
 def convert_favorite_stalls_to_list(favorite_stalls):
-    """
-    Convert favorite stalls from string format to list of integers.
-    
+    """Convert favorite stalls from string format to list of integers.
+
     Args:
-        favorite_stalls: String of comma-separated stall IDs or None
-        
+        favorite_stalls (str or None): String of comma-separated stall IDs or None.
     Returns:
-        List of integers representing stall IDs
+        list: List of integers representing stall IDs.
     """
     if favorite_stalls and isinstance(favorite_stalls, str):
         return [int(id.strip()) for id in favorite_stalls.split(",") if id.strip()]
     return [] if favorite_stalls is None else favorite_stalls
 
+
 def convert_favorite_stalls_to_string(favorite_stalls):
-    """
-    Convert favorite stalls from list format to string.
-    
+    """Convert favorite stalls from list format to string.
+
     Args:
-        favorite_stalls: List of stall IDs or None
-        
+        favorite_stalls (list or None): List of stall IDs or None.
     Returns:
-        Comma-separated string of stall IDs
+        str: Comma-separated string of stall IDs.
     """
     if favorite_stalls and isinstance(favorite_stalls, list):
         return ", ".join(str(stall_id) for stall_id in favorite_stalls)
@@ -37,24 +34,49 @@ def convert_favorite_stalls_to_string(favorite_stalls):
 
 
 def get_consumer_by_user_id(db: Session, userID: int):
+    """Retrieve a consumer by their user ID.
+
+    Args:
+        db (Session): Database session.
+        userID (int): User ID of the consumer.
+    Returns:
+        Consumer: The consumer object, or None if not found.
+    """
     consumer = db.query(Consumer).filter(Consumer.userID == userID).first()
     if consumer is None:
         return None
-    
+
     # consumer.favoriteStalls = convert_favorite_stalls_to_list(consumer.favoriteStalls)
     return consumer
 
 
 def get_consumer_by_consumer_id(db: Session, consumerID: int):
+    """Retrieve a consumer by their consumer ID.
+
+    Args:
+        db (Session): Database session.
+        consumerID (int): Consumer ID.
+    Returns:
+        Consumer: The consumer object, or None if not found.
+    """
     consumer = db.query(Consumer).filter(Consumer.consumerID == consumerID).first()
     if consumer is None:
         return None
-    
+
     # consumer.favoriteStalls = convert_favorite_stalls_to_list(consumer.favoriteStalls)
     return consumer
 
 
 def get_all_consumers(db: Session, skip: int = 0, limit: int = 100):
+    """Retrieve all consumers with pagination.
+
+    Args:
+        db (Session): Database session.
+        skip (int): Number of records to skip.
+        limit (int): Maximum number of records to return.
+    Returns:
+        list: List of consumers, or None if none found.
+    """
     consumers = db.query(Consumer).offset(skip).limit(limit).all()
     if consumers is None:
         return None
@@ -64,6 +86,14 @@ def get_all_consumers(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_consumer(db: Session, user: consumer_schemas.ConsumerCreate):
+    """Create a new consumer and associated user.
+
+    Args:
+        db (Session): Database session.
+        user (ConsumerCreate): Consumer creation schema.
+    Returns:
+        Consumer: The created consumer object, or None if user creation fails.
+    """
     user_to_create = user_schemas.UserCreate(
         name=user.name,
         emailAddress=user.emailAddress,
@@ -76,7 +106,7 @@ def create_consumer(db: Session, user: consumer_schemas.ConsumerCreate):
 
     if not db_user:
         return None
-    
+
     # favorite_stalls_str = convert_favorite_stalls_to_string(user.favoriteStalls)
 
     db_consumer = Consumer(
@@ -98,7 +128,14 @@ def create_consumer(db: Session, user: consumer_schemas.ConsumerCreate):
 
 
 def update_consumer(db: Session, updated_consumer: consumer_schemas.ConsumerUpdate):
+    """Update an existing consumer and associated user.
 
+    Args:
+        db (Session): Database session.
+        updated_consumer (ConsumerUpdate): Updated consumer schema.
+    Returns:
+        Consumer: The updated consumer object, or None if not found.
+    """
     db_user = db.query(User).filter(User.userID == updated_consumer.userID).first()
     db_consumer = (
         db.query(Consumer)
@@ -131,6 +168,6 @@ def update_consumer(db: Session, updated_consumer: consumer_schemas.ConsumerUpda
     db.add(db_consumer)
     db.commit()
     db.refresh(db_consumer)
-    
+
     # db_consumer.favoriteStalls = convert_favorite_stalls_to_list(db_consumer.favoriteStalls)
     return db_consumer

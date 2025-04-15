@@ -9,6 +9,16 @@ from models.user import User
 
 
 def get_hawker_by_user_id(db: Session, userID: int):
+    """Retrieve a hawker by the associated user ID.
+
+    Args:
+        db (Session): Database session.
+        userID (int): User ID of the hawker.
+    Raises:
+        HTTPException: If the hawker is not found.
+    Returns:
+        Hawker: The hawker object.
+    """
     hawker = db.query(Hawker).filter(Hawker.userID == userID).first()
 
     if not hawker:
@@ -21,6 +31,16 @@ def get_hawker_by_user_id(db: Session, userID: int):
 
 
 def get_hawker_by_hawker_id(db: Session, hawkerID: int):
+    """Retrieve a hawker by their hawker ID.
+
+    Args:
+        db (Session): Database session.
+        hawkerID (int): Hawker ID.
+    Raises:
+        HTTPException: If the hawker is not found.
+    Returns:
+        Hawker: The hawker object.
+    """
     hawker = db.query(Hawker).filter(Hawker.hawkerID == hawkerID).first()
 
     if not hawker:
@@ -32,6 +52,15 @@ def get_hawker_by_hawker_id(db: Session, hawkerID: int):
 
 
 def get_all_hawkers(db: Session, skip: int = 0, limit: int = 100):
+    """Retrieve all hawkers with pagination.
+
+    Args:
+        db (Session): Database session.
+        skip (int): Number of records to skip.
+        limit (int): Maximum number of records to return.
+    Returns:
+        list: List of hawkers.
+    """
     hawkers = db.query(Hawker).offset(skip).limit(limit).all()
 
     # for hawker in hawkers:
@@ -41,6 +70,16 @@ def get_all_hawkers(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_hawker(db: Session, user: hawker_schemas.HawkerCreate):
+    """Create a new hawker and associated user.
+
+    Args:
+        db (Session): Database session.
+        user (HawkerCreate): Hawker creation schema.
+    Raises:
+        HTTPException: If the email is already registered.
+    Returns:
+        Hawker: The created hawker object, or None if user creation fails.
+    """
     db_user = db.query(User).filter(User.emailAddress == user.emailAddress).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -81,6 +120,14 @@ def create_hawker(db: Session, user: hawker_schemas.HawkerCreate):
 
 
 def update_hawker(db: Session, updated_hawker: hawker_schemas.HawkerUpdate):
+    """Update an existing hawker and associated user.
+
+    Args:
+        db (Session): Database session.
+        updated_hawker (HawkerUpdate): Updated hawker schema.
+    Returns:
+        Hawker: The updated hawker object, or None if not found.
+    """
     db_user = db.query(User).filter(User.userID == updated_hawker.userID).first()
     db_hawker = (
         db.query(Hawker).filter(Hawker.hawkerID == updated_hawker.hawkerID).first()
@@ -113,6 +160,16 @@ def update_hawker(db: Session, updated_hawker: hawker_schemas.HawkerUpdate):
 
 
 def delete_hawker(db: Session, hawkerID: int) -> bool:
+    """Delete a hawker by their ID.
+
+    Args:
+        db (Session): Database session.
+        hawkerID (int): ID of the hawker to delete.
+    Raises:
+        HTTPException: If the hawkerID is invalid.
+    Returns:
+        bool: True if deleted successfully.
+    """
     db_hawker = db.query(Hawker).filter(Hawker.hawkerID == hawkerID).first()
 
     if not db_hawker:

@@ -11,6 +11,16 @@ from services.objectStorage import ObjectStorage
 
 
 def get_dish_by_dish_id(db: Session, dishID: int):
+    """Retrieve a dish by its dish ID.
+
+    Args:
+        db (Session): Database session.
+        dishID (int): ID of the dish.
+    Raises:
+        HTTPException: If the dish is not found.
+    Returns:
+        Dish: The dish object.
+    """
     db_dish = db.query(Dish).filter(Dish.dishID == dishID).first()
 
     if not db_dish:
@@ -20,6 +30,14 @@ def get_dish_by_dish_id(db: Session, dishID: int):
 
 
 def get_dishes_by_stall_id(db: Session, stallID: int):
+    """Retrieve all dishes for a given stall ID.
+
+    Args:
+        db (Session): Database session.
+        stallID (int): ID of the stall.
+    Returns:
+        list: List of dishes for the stall (empty if none found).
+    """
     db_dishes = db.query(Dish).filter(Dish.stallID == stallID).all()
 
     if not db_dishes:
@@ -40,12 +58,31 @@ def get_dishes_by_stall_id(db: Session, stallID: int):
 
 
 def get_all_dishes(db: Session, skip: int = 0, limit: int = 100):
+    """Retrieve all dishes with pagination.
+
+    Args:
+        db (Session): Database session.
+        skip (int): Number of records to skip.
+        limit (int): Maximum number of records to return.
+    Returns:
+        list: List of dishes.
+    """
     db_dishes = db.query(Dish).offset(skip).limit(limit).all()
 
     return db_dishes
 
 
 def create_dish(db: Session, dish: dish_schemas.DishCreate):
+    """Create a new dish and optionally a promotion.
+
+    Args:
+        db (Session): Database session.
+        dish (DishCreate): Dish creation schema.
+    Raises:
+        HTTPException: If the stallID is invalid.
+    Returns:
+        Dish: The created dish object.
+    """
     db_stall = db.query(Stall).filter(Stall.stallID == dish.stallID).first()
     if not db_stall:
         raise HTTPException(status_code=400, detail="Invalid stallID")
@@ -84,6 +121,14 @@ def create_dish(db: Session, dish: dish_schemas.DishCreate):
 
 
 def update_dish(db: Session, updated_dish: dish_schemas.DishUpdate):
+    """Update an existing dish and its promotion if applicable.
+
+    Args:
+        db (Session): Database session.
+        updated_dish (DishUpdate): Updated dish schema.
+    Returns:
+        Dish: The updated dish object, or None if not found.
+    """
     db_dish = db.query(Dish).filter(Dish.dishID == updated_dish.dishID).first()
     if not db_dish:
         return None
@@ -126,6 +171,16 @@ def update_dish(db: Session, updated_dish: dish_schemas.DishUpdate):
 
 
 def delete_dish(db: Session, dishID: int) -> bool:
+    """Delete a dish and its promotion if it exists.
+
+    Args:
+        db (Session): Database session.
+        dishID (int): ID of the dish to delete.
+    Raises:
+        HTTPException: If the dishID is invalid.
+    Returns:
+        bool: True if deleted successfully.
+    """
     db_dish = db.query(Dish).filter(Dish.dishID == dishID).first()
 
     if db_dish.onPromotion:

@@ -48,6 +48,7 @@ app.include_router(dish.router)
 
 @app.get("/")
 def read_root():
+    """Root endpoint that returns a link to the API documentation."""
     return {"API Docs": "http://127.0.0.1:8000/docs#/"}
 
 

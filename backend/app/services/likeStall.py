@@ -7,6 +7,17 @@ from models.stall import Stall
 
 
 def like_stall(db: Session, userID: int, stallID: int):
+    """Like a stall for a user.
+
+    Args:
+        db (Session): Database session.
+        userID (int): User ID.
+        stallID (int): Stall ID.
+    Raises:
+        HTTPException: If the stall is not found or already liked by the user.
+    Returns:
+        LikeStall: The like record object.
+    """
     # Check if the stall exists
     stall = db.query(Stall).filter(Stall.stallID == stallID).first()
     if not stall:
@@ -26,6 +37,17 @@ def like_stall(db: Session, userID: int, stallID: int):
 
 
 def unlike_stall(db: Session, userID: int, stallID: int):
+    """Remove a like from a stall for a user.
+
+    Args:
+        db (Session): Database session.
+        userID (int): User ID.
+        stallID (int): Stall ID.
+    Raises:
+        HTTPException: If the like relationship is not found.
+    Returns:
+        dict: Success message.
+    """
     # Find and delete the like relationship
     db_like = (
         db.query(LikeStall)
@@ -42,6 +64,14 @@ def unlike_stall(db: Session, userID: int, stallID: int):
 
 
 def get_liked_stalls(db: Session, userID: int):
+    """Get all stalls liked by a user.
+
+    Args:
+        db (Session): Database session.
+        userID (int): User ID.
+    Returns:
+        list: List of LikeStall objects liked by the user.
+    """
     # Get all stalls liked by this user
     liked_stalls = db.query(LikeStall).filter(LikeStall.userID == userID).all()
     return liked_stalls

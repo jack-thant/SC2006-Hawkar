@@ -36,6 +36,14 @@ tags_metadata = [
     tags=["Auth Controller"],
 )
 async def signup(user_signup: user_schemas.UserSignup, db: Session = Depends(get_db)):
+    """Register a new user (admin, consumer, or hawker).
+
+    Args:
+        user_signup (UserSignup): Signup data including user type and details.
+        db (Session, optional): Database session dependency.
+    Returns:
+        User: The created user object (Admin, Consumer, or Hawker).
+    """
     userType = user_signup.userType
     data = user_signup.data
 
@@ -63,11 +71,27 @@ async def signup(user_signup: user_schemas.UserSignup, db: Session = Depends(get
     tags=["Auth Controller"],
 )
 def login(user: user_schemas.UserLogin, db: Session = Depends(get_db)):
+    """Authenticate a user and return user details if successful.
+
+    Args:
+        user (UserLogin): Login credentials from request body.
+        db (Session, optional): Database session dependency.
+    Returns:
+        User: The authenticated user object (User, Admin, Consumer, or Hawker).
+    """
     return AuthController.login(db, user)
 
 
 @router.get("/login-google/{email}", response_model=bool, tags=["Auth Controller"])
 def login_with_google(email: str, db: Session = Depends(get_db)):
+    """Check if a user with the given email can log in with Google.
+
+    Args:
+        email (str): Email address to check.
+        db (Session, optional): Database session dependency.
+    Returns:
+        bool: True if login is possible, False otherwise.
+    """
     return AuthController.loginWithGoogle(db, email)
 
 
@@ -84,6 +108,14 @@ def login_with_google(email: str, db: Session = Depends(get_db)):
 def login_or_signup_with_google(
     google_user: user_schemas.GoogleUser, db: Session = Depends(get_db)
 ):
+    """Authenticate or register a user using Google account information.
+
+    Args:
+        google_user (GoogleUser): Google user data from request body.
+        db (Session, optional): Database session dependency.
+    Returns:
+        User: The authenticated or newly created user object.
+    """
     return AuthController.loginOrSignupWithGoogle(
         db, google_user.email, google_user.name, google_user.picture
     )

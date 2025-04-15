@@ -49,6 +49,15 @@ tags_metadata = [
     tags=["Consumer (CRUD)"],
 )
 def get_all_consumers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Get all consumers with pagination.
+
+    Args:
+        skip (int, optional): Number of records to skip.
+        limit (int, optional): Maximum number of records to return.
+        db (Session, optional): Database session dependency.
+    Returns:
+        list: List of consumer objects.
+    """
     return ConsumerController.getAllConsumers(db, skip, limit)
 
 
@@ -58,6 +67,14 @@ def get_all_consumers(skip: int = 0, limit: int = 100, db: Session = Depends(get
     tags=["Consumer (CRUD)"],
 )
 async def get_consumer_by_consumer_id(consumer_id: str, db: Session = Depends(get_db)):
+    """Get a consumer by their consumer ID.
+
+    Args:
+        consumer_id (str): Consumer ID from the path.
+        db (Session, optional): Database session dependency.
+    Returns:
+        Consumer: The consumer object.
+    """
     return ConsumerController.getConsumerByConsumerId(db, consumer_id)
 
 
@@ -67,6 +84,14 @@ async def get_consumer_by_consumer_id(consumer_id: str, db: Session = Depends(ge
     tags=["Consumer (CRUD)"],
 )
 async def get_consumer_by_user_id(user_id: str, db: Session = Depends(get_db)):
+    """Get a consumer by their user ID.
+
+    Args:
+        user_id (str): User ID from the path.
+        db (Session, optional): Database session dependency.
+    Returns:
+        Consumer: The consumer object.
+    """
     return ConsumerController.getConsumerByUserId(db, user_id)
 
 
@@ -78,4 +103,12 @@ async def get_consumer_by_user_id(user_id: str, db: Session = Depends(get_db)):
 def update_consumer(
     consumer: consumer_schemas.ConsumerUpdate, db: Session = Depends(get_db)
 ):
+    """Update an existing consumer's information.
+
+    Args:
+        consumer (ConsumerUpdate): Updated consumer schema from request body.
+        db (Session, optional): Database session dependency.
+    Returns:
+        Consumer: The updated consumer object.
+    """
     return ConsumerController.updateConsumer(db, consumer)
