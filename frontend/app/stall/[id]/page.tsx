@@ -1,5 +1,6 @@
 import { getSession, getUserData } from "@/app/lib/actions/auth-actions"
 import { fetchDishesByStallID } from "@/app/lib/actions/dish-actions"
+import { fetchLikedStallsByUserID } from "@/app/lib/actions/like-actions"
 import { fetchReviewsByStallID } from "@/app/lib/actions/review-actions"
 import { fetchStallByStallID } from "@/app/lib/actions/stall-actions"
 import { UserType } from "@/app/types/auth"
@@ -22,6 +23,15 @@ export default async function StallDetailsPage(props: { params: Promise<{ id: st
     if (!session) {
       redirect('/login');
     }
+
+    const likedStalls = await fetchLikedStallsByUserID(session.userId)
+    
+      // Fetch all stall details in parallel
+      const stallDetailsPromises = likedStalls.map((stall: { stallID: number}) => 
+        fetchStallByStallID(stall.stallID)
+      );
+      
+      const likedStallDetails = await Promise.all(stallDetailsPromises);
     // Redirect based on user role
     if (userData?.role === UserType.Hawker) {
       redirect("/hawker");
@@ -30,7 +40,7 @@ export default async function StallDetailsPage(props: { params: Promise<{ id: st
     }
     return (
       <>
-        <StallDetails userId={session.userId} userData={userData} reviews={reviews} stall={stall} dishes={dishes} />
+        <StallDetails likedStalls={likedStallDetails} userId={session.userId} userData={userData} reviews={reviews} stall={stall} dishes={dishes} />
       </>
     );
   }

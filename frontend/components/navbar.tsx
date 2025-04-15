@@ -31,41 +31,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { logout } from "@/app/lib/actions/auth-actions"
+import { Stall } from "@/app/types/stall"
+import { UserData } from "@/app/types/auth"
 
 interface NavbarProps {
   username?: string
   stallName?: string
-  onSaveToggle?: () => void
-  isSaved?: boolean
+  savedStalls?: Array<Stall>
+  userData: UserData
 }
-
-// Mock data for saved stalls
-const savedStalls = [
-  {
-    id: "1",
-    name: "Tian Tian Chicken Rice",
-    image: "/images/hs6.jpg",
-    hawkerCenter: "Maxwell Food Centre",
-    rating: 4.7,
-    priceRange: "$4 - $6",
-  },
-  {
-    id: "3",
-    name: "Liao Fan Hawker Chan",
-    image: "/images/hs2.jpg",
-    hawkerCenter: "Chinatown Complex",
-    rating: 4.5,
-    priceRange: "$3 - $5",
-  },
-  {
-    id: "6",
-    name: "Ah Hock Fried Hokkien Noodles",
-    image: "/images/hs3.jpg",
-    hawkerCenter: "Chomp Chomp Food Centre",
-    rating: 4.7,
-    priceRange: "$4 - $6",
-  },
-]
 
 // Mock data for notifications
 const notifications = [
@@ -92,17 +66,17 @@ const notifications = [
   },
 ]
 
-export default function Navbar({ username = "User", stallName, onSaveToggle, isSaved = false }: NavbarProps) {
+export default function Navbar({ username = "User", stallName, savedStalls, userData }: NavbarProps) {
   const [open, setOpen] = useState(false)
   const [showEditProfile, setShowEditProfile] = useState(false)
   const [showSavedStalls, setShowSavedStalls] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   // Update the profileData state to remove bio and rename phone to contactNumber
   const [profileData, setProfileData] = useState({
-    name: username,
-    email: "user@example.com",
-    contactNumber: "+65 9123 4567",
-    profilePicture: "/placeholder.svg?height=200&width=200",
+    name: userData.name,
+    email: userData.emailAddress,
+    contactNumber: userData.contactNumber,
+    profilePicture: userData.profilePicture,
   })
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -190,22 +164,6 @@ export default function Navbar({ username = "User", stallName, onSaveToggle, isS
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
-          {isStallDetailPage && (
-            <>
-              {onSaveToggle && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label={isSaved ? "Remove from favorites" : "Add to favorites"}
-                  onClick={onSaveToggle}
-                  className="hidden md:flex"
-                >
-                  <Heart className={`h-5 w-5 ${isSaved ? "fill-red-500 text-red-500" : ""}`} />
-                </Button>
-              )}
-            </>
-          )}
-
           <Button variant="ghost" size="icon" aria-label="Change language">
             <Globe className="h-5 w-5" />
           </Button>
@@ -238,25 +196,18 @@ export default function Navbar({ username = "User", stallName, onSaveToggle, isS
             <DropdownMenuContent align="end" className="w-56">
               <div className="px-2 py-1.5 text-sm font-medium">Hi, {username}</div>
               <DropdownMenuSeparator />
-              {isStallDetailPage && (
-                <>
-                  {onSaveToggle && (
-                    <DropdownMenuItem onClick={onSaveToggle} className="md:hidden">
-                      <Heart className={`h-4 w-4 mr-2 ${isSaved ? "fill-red-500 text-red-500" : ""}`} />
-                      {isSaved ? "Remove from favorites" : "Add to favorites"}
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator className="md:hidden" />
-                </>
-              )}
               <DropdownMenuItem onClick={() => setShowEditProfile(true)}>
                 <User className="h-4 w-4 mr-2" />
                 Edit Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setShowSavedStalls(true)}>
-                <Bookmark className="h-4 w-4 mr-2" />
-                Saved Stalls
-              </DropdownMenuItem>
+              {
+                userData.role === "Consumer" && (
+                  <DropdownMenuItem onClick={() => setShowSavedStalls(true)}>
+                    <Bookmark className="h-4 w-4 mr-2" />
+                    Saved Stalls
+                  </DropdownMenuItem>
+                )
+              }
               <DropdownMenuItem onClick={() => logout()}>Sign Out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -341,42 +292,35 @@ export default function Navbar({ username = "User", stallName, onSaveToggle, isS
             <DialogDescription>Your favorite hawker stalls in one place.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
-            {savedStalls.length > 0 ? (
+            {savedStalls && savedStalls.length > 0 ? (
               savedStalls.map((stall) => (
                 <Card
-                  key={stall.id}
+                  key={stall.stallID}
                   className="cursor-pointer hover:bg-muted/50 py-2"
                   onClick={() => {
-                    router.push(`/stall/${stall.id}`)
+                    router.push(`/stall/${stall.stallID}`)
                     setShowSavedStalls(false)
                   }}
                 >
                   <CardContent className="p-3 flex gap-4">
                     <div className="relative h-16 w-24 flex-shrink-0">
                       <Image
-                        src={stall.image || "/placeholder.svg"}
-                        alt={stall.name}
+                        src={stall.images[0] || "/placeholder.svg"}
+                        alt={stall.stallName}
                         fill
                         className="object-cover rounded-md"
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium">{stall.name}</h3>
-                      <p className="text-sm text-muted-foreground">{stall.hawkerCenter}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm font-medium">{stall.rating} ★</span>
-                        <span className="text-sm text-muted-foreground">{stall.priceRange}</span>
-                      </div>
+                      <h3 className="font-medium">{stall.stallName}</h3>
+                      <p className="text-sm text-muted-foreground">{stall.hawkerCenter.name}</p>
+                      <span className="text-sm text-muted-foreground">{stall.priceRange}</span>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 self-start"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        // In a real app, you would remove this stall from saved stalls
-                        console.log("Remove stall from saved:", stall.id)
-                      }}
+                      disabled={true}
                     >
                       <Heart className="h-4 w-4 fill-red-500 text-red-500" />
                     </Button>

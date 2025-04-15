@@ -32,7 +32,7 @@ export default async function ReportedReviewPage() {
   }
   return (
     <main className="min-h-screen flex flex-col">
-      <Navbar username={userData?.name || "Admin"}/>
+      <Navbar username={userData?.name || "Admin"} userData={userData}/>
       <div className="container mx-auto py-8 px-4 md:px-8">
         <div className="flex justify-between items-center mb-6">
           <div>

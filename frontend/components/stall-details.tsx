@@ -21,6 +21,7 @@ interface StallDetailsProps {
     reviews: Array<Review>;
     stall: Stall;
     dishes: Array<Dish>;
+    likedStalls: Array<Stall>;
 }
 
 export const getRatingStats = (reviews: Array<Review>): { averageRating: number; totalRatings: number } => {
@@ -36,17 +37,12 @@ export const getRatingStats = (reviews: Array<Review>): { averageRating: number;
     };
 }; 
 
-export default function StallDetails({userId, userData, reviews, stall, dishes}: StallDetailsProps) {
-    const [saved, setSaved] = useState(false)
+export default function StallDetails({userId, userData, reviews, stall, dishes, likedStalls}: StallDetailsProps) {
     const { averageRating, totalRatings } = getRatingStats(reviews)
          
-    const handleSaveToggle = () => {
-        setSaved(!saved)
-    }
-
     return (
         <main className="min-h-screen pb-16">
-            <Navbar username={userData.name} stallName={stall.stallName} onSaveToggle={handleSaveToggle} isSaved={saved} />
+            <Navbar username={userData.name} stallName={stall.stallName} userData={userData} savedStalls={likedStalls} />
             {/* Stall details */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Photo grid */}

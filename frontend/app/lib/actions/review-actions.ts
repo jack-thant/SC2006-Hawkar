@@ -38,7 +38,6 @@ export async function fetchReportedReviews() {
 }
 
 export async function addReview(formData: ReviewFormData) {
-    console.log(formData)
     try {
         const response = await fetch(`${API_URL}/stall/${formData.stallID}/add-review`, {
             method: "POST",

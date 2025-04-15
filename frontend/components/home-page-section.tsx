@@ -19,7 +19,7 @@ const MapView = dynamic(() => import("@/components/map-view"), {
     ),
 })
 
-export default function HomePageSection({ stalls, userData, hawkerCenters }: HomeSectionProps) {
+export default function HomePageSection({ stalls, userData, hawkerCenters, likedStallsDetails, userID }: HomeSectionProps) {
     const [currentView, setCurrentView] = useState<"list" | "map" | "both">("both")
     const [filteredStalls, setFilteredStalls] = useState<Array<Stall>>(stalls)
     const [mounted, setMounted] = useState(false)
@@ -39,7 +39,7 @@ export default function HomePageSection({ stalls, userData, hawkerCenters }: Hom
 
     return (
         <main className="min-h-screen flex flex-col">
-            <Navbar username={userData?.name || "Consumer"} />
+            <Navbar username={userData?.name || "Consumer"} savedStalls={likedStallsDetails} userData={userData}/>
             <div className="flex flex-col items-center justify-center text-center p-8">
                 <h1 className="text-3xl font-bold">Your Guide to the Best Hawker Eats!</h1>
                 <p className="mt-4 text-muted-foreground max-w-2xl">
@@ -62,7 +62,7 @@ export default function HomePageSection({ stalls, userData, hawkerCenters }: Hom
                     {/* List View */}
                     {(currentView === "list" || currentView === "both") && (
                         <div className={`${currentView === "both" ? "lg:col-span-2" : "lg:col-span-3"}`}>
-                            <HawkerStallList stalls={filteredStalls}/>
+                            <HawkerStallList stalls={filteredStalls} userID={userID} likedStallDetails={likedStallsDetails}/>
                         </div>
                     )}
 

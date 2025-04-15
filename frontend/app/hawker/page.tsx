@@ -35,7 +35,7 @@ export default async function HawkerDashboard() {
 
   return (
     <main className="min-h-screen flex flex-col">
-      <Navbar username={userData?.name || "Hawker"} />
+      <Navbar username={userData?.name || "Hawker"} userData={userData}/>
       <HawkerDashboardContent stalls={stalls} hawkerCenters={hawkerCenters} userId={session.userId} />
     </main>
   )

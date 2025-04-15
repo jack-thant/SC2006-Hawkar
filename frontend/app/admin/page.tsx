@@ -39,7 +39,7 @@ import { fetchReportedReviews } from '../lib/actions/review-actions'
 
   return (
     <main className="min-h-screen flex flex-col ">
-      <Navbar username={userData?.name || "Admin"} />
+      <Navbar username={userData?.name || "Admin"} userData={userData}/>
       <div className="container mx-auto py-8 px-4 md:px-8">
         <div className="flex flex-col items-center justify-center text-center mb-8">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>

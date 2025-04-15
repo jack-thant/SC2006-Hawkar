@@ -6,4 +6,6 @@ export interface HomeSectionProps {
     stalls: Array<Stall>
     userData: UserData
     hawkerCenters: Array<HawkerCenter>
+    likedStallsDetails: Array<Stall>
+    userID: string
 }

@@ -38,7 +38,7 @@ export default async function StallManagementPage({ params }: { params: { id: st
 
   return (
     <main className="min-h-screen flex flex-col">
-      <Navbar username={userData?.name || "Hawker"} />
+      <Navbar username={userData?.name || "Hawker"} userData={userData} />
       <StallManagementContent stall={stall} dishes={dishes} reviews={reviews} userId={session.userId} userData={userData} />
     </main>
   )
