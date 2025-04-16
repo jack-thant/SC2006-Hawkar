@@ -116,6 +116,8 @@ export default function SignUpForm() {
                                     onChange={handleInputChange}
                                     required
                                     className="bg-gray-200 py-6 pr-10"
+                                    minLength={8}
+                                    title="Password must be more than 8 characters"
                                 />
                                 <button
                                     type="button"
@@ -145,7 +147,7 @@ export default function SignUpForm() {
                     </form>
                 </div>
             ) : (
-                <ProfileForm formData={formData} isLoading={isLoading} setFormData={setFormData} onSubmit={handleSubmit} />
+                <ProfileForm formData={formData} isLoading={isLoading} setFormData={setFormData} error={error} onSubmit={handleSubmit} />
             )}
         </div>
         </>

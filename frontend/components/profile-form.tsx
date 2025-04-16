@@ -15,9 +15,10 @@ interface ProfileFormProps {
     setFormData: (data: any) => void
     onSubmit: (e: React.FormEvent) => void
     isLoading: boolean
+    error: string | null
 }
 
-export default function ProfileForm({ formData, setFormData, onSubmit, isLoading }: ProfileFormProps) {
+export default function ProfileForm({ formData, setFormData, onSubmit, isLoading, error }: ProfileFormProps) {
     const [profileImage, setProfileImage] = useState<string | null>(null)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,18 +102,18 @@ export default function ProfileForm({ formData, setFormData, onSubmit, isLoading
 
                     <div className="space-y-2">
                         <Label htmlFor="role">Role</Label>
-                        <Select value={formData.role} onValueChange={handleSelectFieldChange('role')}>
+                        <Select value={formData.role} onValueChange={handleSelectFieldChange('role')} required>
                             <SelectTrigger className="bg-gray-200 border-0 w-full py-6">
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                             <SelectContent>
-                               {
-                                Object.values(UserType).map((type) => (
-                                    <SelectItem key={type} value={type}>
-                                        {type}
-                                    </SelectItem>
-                                ))
-                               }
+                                {
+                                    Object.values(UserType).map((type) => (
+                                        <SelectItem key={type} value={type}>
+                                            {type}
+                                        </SelectItem>
+                                    ))
+                                }
                             </SelectContent>
                         </Select>
                     </div>
@@ -181,29 +182,35 @@ export default function ProfileForm({ formData, setFormData, onSubmit, isLoading
                                             name="contactNumber"
                                             value={formData.contactNumber || ""}
                                             onChange={handleInputChange}
-                                            placeholder="+65 1234 5678"
-                                            className="bg-gray-200 py-6"
+                                            placeholder="8XXXXXXX or 9XXXXXXX"
+                                            className={`bg-gray-200 py-6 ${formData.contactNumber && !/^[89]\d{7}$/.test(formData.contactNumber)
+                                                    ? 'border-red-500'
+                                                    : 'border-gray-300'
+                                                }`}
+                                            maxLength={8}
+                                            pattern="[89][0-9]{7}"
+                                            title="Phone number must be 8 digits and start with 8 or 9"
                                             required
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="dietaryPreference">Dietary preference</Label>
-                                        <Select value={formData.dietaryPreference} onValueChange={handleSelectFieldChange('dietaryPreference')}>
+                                        <Select value={formData.dietaryPreference} onValueChange={handleSelectFieldChange('dietaryPreference')} required>
                                             <SelectTrigger className="bg-gray-200 border-0 w-full py-6">
                                                 <SelectValue placeholder="Select a dietary preference" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                               {Object.values(DietaryPreference).map((p) => (
-                                                <SelectItem key={p} value={p}>
-                                                    {p}
-                                                </SelectItem>
-                                               ))}
+                                                {Object.values(DietaryPreference).map((p) => (
+                                                    <SelectItem key={p} value={p}>
+                                                        {p}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="preferredCuisine">Preferred cuisine</Label>
-                                        <Select value={formData.preferredCuisine} onValueChange={handleSelectFieldChange('preferredCuisine')}>
+                                        <Select value={formData.preferredCuisine} onValueChange={handleSelectFieldChange('preferredCuisine')} required>
                                             <SelectTrigger className="bg-gray-200 border-0 w-full py-6">
                                                 <SelectValue placeholder="Select preferred cuisines" />
                                             </SelectTrigger>
@@ -218,7 +225,7 @@ export default function ProfileForm({ formData, setFormData, onSubmit, isLoading
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="ambulatoryStatus">Ambulatory status</Label>
-                                        <Select value={formData.ambulatoryStatus} onValueChange={handleSelectFieldChange('ambulatoryStatus')}>
+                                        <Select value={formData.ambulatoryStatus} onValueChange={handleSelectFieldChange('ambulatoryStatus')} required>
                                             <SelectTrigger className="bg-gray-200 border-0 w-full py-6">
                                                 <SelectValue placeholder="Select ambulatory status" />
                                             </SelectTrigger>
@@ -267,7 +274,7 @@ export default function ProfileForm({ formData, setFormData, onSubmit, isLoading
                     }
 
                     <Button type="submit" className="w-full bg-primary hover:bg-black text-white py-6">
-                       { isLoading ? "Creating an account...": "Get Started"}
+                        {isLoading ? "Creating an account..." : "Get Started"}
                     </Button>
                 </form>
             </div>
