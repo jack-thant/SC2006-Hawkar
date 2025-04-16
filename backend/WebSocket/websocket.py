@@ -1,24 +1,41 @@
-import sys
-from pathlib import Path
-
-# Add project root to Python path
-sys.path.append(str(Path(__file__).parent.parent.parent))
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
-from app.controllers.Customer_service_support import CustomerServiceSupportController  # Import your controller
-from app.schemas.css_message import CSSMessageCreate, CSSMessage  # Import the Pydantic models
-from app.WebSocket.websocket import WebSocketConnectionManager  # WebSocket manager you defined
+from fastapi import WebSocket, WebSocketDisconnect
+from typing import List
+from datetime import datetime
 import json
-import datetime
-import uvicorn
 
-app=FastAPI()
-wbsm=WebSocketConnectionManager()
-@app.websocket("/ws/{client_id}")
-async def websocket_connected(websocket: WebSocket, client_id: int,db:Session):
-     await wbsm.connect(websocket)
-     print(f"User {client_id} connected")
-     try:
+
+
+
+class WebSocketConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def send_personal_message(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_text(message)
+
+
+#WHY IS THE BWLOW FUNCTION HERE?
+#--------THE BOTTOM FUNCTION IS POINTLESS SINCE IT SHOULD BE RUN IN THE ROUTE CODE------------#
+"""async def business_logic(
+    web_socket_manager: WebSocketConnectionManager,
+    websocket: WebSocket,
+    client_id: int,
+    db: Session,
+):
+   
+    try:
         while True:
             data = await websocket.receive_text()
             try:
@@ -28,7 +45,7 @@ async def websocket_connected(websocket: WebSocket, client_id: int,db:Session):
 
             if data["type"] == "new_message":
                 data = data["css_message"]
-                now = datetime.datetime.now()
+                now = datetime.now()
                 current_time = now.strftime("%H:%M")
 
                 # Save to database
@@ -58,7 +75,7 @@ async def websocket_connected(websocket: WebSocket, client_id: int,db:Session):
                     "type": "css_message",
                     "css_message": css_message_response.model_dump_json(),
                 }
-                await wbsm.broadcast(json.dumps(message))
+                await web_socket_manager.broadcast(json.dumps(message))
 
             elif data["type"] == "typing":
                 # Broadcast update
@@ -70,18 +87,14 @@ async def websocket_connected(websocket: WebSocket, client_id: int,db:Session):
                     "senderUserId": data["senderUserId"],
                     "receiverUserId": data["receiverUserId"],
                 }
-                await wbsm.broadcast(json.dumps(message))
-        
-     except WebSocketDisconnect:
-        wbsm.disconnect(websocket)
-        now2=datetime.datetime.now()
+                await web_socket_manager.broadcast(json.dumps(message))
 
+    except WebSocketDisconnect:
+        web_socket_manager.disconnect(websocket)
         message = {
-            "time": now2.strftime("%c"),
+            "time": current_time,
             "clientId": client_id,
             "type": "disconnect",
             "message": "Offline",
         }
-        await wbsm.broadcast(json.dumps(message))
-if __name__ == "__main__":
-    uvicorn.run("app.WebSocket.FASTAPI_route:app", host="localhost", port=8080)
+        await web_socket_manager.broadcast(json.dumps(message))"""

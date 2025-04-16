@@ -24,6 +24,8 @@ async def sendmsg():
         }
         await msg1.send(json.dumps(message))
         print("First Message sent")
+        response = await msg1.recv()
+        print(response)
         runchoice=1
         while runchoice==1:
             await asyncio.sleep(5)  # Adjust the interval as needed
@@ -38,6 +40,8 @@ async def sendmsg():
             }
             await msg1.send(json.dumps(message))
             print("Another message sent")
+            response = await msg1.recv()
+            print(response)
             runchoice=int(input("1 to continue, 0 to exit"))
         print("disconnecting...")
 
