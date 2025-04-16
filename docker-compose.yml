@@ -11,6 +11,20 @@ services:
     volumes:
       - ./backend/app/minio/data:/data
     command: server /data --console-address ":9001"
+  
+  mc:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+        sleep 5 &&
+        mc alias set local http://minio:9000 tanknam 12345678 &&
+        mc anonymous set download local/dish &&
+        mc anonymous set download local/profile-photo &&
+        mc anonymous set download local/stall &&
+        exit 0
+      "
 
   backend:
     build:
@@ -27,3 +41,5 @@ services:
       - MINIO_ROOT_USER=tanknam
       - MINIO_ROOT_PASSWORD=12345678
       - MINIO_ENDPOINT=minio:9000
+
+    
