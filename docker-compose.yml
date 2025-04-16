@@ -42,18 +42,17 @@ services:
       - MINIO_ROOT_PASSWORD=12345678
       - MINIO_ENDPOINT=minio:9000
 
-  Websocket:
+  websocket:
     build:
-      context: ./websocket
+      context: ./backend
       dockerfile: Dockerfile
     container_name: websocket
     ports:
       - "8080:8080"
     volumes:
-      - ./websocket:/app
+      - ./backend:/app
     depends_on:
       - backend
     environment:
       - MINIO_ENDPOINT=minio:9000
-    command: uvicorn FASTAPI_route:app --host 0.0.0.0 --port 8080 --reload
     
