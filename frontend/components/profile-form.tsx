@@ -150,9 +150,15 @@ export default function ProfileForm({ formData, setFormData, onSubmit, isLoading
                                     id="contactNumber"
                                     name="contactNumber"
                                     value={formData.contactNumber || ""}
-                                    placeholder="+65 1234 5678"
                                     onChange={handleInputChange}
-                                    className="bg-gray-200 py-6"
+                                    placeholder="8XXXXXXX or 9XXXXXXX"
+                                    className={`bg-gray-200 py-6 ${formData.contactNumber && !/^[89]\d{7}$/.test(formData.contactNumber)
+                                            ? 'border-red-500'
+                                            : 'border-gray-300'
+                                        }`}
+                                    maxLength={8}
+                                    pattern="[89][0-9]{7}"
+                                    title="Phone number must be 8 digits and start with 8 or 9"
                                     required
                                 />
                             </div>
@@ -264,8 +270,14 @@ export default function ProfileForm({ formData, setFormData, onSubmit, isLoading
                                         name="contactNumber"
                                         value={formData.contactNumber || ""}
                                         onChange={handleInputChange}
-                                        placeholder="+65 1234 5678"
-                                        className="bg-gray-200 py-6"
+                                        placeholder="8XXXXXXX or 9XXXXXXX"
+                                        className={`bg-gray-200 py-6 ${formData.contactNumber && !/^[89]\d{7}$/.test(formData.contactNumber)
+                                                ? 'border-red-500'
+                                                : 'border-gray-300'
+                                            }`}
+                                        maxLength={8}
+                                        pattern="[89][0-9]{7}"
+                                        title="Phone number must be 8 digits and start with 8 or 9"
                                         required
                                     />
                                 </div>
