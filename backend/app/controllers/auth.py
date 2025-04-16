@@ -10,6 +10,19 @@ import services.hawker as hawker_services
 
 class AuthController:
     def signup(db: Session, user: user_schemas.UserCreate):
+        """
+        Register a new user in the system based on their role.
+
+        Args:
+            db (Session): Database session
+            user (user_schemas.UserCreate): User information for registration
+
+        Returns:
+            The created user object based on their role (Admin/Consumer/Hawker)
+
+        Raises:
+            HTTPException: If email is already registered or role is invalid
+        """
         db_user = user_services.get_user_by_email(db, email=user.emailAddress)
         if db_user:
             raise HTTPException(status_code=400, detail="Email is already registered!")
@@ -24,6 +37,19 @@ class AuthController:
         raise HTTPException(status_code=400, detail="User role is not valid.")
 
     def login(db: Session, user: user_schemas.UserLogin):
+        """
+        Authenticate and log in an existing user.
+
+        Args:
+            db (Session): Database session
+            user (user_schemas.UserLogin): User login credentials
+
+        Returns:
+            The user object based on their role (Admin/Consumer/Hawker)
+
+        Raises:
+            HTTPException: If login credentials are invalid
+        """
         db_user = user_services.login_user(db, user)
         if not db_user:
             raise HTTPException(status_code=400, detail="Invalid login credentials")
@@ -39,7 +65,21 @@ class AuthController:
         return db_user
 
     def loginOrSignupWithGoogle(db: Session, email: str, name: str, picture: str = ""):
-        """Handle Google authentication - login existing users or create new ones"""
+        """
+        Handle Google authentication - login existing users or create new ones.
+
+        Args:
+            db (Session): Database session
+            email (str): User's email from Google authentication
+            name (str): User's name from Google authentication
+            picture (str, optional): URL to user's profile picture. Defaults to empty string.
+
+        Returns:
+            The appropriate user object (Admin/Consumer/Hawker)
+
+        Raises:
+            HTTPException: If Google authentication processing fails
+        """
         print(f"Processing Google authentication for: {email}")
 
         # The login_or_create_google_user function now returns the appropriate

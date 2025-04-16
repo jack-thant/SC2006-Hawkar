@@ -24,6 +24,9 @@ def get_hawker_by_user_id(db: Session, userID: int):
     if not hawker:
         raise HTTPException(status_code=404, detail="Hawker not found")
 
+    if not hawker.verifyStatus:
+        raise HTTPException(status_code=403, detail="Hawker not verified")
+
     # # convert geometry json to dict
     # hawker.geometry = json.loads(hawker.geometry)
 

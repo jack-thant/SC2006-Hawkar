@@ -11,12 +11,22 @@ class ObjectStorage:
     _instance: Optional["ObjectStorage"] = None
 
     def __new__(cls):
+        """
+        Singleton pattern implementation to ensure only one instance of ObjectStorage exists.
+
+        Returns:
+            ObjectStorage: The single instance of ObjectStorage
+        """
         if cls._instance is None:
             cls._instance = super(ObjectStorage, cls).__new__(cls)
             cls._instance._initialized = False
         return cls._instance
 
     def __init__(self):
+        """
+        Initialize the ObjectStorage with MinIO client configuration.
+        Uses environment variables for MinIO connection details or defaults.
+        """
         if not self._initialized:
             self.minio_endpoint = os.environ.get("MINIO_ENDPOINT", "minio:9000")
             self.minio_access_key = os.environ.get("MINIO_ROOT_USER", "tanknam")
@@ -32,7 +42,10 @@ class ObjectStorage:
             self._ensure_buckets_exist()
 
     def _ensure_buckets_exist(self):
-        """Ensure required buckets exist in Minio"""
+        """
+        Ensure required buckets exist in MinIO storage.
+        Creates required buckets if they don't already exist.
+        """
         required_buckets = ["profile-photo", "review-attachment", "dish", "stall"]
 
         for bucket in required_buckets:
@@ -40,7 +53,19 @@ class ObjectStorage:
                 self.client.make_bucket(bucket)
 
     def upload_profile_photo(self, email_address: str, encoded_image: str) -> str:
-        """Upload profile photo to Minio and return URL"""
+        """
+        Upload a user's profile photo to MinIO storage.
+
+        Args:
+            email_address (str): Email address of the user
+            encoded_image (str): Base64 encoded image or HTTP URL to image
+
+        Returns:
+            str: URL to access the uploaded image
+
+        Raises:
+            Exception: If there's an error during upload
+        """
         try:
             # Handle both data URLs and direct URLs (like from Google OAuth)
             if encoded_image.startswith("http"):
@@ -74,7 +99,19 @@ class ObjectStorage:
             raise e
 
     def upload_stall_image(self, stallID: int, encoded_image: str) -> str:
-        """Upload stall image to Minio and return URL"""
+        """
+        Upload a stall's image to MinIO storage.
+
+        Args:
+            stallID (int): ID of the stall
+            encoded_image (str): Base64 encoded image data
+
+        Returns:
+            str: URL to access the uploaded image
+
+        Raises:
+            Exception: If there's an error during upload
+        """
         try:
             header, encoded = encoded_image.split(",", 1)
             decoded_data = base64.b64decode(encoded)
@@ -101,7 +138,20 @@ class ObjectStorage:
     def upload_review_photo(
         self, consumer_id: int, stall_id: int, encoded_image: str
     ) -> str:
-        """Upload review photo to Minio and return URL"""
+        """
+        Upload a review photo to MinIO storage.
+
+        Args:
+            consumer_id (int): ID of the consumer submitting the review
+            stall_id (int): ID of the stall being reviewed
+            encoded_image (str): Base64 encoded image data
+
+        Returns:
+            str: URL to access the uploaded image
+
+        Raises:
+            Exception: If there's an error during upload
+        """
         try:
             header, encoded = encoded_image.split(",", 1)
             decoded_data = base64.b64decode(encoded)
@@ -127,7 +177,20 @@ class ObjectStorage:
     def upload_dish_photo(
         self, stall_id: int, dish_name: str, encoded_image: str
     ) -> str:
-        """Upload dish photo to Minio and return URL"""
+        """
+        Upload a dish photo to MinIO storage.
+
+        Args:
+            stall_id (int): ID of the stall offering the dish
+            dish_name (str): Name of the dish
+            encoded_image (str): Base64 encoded image data
+
+        Returns:
+            str: URL to access the uploaded image
+
+        Raises:
+            Exception: If there's an error during upload
+        """
         try:
             header, encoded = encoded_image.split(",", 1)
             decoded_data = base64.b64decode(encoded)
