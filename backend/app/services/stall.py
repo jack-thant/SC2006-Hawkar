@@ -17,6 +17,8 @@ def convert_str_to_list(images_string):
     Returns:
         list: List of image URL strings.
     """
+    if not images_string:  # Handle both None and empty string
+        return []
     if images_string and isinstance(images_string, str):
         return [url.strip() for url in images_string.split(",") if url.strip()]
     return [] if images_string is None else images_string
@@ -197,19 +199,22 @@ def update_stall(db: Session, updated_stall: stall_schemas.StallUpdate, stall_id
     images_url = []
 
     # Convert images from list to string if present
-    if "images" in updated_stall_data and isinstance(
-        updated_stall_data["images"], list
-    ):
-        storage = ObjectStorage()
-        for image in updated_stall_data["images"]:
-            if image.startswith("http"):
-                images_url.append(image)
-                continue
-            image_url = storage.upload_stall_image(stall_id, image)
-            images_url.append(image_url)
-        updated_stall_data["images"] = images_url
-
-        updated_stall_data["images"] = convert_list_to_str(updated_stall_data["images"])
+    if "images" in updated_stall_data:
+        if (
+            updated_stall_data["images"] is None
+            or len(updated_stall_data["images"]) == 0
+        ):
+            # Handle empty list case
+            updated_stall_data["images"] = ""
+        elif isinstance(updated_stall_data["images"], list):
+            storage = ObjectStorage()
+            for image in updated_stall_data["images"]:
+                if image.startswith("http"):
+                    images_url.append(image)
+                    continue
+                image_url = storage.upload_stall_image(stall_id, image)
+                images_url.append(image_url)
+            updated_stall_data["images"] = convert_list_to_str(images_url)
 
     # Convert cuisineType from list to string if present
     if "cuisineType" in updated_stall_data and isinstance(
