@@ -74,7 +74,7 @@ async def websocket_connected(websocket: WebSocket, client_id: int,db:Session):
         
      except WebSocketDisconnect:
         wbsm.disconnect(websocket)
-        now2=datetime.now()
+        now2=datetime.datetime.now()
 
         message = {
             "time": now2.strftime("%c"),
@@ -84,4 +84,4 @@ async def websocket_connected(websocket: WebSocket, client_id: int,db:Session):
         }
         await wbsm.broadcast(json.dumps(message))
 if __name__ == "__main__":
-    uvicorn.run("app.WebSocket.FASTAPI_route:app", host="192.168.168.1", port=8080)
+    uvicorn.run("app.WebSocket.FASTAPI_route:app", host="localhost", port=8080)
