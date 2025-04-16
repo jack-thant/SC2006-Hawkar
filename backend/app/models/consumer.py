@@ -7,6 +7,26 @@ from schemas.user import DietaryType, CuisineType, StatusType
 
 
 class Consumer(Base):
+    """
+    Consumer model representing system users who consume hawker food.
+
+    This class defines the SQLAlchemy ORM model for consumers in the system.
+    Consumers are users who can browse hawker stalls, leave reviews, and have
+    specific preferences and requirements.
+
+    Attributes:
+        consumerID (int): Primary key and unique identifier for the consumer.
+        address (str): Consumer's address for delivery or location-based services.
+        dietaryPreference (DietaryType): Consumer's dietary preferences (e.g., vegetarian).
+        preferredCuisine (CuisineType): Consumer's preferred cuisine type.
+        ambulatoryStatus (StatusType): Consumer's mobility status for accessibility needs.
+        userID (int): Foreign key linking to the associated User record.
+
+    Relationships:
+        user: One-to-one relationship with the User model.
+        reviews: One-to-many relationship with Review models created by this consumer.
+    """
+
     __tablename__ = "consumers"
 
     consumerID = Column(Integer, primary_key=True, index=True)
