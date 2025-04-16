@@ -1,13 +1,13 @@
 from pydantic import BaseModel
 class CSSMessageCreate(BaseModel):
-     css_history_id: int
-     receiver_user_id: int
-     sender_user_id: int
+     css_history_id: str
+     receiver_user_id: str
+     sender_user_id: str
      text: str
 class CSSMessage(BaseModel):
-      css_history_id: int
-      receiver_user_id: int
-      sender_user_id: int
+      css_history_id: str
+      receiver_user_id: str
+      sender_user_id: str
       text: str
-      css_message_id: int
+      css_message_id: str
       datetime: str
