@@ -67,9 +67,7 @@ class ReviewController:
         """
         reviews = review_services.get_reviews_by_consumer_id(db, consumerID=consumerID)
         if not reviews:
-            raise HTTPException(
-                status_code=404, detail="No review found for queried consumer id"
-            )
+            return []
         for review in reviews:
             review = convert_db_review_to_list(review)
         return reviews
@@ -87,9 +85,7 @@ class ReviewController:
         """
         reviews = review_services.get_reviews_by_stall_id(db, stallID=stallID)
         if reviews == []:
-            raise HTTPException(
-                status_code=404, detail="No review found for queried stall id"
-            )
+            return reviews
         for review in reviews:
             review = convert_db_review_to_list(review)
         return reviews
