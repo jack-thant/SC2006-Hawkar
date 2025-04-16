@@ -113,6 +113,8 @@ class ObjectStorage:
             Exception: If there's an error during upload
         """
         try:
+            if encoded_image.startswith("http"):
+                return encoded_image
             header, encoded = encoded_image.split(",", 1)
             decoded_data = base64.b64decode(encoded)
 
@@ -153,6 +155,8 @@ class ObjectStorage:
             Exception: If there's an error during upload
         """
         try:
+            if encoded_image.startswith("http"):
+                return encoded_image
             header, encoded = encoded_image.split(",", 1)
             decoded_data = base64.b64decode(encoded)
 
@@ -192,6 +196,8 @@ class ObjectStorage:
             Exception: If there's an error during upload
         """
         try:
+            if encoded_image.startswith("http"):
+                return encoded_image
             header, encoded = encoded_image.split(",", 1)
             decoded_data = base64.b64decode(encoded)
 
