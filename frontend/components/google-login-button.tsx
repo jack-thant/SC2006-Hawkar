@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { loginWithGoogle } from "@/app/lib/actions/auth-actions";
 import { useRouter } from "next/navigation";
@@ -11,10 +11,6 @@ import { toast } from "sonner";
 
 interface GoogleLoginButtonProps {
   mode: "login" | "signup";
-}
-
-interface GoogleCredentialResponse {
-  credential: string;
 }
 
 interface GoogleUserInfo {
@@ -36,28 +32,30 @@ export default function GoogleLoginButton({ mode }: GoogleLoginButtonProps) {
     }
   }, []);
   
-  const handleGoogleSuccess = async (credentialResponse: GoogleCredentialResponse) => {
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
       setIsLoading(true);
-      
-      // Debug credential
+  
+      if (!credentialResponse.credential) {
+        throw new Error("Missing Google credential");
+      }
+  
       console.log("Received Google credential");
-      
-      // Decode the JWT token from Google
+  
       const decoded = jwtDecode(credentialResponse.credential) as GoogleUserInfo;
-      console.log("Decoded Google user info:", { 
+  
+      console.log("Decoded Google user info:", {
         email: decoded.email,
         name: decoded.name,
         hasPicture: !!decoded.picture
       });
-      
-      // Process Google sign-in
+  
       const result = await loginWithGoogle({
         email: decoded.email,
         name: decoded.name,
         picture: decoded.picture
       });
-      
+  
       if (result.redirectUrl) {
         toast.success(`Successfully ${mode === "login" ? "logged in" : "signed up"} with Google!`);
         router.push(result.redirectUrl);
@@ -93,11 +91,11 @@ export default function GoogleLoginButton({ mode }: GoogleLoginButtonProps) {
           <div className="flex justify-center w-full">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
-              onError={(error) => {
-                console.error("Google OAuth Error:", error);
+              onError={() => {
+                console.error("Google OAuth Error:");
                 toast.error("Google authentication failed");
               }}
-              useOneTap
+              useOneTap={false}
               theme="outline"
               logo_alignment="center"
               shape="rectangular"
