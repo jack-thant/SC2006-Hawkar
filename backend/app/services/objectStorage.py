@@ -46,7 +46,7 @@ class ObjectStorage:
         Ensure required buckets exist in MinIO storage.
         Creates required buckets if they don't already exist.
         """
-        required_buckets = ["profile-photo", "review-attachment", "dish", "stall"]
+        required_buckets = ["profile-photo", "dish", "stall"]
 
         for bucket in required_buckets:
             if not self.client.bucket_exists(bucket):
