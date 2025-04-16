@@ -60,24 +60,61 @@ export default function AddStallDialog({
   const [photoFiles, setPhotoFiles] = useState<File[]>([])
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([])
 
+  // Format time from "HH:MM:SS" to "HH:MM"
+  const formatTime = (time: string) => {
+    if (!time) return ""
+    // Handle case where time is already in HH:MM format
+    if (time.length === 5) return time
+    
+    // Handle HH:MM:SS format
+    return time.substring(0, 5)
+  }
+
+  // Map price range string to enum value
+  const mapPriceRangeToEnum = (priceRange: string): PriceRange => {
+    switch(priceRange) {
+      case "$4 - $6": return PriceRange.RANGE_4_TO_6
+      case "$5 - $8": return PriceRange.RANGE_5_TO_8
+      case "$8 - $12": return PriceRange.RANGE_8_TO_12
+      case "$12 - $20": return PriceRange.RANGE_12_TO_20
+      case "$20+": return PriceRange.RANGE_20_PLUS
+      default: 
+        // If it's already an enum value, return it
+        if (Object.values(PriceRange).includes(priceRange as PriceRange)) {
+          return priceRange as PriceRange
+        }
+        return PriceRange.RANGE_4_TO_6
+    }
+  }
+
   // Initialize form with editing data if available
   useEffect(() => {
     if (editingStall) {
+      const mappedPriceRange = mapPriceRangeToEnum(editingStall.priceRange)
+
+      console.log(editingStall)
+      
       setFormData({
         stallName: editingStall.stallName,
         hawkerID: editingStall.hawkerID,
         hawkerCenterID: editingStall.hawkerCenterID,
-        unitNumber: editingStall.unitNumber || "",
-        startTime: editingStall.startTime,
-        endTime: editingStall.endTime,
+        unitNumber: editingStall.unitNumber,
+        startTime: formatTime(editingStall.startTime),
+        endTime: formatTime(editingStall.endTime),
         cuisineType: editingStall.cuisineType as CuisineType[],
-        priceRange: editingStall.priceRange as PriceRange,
+        priceRange: mappedPriceRange,
         hygieneRating: (editingStall.hygieneRating as HygieneRating) || HygieneRating.A,
         estimatedWaitTime: editingStall.estimatedWaitTime || 0,
-        images: editingStall.images,
+        images: editingStall.images || [],
       })
       setSelectedCuisines(editingStall.cuisineType as CuisineType[])
-      setPhotoPreviewUrls(editingStall.images)
+      
+      // When editing, make sure we keep the existing images in our preview
+      if (editingStall.images && editingStall.images.length > 0) {
+        setPhotoPreviewUrls(editingStall.images)
+      } else {
+        setPhotoPreviewUrls([])
+      }
     } else {
       resetForm()
     }
@@ -166,7 +203,7 @@ export default function AddStallDialog({
     const newPreviewUrls = [...photoPreviewUrls]
 
     // Revoke the object URL to avoid memory leaks
-    if (newPreviewUrls[index] && !newPreviewUrls[index].startsWith("/")) {
+    if (newPreviewUrls[index] && !newPreviewUrls[index].startsWith("http")) {
       URL.revokeObjectURL(newPreviewUrls[index])
     }
 
@@ -195,6 +232,14 @@ export default function AddStallDialog({
     const submitData: StallFormData = {
       ...formData,
       hawkerID: hawkerID || (editingStall ? editingStall.hawkerID : 0),
+    }
+
+    // When editing, preserve existing images if they weren't changed
+    if (editingStall && editingStall.images && editingStall.images.length > 0) {
+      // Check if we're keeping existing images without adding new ones
+      if (photoPreviewUrls.every(url => editingStall.images.includes(url))) {
+        submitData.images = editingStall.images
+      }
     }
 
     // Submit form

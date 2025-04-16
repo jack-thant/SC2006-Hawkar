@@ -44,6 +44,8 @@ export default function HawkerDashboardContent({ userId, hawkerCenters, stalls }
   const handleEditStall = async (updatedStall: StallFormData) => {
     if (!editingStall) return
 
+    console.log("Editing Stall", editingStall)
+    console.log("Updated Stall", updatedStall)
     try {
       setIsLoading(true)
 
@@ -118,12 +120,12 @@ export default function HawkerDashboardContent({ userId, hawkerCenters, stalls }
           {stalls.map((stall) => (
             <div key={stall.stallID}>
               <Card className="overflow-hidden">
-                <div className="relative h-48">
+                <div className="relative h-64">
                   <Image
                     src={stall.images[0] || "/placeholder.svg"}
                     alt={stall.stallName}
                     fill
-                    className="object-cover"
+                    className="object-cover absolute bottom-5"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">

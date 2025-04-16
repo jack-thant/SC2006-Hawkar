@@ -45,6 +45,7 @@ export enum PriceRange {
     RANGE_6_TO_10 = "$6 - $10",
     RANGE_8_TO_12 = "$8 - $12",
     RANGE_10_TO_15 = "$10 - $15",
+    RANGE_12_TO_20 = "$12 - $20",
     RANGE_15_TO_20 = "$15 - $20",
     RANGE_20_PLUS = "$20+"
 }
