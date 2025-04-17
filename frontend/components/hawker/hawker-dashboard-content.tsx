@@ -94,6 +94,24 @@ export default function HawkerDashboardContent({ userId, hawkerCenters, stalls }
     setIsDeleteDialogOpen(true)
   }
 
+  function getValidImageUrl(imageArray?: string[], fallback: string = "/placeholder.svg"): string {
+    if (!imageArray || !imageArray.length || !imageArray[0]) {
+      return fallback;
+    }
+
+    try {
+      // Test if it's a valid URL - this will throw an error for invalid URLs
+      new URL(imageArray[0]);
+      return imageArray[0];
+    } catch (e) {
+      // If it's a relative path, it's okay
+      if (imageArray[0].startsWith('/')) {
+        return imageArray[0];
+      }
+      return fallback;
+    }
+  }
+
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
@@ -122,8 +140,8 @@ export default function HawkerDashboardContent({ userId, hawkerCenters, stalls }
               <Card className="overflow-hidden">
                 <div className="relative h-64">
                   <Image
-                    src={stall.images[0] || "/placeholder.svg"}
-                    alt={stall.stallName}
+                    src={getValidImageUrl(stall.images)}
+                    alt={stall.stallName || "Stall image"}
                     fill
                     className="object-cover absolute bottom-5"
                   />
