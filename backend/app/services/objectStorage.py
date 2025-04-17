@@ -28,15 +28,15 @@ class ObjectStorage:
         Uses environment variables for MinIO connection details or defaults.
         """
         if not self._initialized:
-            self.minio_endpoint = os.environ.get("MINIO_ENDPOINT", "minio:9000")
-            self.minio_access_key = os.environ.get("MINIO_ROOT_USER", "tanknam")
-            self.minio_secret_key = os.environ.get("MINIO_ROOT_PASSWORD", "12345678")
+            self.minio_endpoint = "play.min.io:9000"
+            self.minio_access_key = "Q3AM3UQ867SPQQA43P2F"
+            self.minio_secret_key = "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
 
             self.client = Minio(
                 endpoint=self.minio_endpoint,
                 access_key=self.minio_access_key,
                 secret_key=self.minio_secret_key,
-                secure=False,
+                secure=True,
             )
             self._initialized = True
             self._ensure_buckets_exist()
@@ -93,7 +93,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return f"http://localhost:9000/profile-photo/{obj_name}"
+            return "https://" + self.minio_endpoint + f"/profile-photo/{obj_name}"
         except Exception as e:
             print(f"Error uploading profile photo: {str(e)}")
             raise e
@@ -131,7 +131,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return f"http://localhost:9000/stall/{obj_name}"
+            return "https://" + self.minio_endpoint + f"/stall/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading stall image: {str(e)}")
@@ -172,7 +172,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return f"http://localhost:9000/review-attachment/{obj_name}"
+            return "https://" + self.minio_endpoint + f"/review-attachment/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading review photo: {str(e)}")
@@ -215,7 +215,7 @@ class ObjectStorage:
                 part_size=10 * 1024 * 1024,
             )
 
-            return f"http://localhost:9000/dish/{obj_name}"
+            return "https://" + self.minio_endpoint + f"/dish/{obj_name}"
         except Exception as e:
             # Log the error
             print(f"Error uploading dish photo: {str(e)}")
