@@ -186,10 +186,14 @@ export default function Navbar({ username = "User", stallName, savedStalls, user
           <DropdownMenu open={open} onOpenChange={setOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center gap-2 px-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={profileData.profilePhoto} alt={username} className="object-cover"/>
-                  <AvatarFallback>{getInitials(username)}</AvatarFallback>
-                </Avatar>
+                <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                  <Image
+                    src={profileData.profilePhoto || getInitials(username)}
+                    alt={profileData.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <span className="hidden sm:inline-block">Hi, {username}</span>
               </Button>
             </DropdownMenuTrigger>

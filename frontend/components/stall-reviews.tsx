@@ -42,6 +42,12 @@ interface StallReviewsProps {
   userData: UserData
 }
 
+export interface ReportPayload {
+  stallID: number
+  reportType: ReportType
+  reportText: string
+}
+
 export default function StallReviews({ reviews, rating, reviewCount, currentUserId, stallID, userData }: StallReviewsProps) {
   const [sortBy, setSortBy] = useState("recent")
   const [showAddReviewDialog, setShowAddReviewDialog] = useState(false)
@@ -141,12 +147,12 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
       }
 
       // Since your reportReview function expects ReviewFormData, we need to adapt
-      const formData = {
+      const reportFormData: ReportPayload = {
         stallID: stallID,
         ...reportData,
       }
 
-      await reportReview(reportingReview.reviewID, formData as ReportFormData)
+      await reportReview(reportingReview.reviewID, reportFormData)
       toast("Thank you for your feedback. We'll review this report.")
       setShowReportDialog(false)
       setReportingReview(null)

@@ -1,6 +1,7 @@
 'use server'
 
-import { Review, ReviewFormData } from "@/app/types/review"
+import { ReportFormData, Review, ReviewFormData } from "@/app/types/review"
+import { ReportPayload } from "@/components/stall-reviews"
 import { revalidatePath } from "next/cache"
 
 const API_URL = process.env.NEXT_PUBLIC_DEV_API_URL
@@ -107,7 +108,7 @@ export async function deleteReview(reviewID: number, stallID: number) {
     }
 }
 
-export async function reportReview(reviewID: number, formData: ReviewFormData) {
+export async function reportReview(reviewID: number, formData: ReportPayload) {
     try {
         const response = await fetch(`${API_URL}/review/${reviewID}/report`, {
             method: "POST",
