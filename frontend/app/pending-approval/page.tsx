@@ -38,7 +38,7 @@ export default async function PendingApprovalPage() {
             <p className="mt-2">
               Your account is currently under review by our admin team. This process typically takes 1-2 business days.
             </p>
-            <p className="mt-2">We'll notify you via email once your account has been approved.</p>
+            <p className="mt-2">We&apos;ll notify you via email once your account has been approved.</p>
           </div>
         </div>
 
@@ -47,8 +47,8 @@ export default async function PendingApprovalPage() {
             <h3 className="font-medium text-amber-800">What happens next?</h3>
             <ul className="mt-2 text-sm text-amber-700 list-disc pl-5 space-y-1">
               <li>Our team will verify your SFA license number</li>
-              <li>We'll review your provided information</li>
-              <li>Once approved, you'll receive an email notification</li>
+              <li>We&apos;ll review your provided information</li>
+              <li>Once approved, you&apos;ll receive an email notification</li>
               <li>You can then log in and start setting up your stall profile</li>
             </ul>
           </div>

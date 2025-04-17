@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import FilterModal from "./filter-modal"
 import { HawkerCenter } from "@/app/types/hawker"
 import { CuisineType } from "@/app/types/auth"
-import { HygieneRating, PriceRange, Stall } from "@/app/types/stall"
+import { Stall } from "@/app/types/stall"
 import { countActiveFilters, filterStalls, hasActiveFilters } from "@/app/lib/utils/filter"
 
 export interface FilterState {
@@ -30,7 +30,6 @@ export default function SearchBar({ hawkerCenters, stalls, onFilteredStallsChang
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [appliedFilters, setAppliedFilters] = useState<FilterState | null>(null)
-  const [filteredStalls, setFilteredStalls] = useState<Array<Stall>>(stalls)
 
   // Filter stalls whenever search query or filters change
   useEffect(() => {

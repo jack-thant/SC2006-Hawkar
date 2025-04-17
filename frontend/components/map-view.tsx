@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react"
 import { Loader2 } from "lucide-react"
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { PriceRange, Stall } from "@/app/types/stall"
-import { HawkerCenter } from "@/app/types/hawker"
 
 
 interface MapViewProps {
@@ -14,10 +12,10 @@ interface MapViewProps {
 
 export default function MapView({ stalls }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null)
-  const [map, setMap] = useState<any>(null)
+  const [map, setMap] = useState<mapboxgl.Map | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const markersRef = useRef<any[]>([])
+  const markersRef = useRef<mapboxgl.Marker[]>([])
   const mapInitializedRef = useRef(false)
 
   // Initialize map when component mounts
@@ -58,8 +56,8 @@ export default function MapView({ stalls }: MapViewProps) {
       })
 
       // Handle map load error
-      newMap.on("error", (e: any) => {
-        setError(`Map error: ${e.error?.message || "Unknown error"}`)
+      newMap.on("error", (e: Error) => {
+        setError(`Map error: ${e.message || "Unknown error"}`)
         setLoading(false)
       })
 
@@ -74,8 +72,9 @@ export default function MapView({ stalls }: MapViewProps) {
           mapInitializedRef.current = false
         }
       }
-    } catch (err: any) {
-      setError(`Failed to initialize map: ${err.message}`)
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(`Failed to initialize map: ${errorMessage}`)
       setLoading(false)
     }
   }, [])

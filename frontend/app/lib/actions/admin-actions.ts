@@ -1,6 +1,5 @@
 "use server";
 
-import { Hawker } from "@/app/types/hawker";
 import { revalidatePath } from "next/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_DEV_API_URL

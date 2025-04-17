@@ -80,6 +80,11 @@ export async function addStall(formData: StallFormData) {
 
 export async function updateStall(stallID: number, formData: StallFormData) {
     try {
+        const requestBody = {
+            stallID: stallID,
+            ...formData
+        };
+        console.log('Request payload:', JSON.stringify(requestBody, null, 2));
         const response = await fetch(`${API_URL}/stall/update/${stallID}`, {
             method: "PUT",
             headers: {

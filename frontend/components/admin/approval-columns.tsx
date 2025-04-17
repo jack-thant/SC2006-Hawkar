@@ -19,7 +19,7 @@ const ApproveButton = ({ hawkerID }: { hawkerID: number }) => {
       setIsLoading(true)
       await approveHawker(hawkerID.toString())
       toast.success("Successfully approved hawker")
-    } catch (error) {
+    } catch {
       toast.error("Error approving hawker, try again")
     } finally {
       setIsLoading(false)

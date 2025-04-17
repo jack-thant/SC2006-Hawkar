@@ -10,15 +10,27 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AmbulatoryStatus, CuisineType, DietaryPreference, UserType } from "@/app/types/auth"
 
-interface ProfileFormProps {
-    formData: any
-    setFormData: (data: any) => void
-    onSubmit: (e: React.FormEvent) => void
-    isLoading: boolean
-    error: string | null
+interface ProfileFormData {
+    role: string;
+    license?: string;
+    address?: string;
+    contactNumber?: string;
+    dietaryPreference?: string;
+    preferredCuisine?: string;
+    ambulatoryStatus?: string;
+    adminUID?: string;
+    profilePhoto?: string;
 }
 
-export default function ProfileForm({ formData, setFormData, onSubmit, isLoading, error }: ProfileFormProps) {
+interface ProfileFormProps {
+    formData: ProfileFormData;
+    setFormData: (data: ProfileFormData) => void;
+    onSubmit: (e: React.FormEvent) => void;
+    isLoading: boolean;
+    error: string | null;
+}
+
+export default function ProfileForm({ formData, setFormData, onSubmit, isLoading}: ProfileFormProps) {
     const [profileImage, setProfileImage] = useState<string | null>(null)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

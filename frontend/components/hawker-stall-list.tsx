@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Heart, Loader2, Star } from "lucide-react"
+import { Heart, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation'
 import { Stall } from "@/app/types/stall"
@@ -16,9 +16,6 @@ interface HawkerStallListProps {
 
 export default function HawkerStallList({ stalls, userID, likedStallDetails }: HawkerStallListProps) {
     const router = useRouter()
-
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [likedStalls, setLikedStalls] = useState<Stall[]>([]);
 
     // Add a state to track loading states for individual stalls
     const [loadingStalls, setLoadingStalls] = useState<Set<number>>(new Set());
@@ -37,20 +34,9 @@ export default function HawkerStallList({ stalls, userID, likedStallDetails }: H
             if (isCurrentlyLiked) {
                 // If currently liked, unlike it
                 await unlikeStall(userID, stallID);
-
-                // Remove from likedStallDetails
-                setLikedStalls(prev =>
-                    prev.filter(stall => stall.stallID !== stallID)
-                );
             } else {
                 // If not liked, like it
                 await likeStall(userID, stallID);
-
-                // Find the stall details from the stalls array
-                const stallDetail = stalls.find(s => s.stallID === stallID);
-                if (stallDetail) {
-                    setLikedStalls(prev => [...prev, stallDetail]);
-                }
             }
             router.refresh()
         } catch (error) {
@@ -77,9 +63,6 @@ export default function HawkerStallList({ stalls, userID, likedStallDetails }: H
                                 className="object-cover transition-transform group-hover:scale-105"
                             />
                         </div>
-                        {/* <div className={`absolute top-3 left-3 bg-white/90 px-2 py-1 rounded-full text-xs font-medium ${!stall.isFavorite ? 'hidden' : ''}`}>
-                            Popular Choice
-                        </div> */}
                         <Button
                             variant="ghost"
                             size="icon"
@@ -101,11 +84,6 @@ export default function HawkerStallList({ stalls, userID, likedStallDetails }: H
                     <div className="p-4 cursor-pointer" onClick={() => router.push(`/stall/${stall.stallID}`)}>
                         <div className="flex justify-between items-start">
                             <h3 className="font-medium text-lg">{stall.stallName}</h3>
-                            {/* <div className="flex items-center">
-                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                                <span className="text-sm font-medium">{stall.rating}</span>
-                                <span className="text-sm text-gray-500 ml-1">({stall.reviewCount})</span>
-                            </div> */}
                         </div>
                         <div className="mt-1 text-sm text-gray-500 truncate">{stall.hawkerCenter.name}</div>
                         {

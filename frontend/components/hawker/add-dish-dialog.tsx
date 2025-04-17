@@ -17,10 +17,9 @@ interface AddDishDialogProps {
   onClose: () => void
   onSubmit: (dish: DishFormData) => void
   editingDish: Dish | null
-  isLoading?: boolean
 }
 
-export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish, isLoading }: AddDishDialogProps) {
+export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }: AddDishDialogProps) {
   const [formData, setFormData] = useState({
     dishName: "",
     price: "",

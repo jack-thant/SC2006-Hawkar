@@ -13,7 +13,7 @@ export interface Stall {
     endTime: string;
     unitNumber: string;
     hygieneRating: HygieneRating;
-    cuisineType: Array<String>;
+    cuisineType: Array<string>;
     estimatedWaitTime: number;
     priceRange: PriceRange;
 }

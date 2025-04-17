@@ -1,9 +1,6 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import { ArrowLeft, Clock, MapPin, Share, Star, Heart, Grid2X2, Tag, Award } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Clock, MapPin, Star, Tag, Award } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import StallDishes from "@/components/stall-dishes"

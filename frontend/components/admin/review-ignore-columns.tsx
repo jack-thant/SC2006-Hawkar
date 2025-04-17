@@ -18,7 +18,7 @@ const IgnoreButton = ({ reviewID }: { reviewID: number }) => {
             setIsLoading(true)
             await ignoreReportedReview(reviewID.toString())
             toast.success("Successfully ignored reported review")
-        } catch (error) {
+        } catch {
             toast.error("Error ignoring review, try again")
         } finally {
             setIsLoading(false)

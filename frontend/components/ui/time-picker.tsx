@@ -41,7 +41,7 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
         }
 
         setMinutes(minuteStr)
-      } catch (e) {
+      } catch {
         // If parsing fails, set default values
         setHours("12")
         setMinutes("00")

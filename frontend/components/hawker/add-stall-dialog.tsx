@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -87,6 +87,25 @@ export default function AddStallDialog({
     }
   }
 
+  const resetForm = useCallback(() => {
+    setFormData({
+      stallName: "",
+      hawkerID: hawkerID || 0,
+      hawkerCenterID: 1,
+      unitNumber: "",
+      startTime: "10:00",
+      endTime: "20:00",
+      cuisineType: [],
+      priceRange: PriceRange.RANGE_4_TO_6,
+      hygieneRating: HygieneRating.A,
+      estimatedWaitTime: 0,
+      images: [],
+    })
+    setSelectedCuisines([])
+    setPhotoFiles([])
+    setPhotoPreviewUrls([])
+  }, [hawkerID])
+
   // Initialize form with editing data if available
   useEffect(() => {
     if (editingStall) {
@@ -118,26 +137,7 @@ export default function AddStallDialog({
     } else {
       resetForm()
     }
-  }, [editingStall, isOpen, hawkerID])
-
-  const resetForm = () => {
-    setFormData({
-      stallName: "",
-      hawkerID: hawkerID || 0,
-      hawkerCenterID: 1,
-      unitNumber: "",
-      startTime: "10:00",
-      endTime: "20:00",
-      cuisineType: [],
-      priceRange: PriceRange.RANGE_4_TO_6,
-      hygieneRating: HygieneRating.A,
-      estimatedWaitTime: 0,
-      images: [],
-    })
-    setSelectedCuisines([])
-    setPhotoFiles([])
-    setPhotoPreviewUrls([])
-  }
+  }, [editingStall, isOpen, hawkerID, resetForm])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -148,7 +148,7 @@ export default function AddStallDialog({
     setFormData({ ...formData, [field]: value })
   }
 
-  const handleSelectChange = (field: string, value: any) => {
+  const handleSelectChange = (field: string, value: string | number | HygieneRating | PriceRange) => {
     setFormData({ ...formData, [field]: value })
   }
 

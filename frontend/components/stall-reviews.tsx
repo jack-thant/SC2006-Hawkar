@@ -146,7 +146,7 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
         ...reportData,
       }
 
-      await reportReview(reportingReview.reviewID, formData as any)
+      await reportReview(reportingReview.reviewID, formData as ReportFormData)
       toast("Thank you for your feedback. We'll review this report.")
       setShowReportDialog(false)
       setReportingReview(null)
@@ -427,7 +427,7 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Report Review</DialogTitle>
-            <DialogDescription>Please let us know why you're reporting this review.</DialogDescription>
+            <DialogDescription>Please let us know why you&apos;re reporting this review.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-6 py-2">
             <div className="flex flex-col gap-3">

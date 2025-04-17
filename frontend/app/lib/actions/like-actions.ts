@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-
 const API_URL = process.env.NEXT_PUBLIC_DEV_API_URL
 
 export async function likeStall(userID: string, stallID: number) {

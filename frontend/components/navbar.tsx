@@ -330,7 +330,7 @@ export default function Navbar({ username = "User", stallName, savedStalls, user
             ) : (
               <div className="text-center py-8">
                 <Heart className="h-12 w-12 mx-auto text-muted-foreground" />
-                <p className="mt-4 text-muted-foreground">You haven't saved any stalls yet.</p>
+                <p className="mt-4 text-muted-foreground">You haven&apos;t saved any stalls yet.</p>
                 <Button
                   className="mt-4"
                   onClick={() => {
