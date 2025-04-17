@@ -49,7 +49,7 @@ import { fetchReportedReviews } from '../lib/actions/review-actions'
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
+          <Card className='py-8'>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Hawker Approvals</CardTitle>
               <UserCheck className="h-4 w-4 text-muted-foreground" />
@@ -63,7 +63,7 @@ import { fetchReportedReviews } from '../lib/actions/review-actions'
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className='py-8'>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Reported Reviews</CardTitle>
               <Flag className="h-4 w-4 text-muted-foreground" />
