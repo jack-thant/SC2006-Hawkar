@@ -3,6 +3,7 @@ export interface SignUpFormData {
   emailAddress: string;
   password: string;
   role: UserType;
+  license?: string;
   adminUID?: string;
   profilePhoto?: string;
   address?: string;

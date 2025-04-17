@@ -149,15 +149,7 @@ export default function SignUpForm() {
                 <ProfileForm
                   formData={formData}
                   isLoading={isLoading}
-                  setFormData={(profileData) => {
-                    setFormData(prevData =>
-                      ({
-                        ...prevData,
-                        ...profileData,
-                        role: prevData.role, // keep original enum
-                      } as SignUpFormData)
-                    )
-                  }}
+                  setFormData={setFormData}
                   error={error}
                   onSubmit={handleSubmit}
                 />

@@ -8,23 +8,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AmbulatoryStatus, CuisineType, DietaryPreference, UserType } from "@/app/types/auth"
-
-interface ProfileFormData {
-    role: string;
-    license?: string;
-    address?: string;
-    contactNumber?: string;
-    dietaryPreference?: string;
-    preferredCuisine?: string;
-    ambulatoryStatus?: string;
-    adminUID?: string;
-    profilePhoto?: string;
-}
+import { AmbulatoryStatus, CuisineType, DietaryPreference, SignUpFormData, UserType } from "@/app/types/auth"
 
 interface ProfileFormProps {
-    formData: ProfileFormData;
-    setFormData: (data: ProfileFormData) => void;
+    formData: SignUpFormData;  
+    setFormData: React.Dispatch<React.SetStateAction<SignUpFormData>>; 
     onSubmit: (e: React.FormEvent) => void;
     isLoading: boolean;
     error: string | null;
@@ -38,9 +26,9 @@ export default function ProfileForm({ formData, setFormData, onSubmit, isLoading
         setFormData({ ...formData, [name]: value })
     }
 
-    const handleSelectFieldChange = (fieldName: string) => {
+    const handleSelectFieldChange = (fieldName: keyof SignUpFormData) => {
         return (value: string) => {
-            setFormData({ ...formData, [fieldName]: value });
+            setFormData(prev => ({ ...prev, [fieldName]: value }));
         };
     }
 
