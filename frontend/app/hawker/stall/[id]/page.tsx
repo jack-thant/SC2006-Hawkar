@@ -6,10 +6,13 @@ import { fetchStallByStallID } from "@/app/lib/actions/stall-actions"
 import { fetchDishesByStallID } from "@/app/lib/actions/dish-actions"
 import { fetchReviewsByStallID } from "@/app/lib/actions/review-actions"
 
-export default async function StallManagementPage({ params }: { params: { id: string } }) {
+export default async function StallManagementPage(props: { params: Promise<{ id: string }> }) {
+  // First await the params Promise, then destructure
+  const params = await props.params;
+  const { id } = params;
+  
   const session = await getSession()
   const userData = await getUserData()
-  const { id } = await params
   const stall = await fetchStallByStallID(parseInt(id))
   const dishes = await fetchDishesByStallID(parseInt(id))
   const reviews = await fetchReviewsByStallID(parseInt(id))
@@ -33,8 +36,6 @@ export default async function StallManagementPage({ params }: { params: { id: st
   if (userData?.verifyStatus === false) {
     redirect("/pending-approval")
   }
-
-  // In a real app, you would fetch the stall data and verify ownership
 
   return (
     <main className="min-h-screen flex flex-col">
