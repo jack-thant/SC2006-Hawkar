@@ -76,7 +76,7 @@ export default function Navbar({ username = "User", stallName, savedStalls, user
     name: userData.name,
     email: userData.emailAddress,
     contactNumber: userData.contactNumber,
-    profilePicture: userData.profilePicture,
+    profilePhoto: userData.profilePhoto,
   })
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -187,7 +187,7 @@ export default function Navbar({ username = "User", stallName, savedStalls, user
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center gap-2 px-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={profileData.profilePicture} alt={username} />
+                  <AvatarImage src={profileData.profilePhoto} alt={username} className="object-cover"/>
                   <AvatarFallback>{getInitials(username)}</AvatarFallback>
                 </Avatar>
                 <span className="hidden sm:inline-block">Hi, {username}</span>
@@ -224,7 +224,7 @@ export default function Navbar({ username = "User", stallName, savedStalls, user
           <form onSubmit={handleProfileUpdate}>
             <div className="flex flex-col items-center gap-2 mb-6">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={previewUrl || profileData.profilePicture} alt={profileData.name} />
+                <AvatarImage src={previewUrl || profileData.profilePhoto} alt={profileData.name} className="object-cover" />
                 <AvatarFallback>{getInitials(profileData.name)}</AvatarFallback>
               </Avatar>
               <Button type="button" size="sm" variant="ghost" onClick={handleProfilePictureUpdate}>

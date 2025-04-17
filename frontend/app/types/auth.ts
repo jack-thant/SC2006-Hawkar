@@ -59,7 +59,7 @@ export interface GoogleUserData {
 export interface UserData {
   name: string;
   emailAddress: string;
-  profilePicture?: string;
+  profilePhoto?: string;
   contactNumber?: string;
   role: UserType;
   verifyStatus?: boolean;
