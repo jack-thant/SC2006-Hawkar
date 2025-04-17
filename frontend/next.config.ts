@@ -33,6 +33,10 @@ const nextConfig: NextConfig = {
         port: '9000',
         pathname: '/stall/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com'
+      }
     ]
   }
 };
