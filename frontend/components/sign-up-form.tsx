@@ -146,7 +146,21 @@ export default function SignUpForm() {
                     </form>
                 </div>
             ) : (
-                <ProfileForm formData={formData} isLoading={isLoading} setFormData={setFormData} error={error} onSubmit={handleSubmit} />
+                <ProfileForm
+                  formData={formData}
+                  isLoading={isLoading}
+                  setFormData={(profileData) => {
+                    setFormData(prevData =>
+                      ({
+                        ...prevData,
+                        ...profileData,
+                        role: prevData.role, // keep original enum
+                      } as SignUpFormData)
+                    )
+                  }}
+                  error={error}
+                  onSubmit={handleSubmit}
+                />
             )}
         </div>
         </>

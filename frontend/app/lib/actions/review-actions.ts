@@ -1,8 +1,8 @@
 'use server'
 
-import { ReportFormData, Review, ReviewFormData } from "@/app/types/review"
 import { ReportPayload } from "@/components/stall-reviews"
 import { revalidatePath } from "next/cache"
+import { Review, ReviewFormData } from "@/app/types/review"
 
 const API_URL = process.env.NEXT_PUBLIC_DEV_API_URL
 

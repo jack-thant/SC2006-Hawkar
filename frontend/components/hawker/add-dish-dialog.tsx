@@ -11,15 +11,15 @@ import { X, ImageIcon } from "lucide-react"
 import Image from "next/image"
 import { Dish, DishFormData } from "@/app/types/dish"
 
-
 interface AddDishDialogProps {
-  isOpen: boolean
-  onClose: () => void
-  onSubmit: (dish: DishFormData) => void
-  editingDish: Dish | null
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (dish: DishFormData) => void;
+  editingDish: Dish | null;
+  isLoading?: boolean; // Add this property with optional type
 }
 
-export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }: AddDishDialogProps) {
+export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish, isLoading = false }: AddDishDialogProps) {
   const [formData, setFormData] = useState({
     dishName: "",
     price: "",
@@ -176,7 +176,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
       <div className="bg-background rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-background z-10 flex justify-between items-center p-6 border-b">
           <h2 className="text-xl font-bold">{editingDish ? "Edit Dish" : "Add New Dish"}</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button variant="ghost" size="icon" onClick={onClose} disabled={isLoading}>
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -192,6 +192,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
                 onChange={handleInputChange}
                 placeholder="Enter dish name"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -207,6 +208,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
                 onChange={handleInputChange}
                 placeholder="Enter price"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -226,13 +228,14 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
                     size="icon"
                     className="absolute top-2 right-2 h-8 w-8 rounded-full"
                     onClick={removePhoto}
+                    disabled={isLoading}
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               ) : (
                 <label className="border border-dashed rounded-md flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/50 aspect-video">
-                  <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+                  <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} disabled={isLoading} />
                   <ImageIcon className="h-12 w-12 text-muted-foreground mb-4" />
                   <span className="text-sm text-muted-foreground text-center">
                     Click to upload a photo of your dish
@@ -242,7 +245,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
             </div>
 
             <div className="flex items-center space-x-2">
-              <Switch id="onPromotion" checked={formData.onPromotion} onCheckedChange={handleSwitchChange} />
+              <Switch id="onPromotion" checked={formData.onPromotion} onCheckedChange={handleSwitchChange} disabled={isLoading} />
               <Label htmlFor="onPromotion">This dish is on promotion</Label>
             </div>
 
@@ -262,6 +265,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
                     onChange={handleInputChange}
                     placeholder="Enter discounted price"
                     required={formData.onPromotion}
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -275,6 +279,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
                       value={formData.startDate}
                       onChange={handleInputChange}
                       required={formData.onPromotion}
+                      disabled={isLoading}
                     />
                   </div>
                   <div className="grid gap-3">
@@ -286,6 +291,7 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
                       value={formData.endDate}
                       onChange={handleInputChange}
                       required={formData.onPromotion}
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -294,10 +300,12 @@ export default function AddDishDialog({ isOpen, onClose, onSubmit, editingDish }
           </div>
 
           <div className="flex justify-end gap-3 mt-8">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
               Cancel
             </Button>
-            <Button type="submit">{editingDish ? "Save Changes" : "Add Dish"}</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (editingDish ? "Saving..." : "Adding...") : (editingDish ? "Save Changes" : "Add Dish")}
+            </Button>
           </div>
         </form>
       </div>

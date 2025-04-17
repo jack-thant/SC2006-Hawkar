@@ -219,7 +219,6 @@ export async function getSession() {
 
 export async function getUserData() {
   const session = await getSession();
-  console.log(session?.userId);
   if (!session) {
     return null;
   }
@@ -228,10 +227,11 @@ export async function getUserData() {
     if (!response.ok) {
       throw new Error("Failed to fetch user data");
     }
-    return await response.json();
+    const userData = await response.json();
+    console.log("User data retrieved:", userData); // Add logging to check the data
+    return userData;
   } catch (error) {
     console.error("Error fetching user data:", error);
     return session.userData;
   }
 }
-

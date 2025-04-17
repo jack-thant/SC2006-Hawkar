@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { Loader2 } from "lucide-react"
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-
+import { Stall } from "@/app/types/stall";
 
 interface MapViewProps {
   stalls: Array<Stall>
@@ -56,8 +56,8 @@ export default function MapView({ stalls }: MapViewProps) {
       })
 
       // Handle map load error
-      newMap.on("error", (e: Error) => {
-        setError(`Map error: ${e.message || "Unknown error"}`)
+      newMap.on("error", (event: { error: Error }) => {
+        setError(`Map error: ${event.error.message || "Unknown error"}`)
         setLoading(false)
       })
 

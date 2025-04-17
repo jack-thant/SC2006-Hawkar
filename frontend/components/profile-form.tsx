@@ -51,7 +51,7 @@ export default function ProfileForm({ formData, setFormData, onSubmit, isLoading
             reader.onload = (event) => {
                 if (event.target?.result) {
                     setProfileImage(event.target.result as string)
-                    setFormData({ ...formData, profilePhoto: event.target.result })
+                    setFormData({ ...formData, profilePhoto: event.target.result as string })
                 }
             }
             reader.readAsDataURL(file)
