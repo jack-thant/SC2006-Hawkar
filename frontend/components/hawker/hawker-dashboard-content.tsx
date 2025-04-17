@@ -103,7 +103,7 @@ export default function HawkerDashboardContent({ userId, hawkerCenters, stalls }
       // Test if it's a valid URL - this will throw an error for invalid URLs
       new URL(imageArray[0]);
       return imageArray[0];
-    } catch (e) {
+    } catch {
       // If it's a relative path, it's okay
       if (imageArray[0].startsWith('/')) {
         return imageArray[0];
