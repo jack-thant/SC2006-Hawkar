@@ -67,7 +67,7 @@ export default function StallReviews({ reviews, rating, reviewCount, currentUser
 
   const ratingCounts = [0, 0, 0, 0, 0];
 
-  reviews.forEach((review) => {
+  validReviews.forEach((review) => {
     if (review.rating >= 1 && review.rating <= 5) {
       ratingCounts[review.rating - 1]++;
     }
