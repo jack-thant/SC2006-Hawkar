@@ -14,12 +14,12 @@ All icons used in this readme will be from either [Tandpfun on Github](https://g
 ### Frontend
 
 [Installing Nodejs](#installing-nodejs)
-[Installing NPM](#installing-npm)
+[Installing NPM](#installing-npm-node-package-manager)
 [Running the frontend itself](#running-the-frontend-itself)
 
 ### Backend
 
-[Installing Docker](#installing-docker)
+[Installing Docker](#installing-docker-desktop)
 [Running the Backend](#running-the-backend)
 
 ## Data seeding 
@@ -57,7 +57,8 @@ All icons used in this readme will be from either [Tandpfun on Github](https://g
 ---
 ### Frontend
 
-#### Installing Nodejs [![My Skills](https://skillicons.dev/icons?i=js)](https://skillicons.dev)
+#### Installing Nodejs 
+[![My Skills](https://skillicons.dev/icons?i=js)](https://skillicons.dev)
 In the command prompt, power shell or terminal, type in the following to see if Nodejs is already installed:
 ```bash
 node -v
@@ -90,7 +91,8 @@ Should this not be the case, then you will have to install NPM manually, though 
 
 ---
 
-#### Running the frontend itself ![logo](./read_me_images/icons8-gears-30.png)
+#### Running the frontend itself 
+![logo](./read_me_images/icons8-gears-30.png)
 
 Once you have verified the installation of Nodejs and NPM, you can now starting running the backend.
 
@@ -114,7 +116,8 @@ Once done, run the frontend with the following commands:
 
 ### Backend
 
-#### Installing Docker Desktop ![logo](./read_me_images/icons8-docker-logo-48.png)
+#### Installing Docker Desktop 
+![logo](./read_me_images/icons8-docker-logo-48.png)
 
 For ease of access and set up, we will be using Docker Engine to run the backend and other related services such as Minio (for image storage), Docker Engine is installed with Docker Desktop.
 
@@ -140,7 +143,8 @@ for Docker Compose.
 
 ---
 
-#### Running the Backend ![logo](./read_me_images/icons8-gears-30.png)
+#### Running the Backend
+ ![logo](./read_me_images/icons8-gears-30.png)
 
 Once Docker has been installed, run the backend as follows:
 1. Run Docker deskstop and ensure that the Docker Engine is up and running.
