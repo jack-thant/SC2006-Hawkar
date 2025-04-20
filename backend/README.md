@@ -1,4 +1,4 @@
-# Setup Instructions
+# Setup Instructions (Backend)
 
 1. In the `/backend` directory, create a python virtual environment and activate it.
 
